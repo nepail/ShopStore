@@ -1,0 +1,45 @@
+﻿@page "/counter"
+@using ShopStore.ViewModels
+@using ShopStore.Models.Interface
+@inject IProducts product
+
+<h1>Counter</h1>
+
+<p>Current count: @currentCount</p>
+
+<p>Current count2: @currentCount2</p>
+
+@*<p>@ProductsViewModel.f_id</p>
+    <p>@ProductsViewModel.f_name</p>*@
+
+@*@foreach (var a in products)
+{
+    <p>@a.f_id</p>
+    <p>@a.f_name</p>
+    <p>@a.f_categoryId</p>
+    <p>@a.f_price</p>
+}*@
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+    private int currentCount = 0;
+    private int currentCount2 = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+        currentCount2++;
+
+    }
+
+    //private IReadOnlyList<ProductsViewModel>? products;
+
+    private IEnumerable<ProductsViewModel> products;
+
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    products = await product.GetProductsAsync();
+
+    //}
+}
