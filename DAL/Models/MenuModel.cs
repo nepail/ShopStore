@@ -53,6 +53,10 @@ namespace DAL.Models
         /// 新加入的子選單
         /// </summary>
         public List<SubItem> SubItems { get; set; }
+        /// <summary>
+        /// 主選單item
+        /// </summary>
+        public List<MainMenuItem> MainMenuItems { get; set; }
     }
 
 
@@ -80,5 +84,16 @@ namespace DAL.Models
         public int f_isopen { get; set; }
         public int f_level { get; set; }
         //public int f_isdel { get; set; }
+    }
+
+    public class MainMenuItem
+    {
+        public int f_id { get; set; }
+        public string f_name { get; set; }
+        public string f_icon { get; set; }
+        public int f_level { get; set; }
+        public int f_isopen { get; set; }
+        public int f_issys { get; set; }
+        public int f_isdel { get; set; }
     }
 }

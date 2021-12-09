@@ -90,19 +90,18 @@ namespace ShopStore.Models.Service
             try
             {
                 using var conn = _connection;
+                if(model.MainMenuItems != null && model.MainMenuItems.Count > 0)
+                {
+                    var result = await conn.ExecuteAsync("pro_shopStore_Manager_addMainMenu", model.MainMenuItems, commandType: System.Data.CommandType.StoredProcedure);
+                }
+                
                 if(model.SubItems != null && model.SubItems.Count > 0)
                 {
                     var result = await conn.ExecuteAsync("pro_shopStore_Manager_addSubMenu", model.SubItems, commandType: System.Data.CommandType.StoredProcedure);
-                    //string sqlStr = "";
-                    //var result = await conn.ExecuteAsync(sqlStr, model.SubItems);
                 }
                 if(model.MenuSubModels != null && model.MenuSubModels.Count > 0)
                 {
                     var result = await conn.ExecuteAsync("pro_shopStore_Manager_updateSubMenu", model.MenuSubModels, commandType: System.Data.CommandType.StoredProcedure);
-                    //string sqlStr = @"	UPDATE t_manager_menusub 
-                    //                 SET	f_isopen = @f_isopen
-                    //                 WHERE f_id = @f_id";
-                    //var result = await conn.ExecuteAsync(sqlStr, model.MenuSubModels);
                 }                                              
             }
             catch (Exception ex)

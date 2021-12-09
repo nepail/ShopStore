@@ -11,6 +11,8 @@ var upMenuItem = [];
 //新建的MenuItem
 var newMenuItem = [];
 var newMenuItemNum = -1;
+//主選單array
+var newMainMenuItem = [];
 
 //主選單的ID
 var mainMenuid = Number($('.box>.item:last>.content').attr('data-menuid'))
@@ -38,7 +40,7 @@ $(document).on('focus', '.rowx input', function () {
     focusout = false
 })
 
-//input focusout
+//input submenu focusout
 $(document).on('focusout', '.rowx input', function () {
     if(focusout) return
 
@@ -80,6 +82,29 @@ $(document).on('focusout', '.rowx input', function () {
     }
     focusout = true
 })
+
+
+//主選單 focusout
+$(document).on('focusout', '.mainInput', function () {    
+    console.log($(this).val())
+    console.log($(this).parent().parent().siblings('.content').attr('data-menuid'))
+
+    var id = Number($(this).parent().parent().siblings('.content').attr('data-menuid'))
+    var name = $(this).val()
+
+    if(name == '') return
+
+    newMainMenuItem[id] = {
+        f_id: id,
+        f_name: name,
+        f_icon: 'bx-windows',
+        f_level: 1,
+        f_isopen: 1,
+        f_issys: 0,
+        f_isdel: 0
+    }
+})
+
 
 //選單下拉動畫
 $(document).on('click', '.container>.box>.item>.title>.edit', function (event) {
@@ -159,10 +184,6 @@ function RemoveSelf(obj) {
             f_isdel: 0
         }
 
-        //upMenuItem = upMenuItem.filter(el => el);                
-        //var thisSubIndex = upMenuItem.findIndex((obj => obj.f_id == dataid))
-        //console.log('thisindex='+thisSubIndex)
-
         if ($(obj).hasClass('bx-show') == false) {
             upMenuItem[dataid].f_isopen = 1
         } else {
@@ -175,10 +196,12 @@ function RemoveSelf(obj) {
     $(obj).toggleClass('bx-show bx-hide')
 
     if ($(obj).parent().hasClass('del')) {
-        input.attr('disabled', true)
+        input.attr('disabled', true)        
     } else {
-        input.attr('disabled', false)
+        input.attr('disabled', false)        
     }
+
+    $('#btnSave').attr('disabled', false)
 }
 
 //傳送資料
@@ -188,11 +211,13 @@ function SendData(btn) {
     $(btn).attr('disabled', true)
 
     //去除 Array 的 Null
-    upMenuItem = upMenuItem.filter(el => el);
-    
+    upMenuItem = upMenuItem.filter(el => el)
+    newMainMenuItem = newMainMenuItem.filter(el => el)
+
     var postData = {
         MenuSubModels: upMenuItem,
-        SubItems: newMenuItem
+        SubItems: newMenuItem,
+        MainMenuItems: newMainMenuItem
     }
 
     post_flag = true
@@ -210,9 +235,10 @@ function SendData(btn) {
             swal(res.message, '', 'success')
             $(btn).attr('disabled', false)
             post_flag = false
-            upMenuItem = [];
-            newMenuItem = [];
-            newMenuItemNum = -1;
+            upMenuItem = []
+            newMenuItem = []
+            newMenuItemNum = -1
+            newMainMenuItem = []
         },
         error: function (res) {
             swal(res.message, '', 'error')

@@ -50,7 +50,6 @@ namespace ShopStore.Controllers.Manager
                 {
                     var result = await _manager.AddSubMenu(model);
                 }
-
             }
             catch (Exception e)
             {
