@@ -1,10 +1,4 @@
-﻿//window.onload = function () {
-//    console.log("getlist");
-//    GetProductList(1);
-//}
-
-//const productData = $.get('/Products/ProductLists');
-var productData;
+﻿var productData;
 
 $(document).ready(function () {
     console.log(productData);
@@ -12,16 +6,19 @@ $(document).ready(function () {
     //Product.SetEvent();
 });
 
-$(window).on('load',function () {
-    //console.log($('#productList').attr('data-ajax-sign'))
+$(window).on('load',function () {    
     getproduct();
 });
 
-
 function getproduct() {
 
-    var md5 = JSON.parse(localStorage.getItem('item')).ajaxsign;
-    console.log(md5)
+    try {
+        var md5 = JSON.parse(localStorage.getItem('item')).ajaxsign;
+        console.log(md5)
+    } catch {
+        md5 = 0
+    }
+
 
     $.ajax({
         async: false,
@@ -74,15 +71,6 @@ function showProductDetail(itemName, itemid) {
         $("#prodetailCard-inline p.l-grey span:eq(0)").text(p.f_categoryId)
         $("#prodetailCard-inline p.l-grey span:eq(1)").text(p.f_price)
     }
-
-    //$.ajax({
-    //    url: "/Products/GetProductDetailById/?id=" + itemName,
-    //    method: "GET",
-
-    //    success: res => {
-    //        console.log(res);
-    //    }
-    //});
 }
 
 function AddtoCart(item, itemname) {

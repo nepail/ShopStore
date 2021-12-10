@@ -33,7 +33,6 @@ var clickTimeout = {
     }
 }
 
-
 //input focus
 $(document).on('focus', '.rowx input', function () {
     inputValue = $(this).val()
@@ -92,7 +91,7 @@ $(document).on('focusout', '.mainInput', function () {
     var id = Number($(this).parent().parent().siblings('.content').attr('data-menuid'))
     var name = $(this).val()
 
-    if(name == '') return
+    if (name == '') return
 
     newMainMenuItem[id] = {
         f_id: id,
@@ -119,7 +118,7 @@ $(document).on('click', '.container>.box>.item>.title>.edit', function (event) {
     })
 })
 
-//新增子選單事件
+//新增子選單
 $(document).on('click', '.container>.box>.item>.title>.bx-add-to-queue', function (event) {
     if (menuAppend) {
         newMenuItemNum++
@@ -133,7 +132,18 @@ $(document).on('click', '.container>.box>.item>.title>.bx-add-to-queue', functio
     }
 })
 
-//雙擊主選單標題事件
+//$(document).click(':not', function () {
+//    if ($('.popmenu').is(':visible')) $('.popmenu').hide()
+    
+//    console.log('tt')
+//})
+
+//顯示icon的選單
+$(document).on('click', '.title .bx:first-child', function (event) {
+    $(this).siblings('.popmenu').toggle();
+})
+
+//主選單標題下拉
 $(document).on('dblclick', '.edit', function (event) {
     clickTimeout.clear()    
     $(this).find('input').attr('disabled', false)
@@ -248,7 +258,7 @@ function SendData(btn) {
     })
 }
 
-//新增主選單
+//新增主選單按鈕
 function AddMenu() {
     if (mainMenuAdd) return
 
@@ -276,6 +286,5 @@ function AddMenu() {
 
     //$(".box").animate({ scrollTop: $('.box').offset().top }, 5000);
     $('.box').animate({ scrollTop: 5000}, 1000)
-
 }
 

@@ -16,10 +16,6 @@ namespace ShopStore.Controllers.Manager
             _manager = manager;
         }
 
-
-
-
-
         /// <summary>
         /// 取得菜單
         /// </summary>
