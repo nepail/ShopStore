@@ -4,14 +4,31 @@
 }
 
 
+#uploadImg{
+    position: relative;
+}
+
+#uploadImg input{
+    z-index:1;
+    left:0;
+    height: 350px;
+    width: 300px;    
+    position: absolute;
+    opacity: 0;
+}
+
 .checkbox {
     height: 80px;
-    width: 270px;
+    /*width: 370px;*/
     background: #fff;
     display: flex;
     align-items: center;
-    padding: 20px;
+    /*padding: 5px;*/
     justify-content: space-between;
+}
+
+.checkbox label{
+    margin-right: 800px;
 }
 
     .checkbox input {
@@ -40,31 +57,52 @@
         }
 
 input:checked {
-    background: #664AFF;
+    background: #32CD32;
 }
 
     input:checked:before {
         left: 50px;
     }
 
+/*²»é_·Å*/
 .checkbox .text:before {
-    content: "Disabled";
+    content: "\4e0d\958b\653e";
     font-size: 25px;
     font-weight: 500;
     color: #bfbfbf;
 }
 
+/*é_·Å*/
 input:checked ~ .text:before {
-    content: "Enabled";
+    content: "\958b\653e";
     font-size: 26px;
-    color: #664AFF;
+    color: #32CD32;
 }
 
+
+#searchBox {
+    margin-top: 30px;
+    height: 50px;
+    width: 100%;
+    background: #fff;
+    box-shadow: 0px 0px 10px 4px #E5E5E5;
+    border-radius: 15px;
+}
+
+#searchBox input{
+    width: 100%;
+    height: 100%;
+    outline: none;
+    border: none;
+    border-radius: 15px;
+}
 
 
 #plist {
     /* display: flex; */
     /*justify-content:right;*/
+    height: 400px;
+    width: 100%;
     padding: 30px;
     background: #fff;
     border-radius: 15px;
@@ -93,8 +131,17 @@ input:checked ~ .text:before {
 
     #plist #plist-table {
         height: 600px;
-        width: 1500px;
+        width: 1450px;
+        font-size: 15px !important;
     }
+
+#plist-table tr{
+    background-color: #fff;
+}
+
+#plist-table td{
+    font-size: 20px;
+}
 
 table {
     margin-top: 25px;

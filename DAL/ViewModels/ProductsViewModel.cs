@@ -17,8 +17,7 @@ namespace ShopStore.ViewModels
         public ProductsViewModel()
         {
             SelectListItems = new List<SelectListItem>();
-            f_stock = 1;
-            f_isdel = 0;
+
         }
 
         /// <summary>
@@ -61,28 +60,31 @@ namespace ShopStore.ViewModels
         [Display(Name = "類型"), Required(ErrorMessage = "請輸入商品分類")]
         public int f_categoryId { get; set; }
 
+        public string categoryName { get; set; }
+
         /// <summary>
         /// 庫存數量
         /// </summary>
         [Display(Name = "庫存數量"), Required(ErrorMessage = "請輸入庫存量")]
-        public int f_stock { get; set; } = 1;
+        public int f_stock { get; set; }
 
         /// <summary>
         /// 是否刪除
         /// </summary>
         [Display(Name = "是否刪除")]
-        public int f_isdel { get; set; } = 0;
+        public int f_isdel { get; set; }
 
         /// <summary>
         /// 是否開放
         /// </summary>
         [Display(Name = "是否開放"), Required(ErrorMessage = "請選擇是否開放")]
-        public int f_isopen { get; set; } = 1;
+        public int f_isopen { get; set; }
 
         /// <summary>
         /// 圖片實體
         /// </summary>
-        [Display(Name = "圖片"), Required(ErrorMessage = "請上傳圖片")]
+        //[Display(Name = "圖片"), Required(ErrorMessage = "請上傳圖片")]
+        [Display(Name = "圖片")]
         public IFormFile ProductPic { get; set; }
 
         public DateTime f_createtime { get; set; }
@@ -101,18 +103,20 @@ namespace ShopStore.ViewModels
         /// </summary>
         public List<SelectListItem> SelectListItems { get; set; }
 
-        //public class ProductModel : ProductsViewModel
-        //{
-        //    /// <summary>
-        //    /// 圖片實體
-        //    /// </summary>
-        //    [Display(Name = "圖片"), Required(ErrorMessage = "請上傳圖片")]
-        //    public IFormFile ProductPic { get; set; }
-
-        //    /// <summary>
-        //    /// 類別清單
-        //    /// </summary>
-        //    public List<SelectListItem> SelectListItems { get; set; }
-        //}
+        public class ProductModel
+        {
+            public string f_id { get; set; }
+            public string f_name { get; set; }
+            public int f_price { get; set; }
+            public string f_picPath { get; set; }
+            public string f_description { get; set; }
+            public int f_categoryId { get; set; }
+            public int f_stock { get; set; }
+            public int f_isdel { get; set; }
+            public int f_isopen { get; set; }
+            public string f_content { get; set; }
+            public string f_updatetime { get; set; } = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");            
+            //public IFormFile ProductPic { get; set; }
+        }
     }
 }

@@ -1,10 +1,11 @@
-﻿
-<link rel="stylesheet" href="~/css/Manager/_ProductManagePartial.css" />
+﻿<link rel="stylesheet" href="~/css/Manager/_ProductManagePartial.css" />
 <script type="text/javascript" src="~/js/Manager/_ProductManagePartial.js"></script>
 <script type="text/javascript" src="~/lib/phuong-jqueryInlineEdit-3a3b5ba/src/jquery.autoresize.js"></script>
 <script type="text/javascript" src="~/lib/phuong-jqueryInlineEdit-3a3b5ba/src/jquery.inline-edit.js"></script>
 
-
+<div id="searchBox">
+    <input id="searchInput" type="search" class="light-table-filter" data-table="product-table" placeholder="搜尋..."/>
+</div>
 
 <div id="plist">
     <div id="plist-sub">
@@ -12,7 +13,7 @@
         <hr />
 
     </div>
-    <div id="plist-table">
+    <div id="plist-table" class="product-table">
         <table class="table table-hover table-borderless">
             <thead>
                 <tr class="table-hover">
@@ -25,100 +26,68 @@
                     <th scope="col">加入時間</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="productTable">
             </tbody>
         </table>
     </div>
 
 </div>
 
-@*<div id="pliA">
-
-    </div>*@
-
-@* <hr />
-    <div id="editP">
-    <input type="button" class="btn btn-primary" value="新增商品" />
-    </div>
-    <hr /> *@
-
 
 
 <div id="showP">
 
     <div id="container">
-        <div class="item" style="background-color: #fff;">
-            <img src="~/images/08498d31-62ed-4733-8126-d91d42a75847_getImage.jpg" />
+        <div id="uploadImg" class="item" style="background-color: #fff;">
+            <img id="itemImg" src="" />
+            <input accept="image/*" type="file" class="custom-file-input" id="customFile" data-val="true" data-val-required="請上傳圖片" name="ProductPic">
         </div>
         <div class="item" style="margin-bottom:0.4rem !important;">
 
             <div class="input-group input-group-sm mb-3">
                 <span class="input-group-text" id="inputGroup-sizing-sm">名稱</span>
-                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                <input id="itemName" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
             </div>
 
             <div class="input-group input-group-sm mb-3">
                 <span class="input-group-text" id="inputGroup-sizing-sm">售價</span>
-                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                <input id="itemPrice" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
             </div>
 
             <div class="input-group input-group-sm mb-3">
                 <span class="input-group-text" id="inputGroup-sizing-sm">類別</span>
-                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                <input id="itemCategory" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
             </div>
 
             <div class="input-group input-group-sm mb-3">
                 <span class="input-group-text" id="inputGroup-sizing-sm">庫存量</span>
-                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                <input id="itemStock" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
             </div>
 
+            <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text" id="inputGroup-sizing-sm">商品描述</span>
+                <input id="itemDescription" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" />
+            </div>
 
             <!-- Button trigger modal -->
             <div class="checkbox">
-                <input type="checkbox" id="click" />
-                <label for="click" class="text"></label>
+                <input id="click" type="checkbox"  />
+                <label for="click" class="text"></label>            
+            <div>
+                @*<input type="button" class="btn btn-outline-primary" value="保存"/>*@
+                <button id="btnSave" class="btn btn-outline-primary">保存</button>
+            </div>
             </div>
 
-            <!-- Modal -->
-            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-
-                        <div class="modal-body">
-                            ...
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          
         </div>
-
-        @*<div>
-            <p class="editable" data-connect-with="title" data-max-length="50" data-input-type="input">
-            Mark
-            </p>
-
-            <p class="editable" data-connect-with="username" data-max-length="50">
-            Click me to edit, I am long text and autogrow
-            </p>
-
-            <div id="limitText">
-            This editor is limit text, click me to edit
-            </div>
-            </div>*@
     </div>
-
-
     <hr />
-    <div id="showP-content"></div>
+    <div id="showP-content">
 
+
+        <textarea id="editor"></textarea>
+
+    </div>
 </div>
-<label for="toggleControl" style="cursor: pointer;">Click Me</label>
-<input type="checkbox" id="toggleControl" style="display: none;">
-<div id="toggleMe"
-     style="border: 1px solid black; margin: 10px; padding: 10px;">
-    Look mom, no JavaScript!
-</div>
+

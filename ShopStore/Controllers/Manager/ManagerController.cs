@@ -10,6 +10,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using NLog;
 using DAL.Models;
+using Microsoft.AspNetCore.Http;
+using static ShopStore.ViewModels.ProductsViewModel;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ShopStore.Controllers
 {
@@ -17,11 +21,13 @@ namespace ShopStore.Controllers
     {
         private readonly IProducts _products;
         private readonly IManager _manager;
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        public ManagerController(IProducts products, IManager manager)
+        public ManagerController(IProducts products, IManager manager, IWebHostEnvironment webHostEnvironment)
         {
             _products = products;
             _manager = manager;
+            _webHostEnvironment = webHostEnvironment;
         }
         public async Task<IActionResult> Index()
         {
@@ -162,6 +168,75 @@ namespace ShopStore.Controllers
         public IActionResult ProductList(int type)
         {
             return PartialView("PartialView/Product/_ProductManagePartial");
+        }
+
+        /// <summary>
+        /// 更新產品
+        /// </summary>
+        /// <returns></returns>        
+        public async Task<IActionResult> EditProductById(ProductsViewModel model)
+        {
+            try
+            {
+                if (model != null && ModelState.IsValid)
+                {
+                    if(model.ProductPic != null) model.f_picPath = await UploadedFile(model.ProductPic);
+
+                    if (model.f_picPath != "")
+                    {
+                        bool result = await _products.EditProductById(model);
+
+                        if (result)
+                        {
+                            return Json(new { success = true, message = "success" });
+                        }
+                        else
+                        {
+                            return Json(new { success = false, message = "fail" });
+                        }
+
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "圖片上傳失敗" });
+                    }
+                }
+
+                return Json(new { success = false, message = "傳入data error" });
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "Debug");
+                return Json(new { success = false, message = "server error" });
+            }
+        }
+
+        /// <summary>
+        /// 上傳圖片
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        private async Task<string> UploadedFile(IFormFile file)
+        {
+            string uniqueFileName = null;
+            try
+            {
+                if (file != null)
+                {
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                    uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    await using var fileStream = new FileStream(filePath, FileMode.Create);
+                    file.CopyTo(fileStream);
+                }
+
+                return uniqueFileName;
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "UploadFile Error");
+                return "";
+            }
         }
 
         /// <summary>

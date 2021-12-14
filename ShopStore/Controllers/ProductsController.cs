@@ -62,6 +62,7 @@ namespace ShopStore.Controllers
                     return (new { success = false });
                 }
 
+
                 return (new { success = true, item = result, ajaxsign = resiltJsonMd5 });
             }
             catch (Exception ex)
@@ -133,7 +134,7 @@ namespace ShopStore.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateNewProduct([FromForm] IFormFile file, ProductsViewModel request)
+        public async Task<IActionResult> CreateNewProduct(ProductsViewModel request)
         {
             try
             {

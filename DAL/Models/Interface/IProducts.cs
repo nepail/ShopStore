@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using static ShopStore.ViewModels.ProductsViewModel;
 
 namespace ShopStore.Models.Interface
 {
@@ -38,5 +39,12 @@ namespace ShopStore.Models.Interface
         /// </summary>
         /// <returns></returns>
         Task<ProductDetailViewModel> GetProductDetailByIdAsync(string id);
+
+        /// <summary>
+        /// 更新商品
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<bool> EditProductById(ProductsViewModel model);
     }
 }
