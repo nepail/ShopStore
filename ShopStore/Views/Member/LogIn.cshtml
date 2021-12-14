@@ -13,15 +13,13 @@
                     <h4>登入</h4>
                     <hr />
                 </div>
+
                 <div>
                     <form enctype="multipart/form-data" asp-action="Login" asp-route-returnurl="@returnUrl">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group">                                    
-                                    @*<label asp-for="f_account" class="control-label" required></label>
-                                    <input asp-for="f_account" class="form-control" />
-                                    <span asp-validation-for="f_account" class="text-danger"></span>*@
-                                    <input class="form-control" name="account" value="@ViewBag.account" required/>
+                                <div class="form-group">
+                                    <input id="inputAccount" class="form-control" name="account" value="@ViewBag.account" required />
                                 </div>
                             </div>
                         </div>
@@ -29,16 +27,13 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    @*<label asp-for="f_pwd" class="control-label" required></label>
-                                    <input asp-for="f_pwd" class="form-control" />
-                                    <span asp-validation-for="f_pwd" class="text-danger"></span>*@
                                     <input class="form-control" name="pwd" type="password" value="@ViewBag.pwd" required />
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <input class="btn btn-lg btn-primary" type="submit" value="登入" onclick="" />
+                            <input id="btnLogin" class="btn btn-lg btn-primary" type="submit" value="登入" onclick="" />
                         </div>
                     </form>
                 </div>
@@ -53,7 +48,12 @@
 </div>
 
 @section scripts{
-    <script type="text/javascript">
-        $('label[required]').before('<span style="color:red">* </span>');
-    </script>
+<script type="text/javascript">
+    $('label[required]').before('<span style="color:red">* </span>');
+
+    $('#btnLogin').click(function(){
+        console.log(this)
+        localStorage.setItem('user', $('#inputAccount').val())
+    })
+</script>
 }
