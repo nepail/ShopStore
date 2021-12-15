@@ -8,5 +8,7 @@ namespace ShopStore.Models.Interface
     {
         public ProductsViewModel Single(string id);        
         public int InsertOrderItem(OrderModel model);
+
+        public List<ProductsViewModel> QueryMutiple(string[] list);
     }
 }

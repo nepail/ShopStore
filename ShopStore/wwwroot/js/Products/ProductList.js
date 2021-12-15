@@ -6,8 +6,6 @@ $(document).ready(function () {
     //Product.SetEvent();
     console.log(productData);
 });
-
-
 const Product = {
     Getproducts: function () {
         try {
@@ -50,7 +48,6 @@ const Product = {
 
         var p = product[0]
 
-
         if (itemName != undefined) {
             $('#navItemName').text(itemName);
         }
@@ -65,6 +62,9 @@ const Product = {
             $('#prodetailCard-title b').text(p.f_name)
             $('#prodetailCard-inline p.l-grey span:eq(0)').text(p.f_categoryId)
             $('#prodetailCard-inline p.l-grey span:eq(1)').text(p.f_price)
+
+            $('#prodetailCard-inline input:eq(0)').attr('data-id', p.f_id)
+            $('#prodetailCard-inline input:eq(1)').attr('data-id', p.f_id)
         }
     },
 
@@ -90,7 +90,7 @@ const Product = {
                 toastr.success('已加入購物車', itemname);
             },
             error: function () {
-                alert('error');
+                toastr.error('取得清單失敗')
             }
         });
     },
@@ -108,8 +108,7 @@ const Product = {
             WishList = JSON.parse(localStorage.getItem(user))
         }
 
-        if (WishList.item.indexOf(itemid) > -1) {
-            console.log(WishList.item.indexOf(itemid))
+        if (WishList.item.indexOf(itemid) > -1) {            
             toastr.error('已存在願望清單中')
         } else {
             WishList.item.push(itemid)

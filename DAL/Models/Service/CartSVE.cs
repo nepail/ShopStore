@@ -51,6 +51,21 @@ namespace ShopStore.Models.Service
             return conn.QuerySingle<ProductsViewModel>(strSql, new { f_id = id });
         }
 
+        public List<ProductsViewModel> QueryMutiple(string[] list)
+        {
+            //var dynamicParams = new DynamicParameters();
+            //foreach (var item in list)
+            //{
+            //    dynamicParams.Add("@f_id", item);
+            //}
+
+            List<string> lists = list.ToList();
+
+            using var conn = _connection;
+            string strSql = @"select * from t_products where f_id in @f_id";
+            return (List<ProductsViewModel>)conn.Query<ProductsViewModel>(strSql, new { f_id = lists });
+        }
+
         /// <summary>
         /// 將訂單寫入資料庫
         /// </summary>

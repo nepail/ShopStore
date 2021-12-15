@@ -21,6 +21,7 @@ namespace ShopStore.Controllers
             _cart = cart;
         }
 
+
         public IActionResult Index()
         {
             //向 Session 取得商品列表
@@ -41,7 +42,28 @@ namespace ShopStore.Controllers
 
         public IActionResult AddtoCart(string id)
         {
+            UpdateCart(id, null);
+
+            return NoContent(); // HttpStatus 204: 請求成功但不更新畫面
+        }
+
+        public IActionResult AddListToCart(string[] list)
+        {
+            var result =_cart.QueryMutiple(list);
+
+            return Json(new { success = true, message = "kkk" });
+        }
+
+
+        /// <summary>
+        /// 更新購物車
+        /// </summary>
+        private void UpdateCart(string id, string[] idList)
+        {
             var cartItem = _cart.Single(id);
+
+            //todo 取得多筆cartitem
+
 
             //取得商品資料
             CartItem item = new CartItem
@@ -78,8 +100,33 @@ namespace ShopStore.Controllers
                 }
                 SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
             }
+        }
 
-            return NoContent(); // HttpStatus 204: 請求成功但不更新畫面
+
+        /// <summary>
+        /// 移除購物車Item
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public IActionResult RemoveItem(string id)
+        {
+            //向 Session 取得商品列表
+            List<CartItem> cart = SessionHelper.GetObjectFromJson<List<CartItem>>(HttpContext.Session, "cart");
+
+            //用FindIndex查詢目標在List裡的位置
+            int index = cart.FindIndex(m => m.Product.f_id.Equals(id));
+            cart.RemoveAt(index);
+
+            if (cart.Count < 1)
+            {
+                SessionHelper.Remove(HttpContext.Session, "cart");
+            }
+            else
+            {
+                SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
+            }
+
+            return Json(new { success = true, message = $"刪除產品 {id} 成功" });
         }
 
         /// <summary>
@@ -116,25 +163,5 @@ namespace ShopStore.Controllers
         }
 
 
-        public IActionResult RemoveItem(string id)
-        {
-            //向 Session 取得商品列表
-            List<CartItem> cart = SessionHelper.GetObjectFromJson<List<CartItem>>(HttpContext.Session, "cart");
-
-            //用FindIndex查詢目標在List裡的位置
-            int index = cart.FindIndex(m => m.Product.f_id.Equals(id));
-            cart.RemoveAt(index);
-
-            if (cart.Count < 1)
-            {
-                SessionHelper.Remove(HttpContext.Session, "cart");
-            }
-            else
-            {
-                SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
-            }
-            
-            return Json(new { success = true, message = $"刪除產品 {id} 成功" });
-        }
     }
 }

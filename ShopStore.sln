@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31205.134
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopStore", "ShopStore\ShopStore.csproj", "{83787F6E-B4F8-4455-87AB-BBBCACED2A9F}"
 EndProject
@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopStoreManager", "ShopSto
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{4179B73B-FF56-421D-80FC-1F7375329B82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopStore.Manager", "ShopStore.Manager\ShopStore.Manager.csproj", "{C75800AE-FC98-4ED7-829D-11BEC5A053DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopStore.Manager", "ShopStore.Manager\ShopStore.Manager.csproj", "{C75800AE-FC98-4ED7-829D-11BEC5A053DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
