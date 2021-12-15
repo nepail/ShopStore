@@ -31,6 +31,7 @@ namespace ShopStore
             {
                 option.LoginPath = new PathString("/Member/Login");
                 option.LogoutPath = new PathString("/Member/Logout");
+                option.AccessDeniedPath = new PathString("/Home/AccessDenied");
             });
 
             services.AddStackExchangeRedisCache(option =>

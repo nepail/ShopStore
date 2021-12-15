@@ -51,14 +51,13 @@ namespace ShopStore.Models.Service
             return conn.QuerySingle<ProductsViewModel>(strSql, new { f_id = id });
         }
 
+        /// <summary>
+        /// 取多筆產品資訊
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
         public List<ProductsViewModel> QueryMutiple(string[] list)
         {
-            //var dynamicParams = new DynamicParameters();
-            //foreach (var item in list)
-            //{
-            //    dynamicParams.Add("@f_id", item);
-            //}
-
             List<string> lists = list.ToList();
 
             using var conn = _connection;

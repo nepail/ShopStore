@@ -70,7 +70,7 @@ const Product = {
 
     AddtoCart: function (item, itemname) {
         let itemid = $(item).attr('data-id');
-
+        
         if ($('#cartItemCount').length > 0) {
             let cartNum = $('#cartItemCount').text();
             cartNum++;

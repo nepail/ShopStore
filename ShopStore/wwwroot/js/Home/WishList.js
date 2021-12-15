@@ -9,15 +9,15 @@
         //row.remove()
     })
 
-    $('#btnAddtoCart').on('click', function () {       
+    $('#btnAddtoCart').on('click', function () {
         var addtoCartList = $(this).parent().parent().parent().find('input:checkbox:checked')
-               
+
         if (addtoCartList.length > 0) {
 
             var postdata = []
 
             addtoCartList.each(function () {
-                var item = $(this).parent().parent()                
+                var item = $(this).parent().parent()
                 var itemid = $(this).parent().parent().attr('data-id')
                 Wish.RemoveWishItem(item)
                 postdata.push(itemid)
@@ -79,13 +79,13 @@ var Wish = {
     RemoveWishItem: function (item) {
 
         $(item).remove()
-        var itemid = item.attr('data-id')        
+        var itemid = item.attr('data-id')
 
         wishList.item = $.grep(wishList.item, function (e) {
             return e != itemid
         })
 
-        localStorage[user] = JSON.stringify(wishList)        
+        localStorage[user] = JSON.stringify(wishList)
         Wish.CheckWishList()
     },
 
@@ -118,14 +118,24 @@ var Wish = {
             url: '/Cart/AddListToCart',
             type: 'post',
             data: postData,
-            success: (res) => {
+            success: function(res) {
                 if (res.success) {
-                    
+                    swal('新增購物車成功', '', 'success')
+
+                    if ($('#cartItemCount').length > 0) {
+                        let cartNum = $('#cartItemCount').text();
+                        cartNum++;
+                        $('#cartItemCount').text(cartNum);
+                    } else {
+                        $('#myCart').append(`<span id='cartItemCount' class='badge badge-info'>${res.addedItem}</span>`);
+                        $('#mymenu').attr('class', 'dropdown-menu show');
+                    }
+
                 } else {
 
                 }
             },
-            error: (res) => {
+            error: function(res) {
                 swal(res.message, '', 'error')
             }
         })

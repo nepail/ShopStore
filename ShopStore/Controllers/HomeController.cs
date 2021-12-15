@@ -21,12 +21,25 @@ namespace ShopStore.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 帳號重複登入
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Error()
         {
             return View();
             //return Content("alert('Hello');", "application/javascript");
         }
 
+        /// <summary>
+        /// 授權拒絕
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+        
         public IActionResult Privacy()
         {
             return View();

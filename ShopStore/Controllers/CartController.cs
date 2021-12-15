@@ -21,7 +21,6 @@ namespace ShopStore.Controllers
             _cart = cart;
         }
 
-
         public IActionResult Index()
         {
             //向 Session 取得商品列表
@@ -40,6 +39,11 @@ namespace ShopStore.Controllers
             return View(CartItems);
         }
 
+        /// <summary>
+        /// 單筆新增購物車
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IActionResult AddtoCart(string id)
         {
             UpdateCart(id, null);
@@ -47,61 +51,111 @@ namespace ShopStore.Controllers
             return NoContent(); // HttpStatus 204: 請求成功但不更新畫面
         }
 
+        /// <summary>
+        /// 願望清單新增購物車
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
         public IActionResult AddListToCart(string[] list)
         {
-            var result =_cart.QueryMutiple(list);
+            int addedItem = UpdateCart(null, list);
 
-            return Json(new { success = true, message = "kkk" });
+            return Json(new { success = true, message = "新增購物車成功", addedItem });
         }
-
 
         /// <summary>
         /// 更新購物車
         /// </summary>
-        private void UpdateCart(string id, string[] idList)
+        private int UpdateCart(string id, string[] idList)
         {
-            var cartItem = _cart.Single(id);
-
-            //todo 取得多筆cartitem
-
-
-            //取得商品資料
-            CartItem item = new CartItem
+            if (id != null)
             {
-                Product = cartItem,
-                Amount = 1,
-                SubTotal = cartItem.f_price
-            };
+                ProductsViewModel cartItem = _cart.Single(id);
 
-            //判斷 Session 內有無購物車
-            if (SessionHelper.GetObjectFromJson<List<CartItem>>(HttpContext.Session, "cart") == null)
-            {
-                //如果沒有已存在購物車: 建立新的購物車
-                List<CartItem> cart = new List<CartItem>
+                //取得商品資料
+                CartItem item = new CartItem
                 {
-                    item
+                    Product = cartItem,
+                    Amount = 1,
+                    SubTotal = cartItem.f_price
                 };
-                SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
-            }
-            else
-            {
-                //如果已存在購物車: 檢查有無相同的商品，有的話只調整數量
-                List<CartItem> cart = SessionHelper.GetObjectFromJson<List<CartItem>>(HttpContext.Session, "cart");
 
-                int index = cart.FindIndex(m => m.Product.f_id.Equals(id));
-                if (index != -1)
+                //判斷 Session 內有無購物車
+                if (SessionHelper.GetObjectFromJson<List<CartItem>>(HttpContext.Session, "cart") == null)
                 {
-                    cart[index].Amount += item.Amount;
-                    cart[index].SubTotal += item.SubTotal;
+                    //如果沒有已存在購物車: 建立新的購物車
+                    List<CartItem> cart = new List<CartItem>
+                    {
+                        item
+                    };
+                    SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
                 }
                 else
                 {
-                    cart.Add(item);
-                }
-                SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
-            }
-        }
+                    //如果已存在購物車: 檢查有無相同的商品，有的話只調整數量
+                    List<CartItem> cart = SessionHelper.GetObjectFromJson<List<CartItem>>(HttpContext.Session, "cart");
 
+                    int index = cart.FindIndex(m => m.Product.f_id.Equals(id));
+
+                    if (index != -1)
+                    {
+                        cart[index].Amount += item.Amount;
+                        cart[index].SubTotal += item.SubTotal;
+                    }
+                    else
+                    {
+                        cart.Add(item);
+                    }
+
+                    SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
+                }                
+            }
+
+            if (idList != null)
+            {
+                List<ProductsViewModel> cartItems = _cart.QueryMutiple(idList);
+
+                List<CartItem> cartItemsOfList = (from a in cartItems
+                                                  select new CartItem
+                                                  {
+                                                      Product = a,
+                                                      Amount = 1,
+                                                      SubTotal = a.f_price
+                                                  }).ToList();
+
+                //判斷 Session 內有無購物車
+                if (SessionHelper.GetObjectFromJson<List<CartItem>>(HttpContext.Session, "cart") == null)
+                {
+                    SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cartItemsOfList);
+                }
+                else
+                {
+                    //如果已存在購物車: 檢查有無相同的商品，有的話只調整數量
+                    List<CartItem> cart = SessionHelper.GetObjectFromJson<List<CartItem>>(HttpContext.Session, "cart");
+
+                    foreach (CartItem item in cartItemsOfList)
+                    {
+                        int index = cart.FindIndex(m => m.Product.f_id.Equals(item.Product.f_id));
+
+                        if (index != -1)
+                        {
+                            cart[index].Amount += item.Amount;
+                            cart[index].SubTotal += item.SubTotal;
+                        }
+                        else
+                        {
+                            cart.Add(item);
+                        }
+
+                        SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
+                    }
+                }
+
+                return cartItemsOfList.Count;
+            }
+
+            return 0;
+        }
 
         /// <summary>
         /// 移除購物車Item
@@ -139,7 +193,7 @@ namespace ShopStore.Controllers
         {
             //清空購物車
             HttpContext.Session.Clear();
-            
+
             OrderModel orderModel = new OrderModel()
             {
                 f_num = DateTime.Now.ToString("yyyyMMddHHmmss"),
@@ -153,15 +207,13 @@ namespace ShopStore.Controllers
             try
             {
                 var result = _cart.InsertOrderItem(orderModel);
-                return Json(new { success = true, message = $"成功新增 {result} 筆訂單" });                
+                return Json(new { success = true, message = $"成功新增 {result} 筆訂單" });
             }
             catch (Exception ex)
             {
                 logger.Debug(ex, "Debug");
                 return Json(new { success = false, message = "訂單新增失敗" });
-            }               
+            }
         }
-
-
     }
 }
