@@ -80,7 +80,7 @@
     }
 
         .search-box input:focus::-webkit-input-placeholder {
-            color: lightgray;
+            color: lightgray;            
         }
 
 .a {

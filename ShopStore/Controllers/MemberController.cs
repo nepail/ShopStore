@@ -211,7 +211,7 @@ namespace ShopStore.Controllers
             Response.Cookies.Append(account, userGuid);
             //設定Redis
             var options = new DistributedCacheEntryOptions();
-            options.SetSlidingExpiration(TimeSpan.FromMinutes(1)); //重新讀取後會重新計時
+            options.SetSlidingExpiration(TimeSpan.FromMinutes(30)); //重新讀取後會重新計時
             _cache.SetString(account, userGuid, options);
 
             //Session 自動保存到Redis

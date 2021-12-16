@@ -41,4 +41,24 @@ namespace ShopStore.Models
             throw new NotImplementedException();
         }
     }
+
+    /// <summary>
+    /// Order 狀態
+    /// </summary>
+    public class OrderStatus
+    {
+        public int f_id { get; set; }
+        public string f_name { get; set; }
+        public string f_badge { get; set; }
+    }
+
+    /// <summary>
+    /// 運輸方式
+    /// </summary>
+    public class OrderShipping
+    {
+        public int f_id { get; set; }
+        public string f_name { get; set; }
+        public string f_badge { get; set; }
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using DAL.Models;
+using DAL.Models.Manager;
 using Dapper;
 using NLog;
 using ShopStore.Models.Interface;
@@ -27,7 +28,7 @@ namespace ShopStore.Models.Service
         /// <param name="userid"></param>
         /// <returns></returns>
         public async Task<IEnumerable<MenuModel>> GetMenu(int userid)
-        {            
+        {
             try
             {
                 using var conn = _connection;
@@ -51,13 +52,14 @@ namespace ShopStore.Models.Service
 
 
                 return menu;
-            } catch (Exception ex)
-            {                
+            }
+            catch (Exception ex)
+            {
                 logger.Error(ex);
                 return null;
-            }            
+            }
         }
-       
+
         /// <summary>
         /// 新增菜單
         /// </summary>
@@ -71,11 +73,11 @@ namespace ShopStore.Models.Service
                 var result = conn.Execute("pro_shopStore_Manager_addMenu", menuModel, commandType: System.Data.CommandType.StoredProcedure);
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logger.Debug(ex, "Debug");
                 return false;
-            }           
+            }
         }
 
 
@@ -90,19 +92,20 @@ namespace ShopStore.Models.Service
             try
             {
                 using var conn = _connection;
-                if(model.MainMenuItems != null && model.MainMenuItems.Count > 0)
+                if (model.MainMenuItems != null && model.MainMenuItems.Count > 0)
                 {
                     var result = await conn.ExecuteAsync("pro_shopStore_Manager_addMainMenu", model.MainMenuItems, commandType: System.Data.CommandType.StoredProcedure);
                 }
-                
-                if(model.SubItems != null && model.SubItems.Count > 0)
+
+                if (model.SubItems != null && model.SubItems.Count > 0)
                 {
                     var result = await conn.ExecuteAsync("pro_shopStore_Manager_addSubMenu", model.SubItems, commandType: System.Data.CommandType.StoredProcedure);
                 }
-                if(model.MenuSubModels != null && model.MenuSubModels.Count > 0)
+                if (model.MenuSubModels != null && model.MenuSubModels.Count > 0)
                 {
                     var result = await conn.ExecuteAsync("pro_shopStore_Manager_updateSubMenu", model.MenuSubModels, commandType: System.Data.CommandType.StoredProcedure);
-                }                                              
+                }
+
             }
             catch (Exception ex)
             {
@@ -111,6 +114,52 @@ namespace ShopStore.Models.Service
             }
             //scope.Complete();
             return true;
+        }
+
+        /// <summary>
+        /// 取訂單資料
+        /// </summary>
+        /// <returns></returns>
+        public List<OrderManageViewModel> GetOrderList()
+        {
+            try
+            {
+                using var conn = _connection;
+                string sqlStr = @"pro_shopStore_Manager_getOrderList";
+
+                //var result = conn.QueryMultiple(sqlStr);
+                var result = conn.Query(sqlStr);
+                List<OrderManageViewModel> model = (List<OrderManageViewModel>)conn.Query<OrderManageViewModel>(sqlStr);
+                //List<OrderManageModel> orderManageModels = (List<OrderManageModel>)result.Read<OrderManageModel>();
+
+                return model;
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "Debug");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 刪除Order單
+        /// isdel => 1, status => 4(已退貨)
+        /// </summary>
+        /// <returns></returns>
+        public bool RemoveOrder(string ordernum)
+        {
+            try
+            {
+                using var conn = _connection;
+                string sqlStr = @"pro_shopStore_Manager_removeOrderList";
+                bool result = conn.Query<bool>(sqlStr, new { f_num = ordernum }, commandType:System.Data.CommandType.StoredProcedure).FirstOrDefault();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "Debug");
+                return false;
+            }
         }
     }
 }

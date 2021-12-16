@@ -1,8 +1,8 @@
-﻿function showOrderDetail(itemid) {
+﻿function ShowOrderDetail(itemid) {
     $("#" + itemid).slideToggle("slow");
 }
 
-function cancelOrder(ordernum) {
+function CancelOrder(ordernum) {
     
     swal({
         title: "確定取消嗎?",
@@ -21,9 +21,13 @@ function cancelOrder(ordernum) {
                         url: "/Order/CancelOrder/?ordernum=" + ordernum,
                         type: "get",                        
                         success: (res) => {
-                            swal("取消", "編號 #" + ordernum + " 訂單已取消", "success");
-                            $("#tb_" + ordernum).remove();
-                            emptyOrder();
+                            swal("取消", "編號 #" + ordernum + " 訂單已取消", "success");                            
+                            var targetOrder = $(`#tb_${ordernum}`).find('span:eq(0)')
+                            var targetClass = targetOrder.attr('class').split(' ')[2]
+                            targetOrder.toggleClass(`${targetClass} bg-secondary`)
+                            targetOrder.text('已取消')
+                            $(`#order_${ordernum}`).find('input').parent().parent().remove()
+                            EmptyOrder();
                         },
                         error: (res) => {
                             alert('fail')
@@ -34,15 +38,13 @@ function cancelOrder(ordernum) {
         });
 }
 
-function emptyOrder() {
+function EmptyOrder() {
     if ($("#orderList tbody[id]").length == 0) {
         $('#orderList').append('<tbody><tr><td align="center" colspan="7">您的訂單目前是空的！</td></tr></tbody>');
-    }
-
-    //table-bordered table-striped
+    }    
 }
 
-function showProductDetail(itemname, itemid) {    
+function ShowProductDetail(itemname, itemid) {    
     $("#orderTable").toggle("normal");
     $("#prodetail").toggle("normal");
     if (itemid != undefined) {

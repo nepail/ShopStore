@@ -1,4 +1,5 @@
 ﻿using DAL.Models;
+using DAL.Models.Manager;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -28,5 +29,17 @@ namespace ShopStore.Models.Interface
         /// <returns></returns>
         Task <bool> AddSubMenu(MenuViewModel model);
 
+        /// <summary>
+        /// 取訂單列表
+        /// </summary>
+        /// <returns></returns>
+        public List<OrderManageViewModel> GetOrderList();
+
+        /// <summary>
+        /// 刪除訂單
+        /// </summary>
+        /// <param name="ordernum"></param>
+        /// <returns></returns>
+        public bool RemoveOrder(string ordernum);
     }
 }

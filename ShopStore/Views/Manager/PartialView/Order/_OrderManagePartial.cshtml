@@ -1,0 +1,38 @@
+﻿<link rel="stylesheet" href="~/css/Manager/Order/_OrderManagePartial.css" />
+
+<div class="container">
+    <div class="box boxtitle bf5f5">
+        <h4>訂單管理</h4>
+    </div>
+    <div class="box boxtitle bf5f5">
+        <input id="btnSave" type="button" class="btn btn-outline-primary" value="保存" style="float: right;"/>
+    </div>
+    <div class="box a">
+        <div id="orderList" class="orderbox">
+
+            <!--Title部分-->
+            <div class="box brow boxtitle">
+                <div class="box bcol rowckbox">
+                    <input type="checkbox" class="visibility" />
+                </div>
+                <div class="box bcol">訂單編號</div>
+                <div class="box bcol">日期</div>
+                <div class="box bcol">會員ID</div>
+                <div class="box bcol">狀態</div>
+                <div class="box bcol">運送方式</div>
+                <div class="box bcol">總金額</div>
+                <div class="box bcol rowckbox">
+                    <input type="button" class="btn btn-sm btn-outline-danger" value="退貨" style="visibility: hidden" />
+                    <i class="bx bx-search"></i>
+                    <input type="search" placeholder="Search..." />
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript" src="~/js/Manager/Order/_OrderManagePartial.js"></script>

@@ -134,6 +134,8 @@ namespace ShopStore.Controllers
             return Ok();
         }
 
+        #region 產品管理
+
         /// <summary>
         /// Manager 新增商品
         /// </summary>
@@ -239,6 +241,10 @@ namespace ShopStore.Controllers
             }
         }
 
+        #endregion
+
+        #region 會員管理
+
         /// <summary>
         /// Manager 會員查詢
         /// </summary>
@@ -257,11 +263,52 @@ namespace ShopStore.Controllers
         /// <returns></returns>
         public IActionResult MemberPermissionSetting() => PartialView("PartialView/Member/_MemberPermissionSettingPartial");
 
+        #endregion
+
+        #region 菜單相關
 
         public async Task<IActionResult> Menu()
         {
             IEnumerable<MenuModel> model = await _manager.GetMenu(2);
             return PartialView("PartialView/Menu/_MenuPartial", model);
         }
+
+        #endregion
+
+
+        #region 訂單管理
+
+        /// <summary>
+        /// 訂單管理
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult OrderManage() => PartialView("PartialView/Order/_OrderManagePartial");
+
+        /// <summary>
+        /// 取所有訂單
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult GetOrderList()
+        {
+            var item = _manager.GetOrderList();
+
+            return Json(new { success = true, result = item });
+        }
+
+        /// <summary>
+        /// 刪除訂單
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult RemoveOrder(string id)
+        {
+            bool result = _manager.RemoveOrder(id);
+
+            return Json(new { success = result });
+        }
+
+        #endregion
     }
 }

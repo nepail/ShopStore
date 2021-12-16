@@ -16,29 +16,34 @@ namespace ShopStore.Controllers
     public class OrderController : Controller
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly IOrders _orders;        
+        private readonly IOrders _orders;
 
 
         public OrderController(IOrders orders)
-        {            
-            _orders = orders;            
+        {
+            _orders = orders;
         }
-        
+
         /// <summary>
         /// 我的訂單
         /// </summary>
         /// <returns></returns>
         public IActionResult Index()
         {
+            List<OrderViewModel> model;
+            string userId;
 
-            string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;            
-
-
-
-
-            var model = _orders.GetOrderList(userId);
-
-            return View(model);
+            try
+            {
+                userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                model = _orders.GetOrderList(userId);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                return RedirectToAction("/Home/Error");
+            }
         }
 
         /// <summary>
@@ -59,6 +64,6 @@ namespace ShopStore.Controllers
             }
 
             return Json(new { success = true, message = "successfull" });
-        }     
+        }
     }
 }

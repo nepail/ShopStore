@@ -29,44 +29,59 @@ namespace ShopStore.ViewModels
         /// <summary>
         /// 配送狀態
         /// </summary>
-        public string Status
-        {
-            get
-            {
-                return _status;
-            }
-            set
-            {
-                _status = value switch
-                {
-                    "1" => "待確認",
-                    "2" => "處理中",
-                    "3" => "已發貨",
-                    _ => "狀態未知",
-                };
-            }
-        }
+        public string Status { get; set; }
 
         /// <summary>
-        /// 配送方式
+        /// 配送Badge
         /// </summary>
-        public string ShippingMethod
-        {
-            get 
-            {
-                return _shippingMethod;
-            }
-            set 
-            {
-                _shippingMethod = value switch
-                {
-                    "1" => "郵寄",
-                    "2" => "店到店",
-                    "3" => "賣家直送",
-                    _ => "狀態未知",
-                };
-            }
-        }
+        public string StatusBadge { get; set; }
+
+
+        ///// <summary>
+        ///// 配送狀態
+        ///// </summary>
+        //public string Status
+        //{
+        //    get
+        //    {
+        //        return _status;
+        //    }
+        //    set
+        //    {
+        //        _status = value switch
+        //        {
+        //            "1" => "待確認",
+        //            "2" => "處理中",
+        //            "3" => "已發貨",
+        //            _ => "狀態未知",
+        //        };
+        //    }
+        //}
+
+        public string ShippingMethod { get; set; }
+
+        public string ShippingBadge { get; set; }
+
+        ///// <summary>
+        ///// 配送方式
+        ///// </summary>
+        //public string ShippingMethod
+        //{
+        //    get 
+        //    {
+        //        return _shippingMethod;
+        //    }
+        //    set 
+        //    {
+        //        _shippingMethod = value switch
+        //        {
+        //            "1" => "郵寄",
+        //            "2" => "店到店",
+        //            "3" => "賣家直送",
+        //            _ => "狀態未知",
+        //        };
+        //    }
+        //}
 
         /// <summary>
         /// 訂單金額

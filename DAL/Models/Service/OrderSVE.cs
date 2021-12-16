@@ -36,24 +36,33 @@ namespace ShopStore.Models.Service
         public List<OrderViewModel> GetOrderList(string memberid)
         {            
             using var conn = _connection;
-            string strSql = @"select * from t_orders where f_memberid = @f_memberid and f_isdel = 0
+            string strSql = @"select * from t_orders where f_memberid = @f_memberid
 
                               select c.f_Id, c.f_ordernum, c.f_productid, c.f_amount, p.f_name, p.f_price from t_orders o with (NOLOCK)
                               join t_orderDetails c with (NOLOCK)
                               join t_products p with (NOLOCK) on c.f_productid = p.f_id
                               on o.f_num = c.f_ordernum
-                              where f_memberid = @f_memberid and o.f_isdel = 0";
+                              where f_memberid = @f_memberid
+
+                              select f_id, f_name, f_badge from t_orderStatus with (NOLOCK)
+                              select f_id, f_name, f_badge from t_orderShipping with (NOLOCK)
+";
             
             SqlMapper.GridReader result = conn.QueryMultiple(strSql, new { f_memberid = memberid });
             List<OrderModel> orderModels = result.Read<OrderModel>().ToList();            
             List<OrderItem> orderdetail = result.Read<OrderItem>().ToList();
+            List<OrderStatus> orderStatuses = result.Read<OrderStatus>().ToList();
+            List<OrderShipping> orderShippings = result.Read<OrderShipping>().ToList();
+
             List<OrderViewModel> orderViewModels = (from a in orderModels
                                                     select new OrderViewModel
                                                     {
                                                         Num = a.f_num,
                                                         Date = a.f_date.ToString(),
-                                                        Status = a.f_status.ToString(),
-                                                        ShippingMethod = a.f_shippingMethod.ToString(),
+                                                        Status = orderStatuses.Where(x => x.f_id == a.f_status).SingleOrDefault().f_name,
+                                                        StatusBadge = orderStatuses.Where(x => x.f_id == a.f_status).SingleOrDefault().f_badge,
+                                                        ShippingMethod = orderShippings.Where(x => x.f_id == a.f_shippingMethod).SingleOrDefault().f_name,
+                                                        ShippingBadge = orderShippings.Where(x => x.f_id == a.f_shippingMethod).SingleOrDefault().f_badge,
                                                         TotalAmountOfMoney = a.f_total,
                                                         TotalAmountOfProducts = orderdetail.Where(b => b.f_ordernum == a.f_num).Sum(x => x.f_amount),
                                                         ListOfItem = orderdetail.Where(b => b.f_ordernum == a.f_num).Select(x => new ItemDetail
@@ -86,7 +95,7 @@ namespace ShopStore.Models.Service
                 //conn.Execute(strSql2, new { f_ordernum = ordernum });
 
                 string strSql =
-                    @"update t_orders set f_isdel = 1 where f_num = @f_num
+                    @"update t_orders set f_status = 5, f_isdel = 1 where f_num = @f_num
                       update t_orderDetails set f_isdel = 1 where f_ordernum = @f_ordernum";
                 conn.Execute(strSql, new { f_num = ordernum, f_ordernum = ordernum });
             }
