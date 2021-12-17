@@ -241,6 +241,24 @@ namespace ShopStore.Controllers
             }
         }
 
+        /// <summary>
+        /// 取得列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult GetCategoryList()
+        {
+            List<CategoriesViewModel> productList = _products.GetCatgoryId().ToList();
+            ProductsViewModel productsViewModels = new ProductsViewModel();
+            productsViewModels.SelectListItems.AddRange(from a in productList
+                                                        select new SelectListItem
+                                                        {
+                                                            Value = a.f_id.ToString(),
+                                                            Text = a.f_name,
+                                                        });
+            return Json(new { success = true, item = productsViewModels });
+        }
+
         #endregion
 
         #region 會員管理

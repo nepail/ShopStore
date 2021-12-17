@@ -12,7 +12,7 @@ namespace ShopStore.Models.Interface
         /// 取得商品列表
         /// </summary>
         /// <returns></returns>
-        Task <IEnumerable<ProductsViewModel>> GetProductsAsync();
+        Task <IEnumerable<ProductsViewModel>> GetProductsAsync(int isopen);
 
         /// <summary>
         /// 取得類別列表

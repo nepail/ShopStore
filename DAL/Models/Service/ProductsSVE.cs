@@ -23,12 +23,12 @@ namespace ShopStore.Models.Service
         /// 取得商品列表
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<ProductsViewModel>> GetProductsAsync()
+        public async Task<IEnumerable<ProductsViewModel>> GetProductsAsync(int isopen)
         {
             try
             {
                 using var conn = _connection;
-                var result = await conn.QueryAsync<ProductsViewModel>(@"pro_shopStore_getProducts");
+                var result = await conn.QueryAsync<ProductsViewModel>(@"pro_shopStore_getProducts", new {f_isopen = isopen}, commandType: System.Data.CommandType.StoredProcedure);
                 return result;
             }
             catch (Exception ex)

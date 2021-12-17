@@ -4,7 +4,7 @@
 <script type="text/javascript" src="~/lib/phuong-jqueryInlineEdit-3a3b5ba/src/jquery.inline-edit.js"></script>
 
 <div id="searchBox">
-    <input id="searchInput" type="search" class="light-table-filter" data-table="product-table" placeholder="搜尋..."/>
+    <input id="searchInput" type="search" class="light-table-filter" data-table="product-table" placeholder="搜尋..." />
 </div>
 
 <div id="plist">
@@ -56,7 +56,13 @@
 
             <div class="input-group input-group-sm mb-3">
                 <span class="input-group-text" id="inputGroup-sizing-sm">類別</span>
-                <input id="itemCategory" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                    @*<input id="itemCategory" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">*@
+                <select id="selectForm" class="form-select" aria-label="Default select example">
+                    <option selected>請選擇</option>
+@*                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>*@
+                </select>
             </div>
 
             <div class="input-group input-group-sm mb-3">
@@ -71,15 +77,15 @@
 
             <!-- Button trigger modal -->
             <div class="checkbox">
-                <input id="click" type="checkbox"  />
-                <label for="click" class="text"></label>            
-            <div>
-                @*<input type="button" class="btn btn-outline-primary" value="保存"/>*@
-                <button id="btnSave" class="btn btn-outline-primary">保存</button>
-            </div>
+                <input id="click" type="checkbox" />
+                <label for="click" class="text"></label>
+                <div>
+                    @*<input type="button" class="btn btn-outline-primary" value="保存"/>*@
+                    <button id="btnSave" class="btn btn-outline-primary">保存</button>
+                </div>
             </div>
 
-          
+
         </div>
     </div>
     <hr />

@@ -43,16 +43,19 @@ namespace ShopStore.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ProductList(int type)
         {
-            return View(await _products.GetProductsAsync());
+            var isopen = 1;
+            return View(await _products.GetProductsAsync(isopen));
         }
 
         [HttpGet]
         [AllowAnonymous]
         public async Task<object> ProductLists(string md5string)
         {
+            var isopen = 0;
+
             try
             {
-                IEnumerable<ProductsViewModel> result = await _products.GetProductsAsync();
+                IEnumerable<ProductsViewModel> result = await _products.GetProductsAsync(isopen);
                 string resultJson = JsonConvert.SerializeObject(result);
                 string resiltJsonMd5 = Md5(resultJson);
 
@@ -62,7 +65,6 @@ namespace ShopStore.Controllers
                     return (new { success = false });
                 }
 
-
                 return (new { success = true, item = result, ajaxsign = resiltJsonMd5 });
             }
             catch (Exception ex)
@@ -70,28 +72,6 @@ namespace ShopStore.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
-
-
-        //--------------------------------------------//
-
-        //[HttpGet]
-        //[AllowAnonymous]
-        //public async Task<JsonResult> ProductLists(int type)
-        //{
-        //    try
-        //    {
-        //        var result = await _products.GetProductsAsync();
-        //        return new JsonResult(new { success = true, item = result });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { success = false, message = ex.Message });
-        //    }
-        //}
-
-
-        //--------------------------------------------//
-
 
         /// <summary>
         /// 取得類別清單
@@ -198,8 +178,6 @@ namespace ShopStore.Controllers
 
             return NotFound();
         }
-
-
 
         public static string Md5(string s)
         {

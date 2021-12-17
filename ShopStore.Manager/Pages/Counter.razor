@@ -44,9 +44,10 @@
 
     //}
 
-    public async Task GetProducts()
+    public async Task GetProducts(int isopen)
     {
-        products = await product.GetProductsAsync();
+        isopen = 1;
+        products = await product.GetProductsAsync(isopen);
     }
 
 }
