@@ -6,7 +6,7 @@ namespace DAL.Models.Manager
 {
     public class OrderManageModel
     {
-        public string f_num { get; set; }
+        public string f_id { get; set; }
         public int f_memberid { get; set; }
         public string f_date { get; set; }
         public int f_status { get; set; }

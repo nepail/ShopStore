@@ -83,9 +83,12 @@ namespace ShopStore.Models.Service
             try
             {
                 using var conn = _connection;
+                //var result = conn.Query<CategoriesViewModel>(@"SELECT 
+                //                                                 [f_id]
+                //                                                ,[f_code]
+                //                                                ,[f_name] FROM t_categories WITH(NOLOCK)");
                 var result = conn.Query<CategoriesViewModel>(@"SELECT 
-                                                                 [f_id]
-                                                                ,[f_code]
+                                                                 [f_id]                                                                
                                                                 ,[f_name] FROM t_categories WITH(NOLOCK)");
                 return result;
             }

@@ -38,10 +38,10 @@ namespace ShopStore.Models.Service
             using var conn = _connection;
             string strSql = @"select * from t_orders where f_memberid = @f_memberid
 
-                              select c.f_Id, c.f_ordernum, c.f_productid, c.f_amount, p.f_name, p.f_price from t_orders o with (NOLOCK)
+                              select c.f_Id, c.f_orderId, c.f_productid, c.f_amount, p.f_name, p.f_price from t_orders o with (NOLOCK)
                               join t_orderDetails c with (NOLOCK)
                               join t_products p with (NOLOCK) on c.f_productid = p.f_id
-                              on o.f_num = c.f_ordernum
+                              on o.f_id = c.f_orderId
                               where f_memberid = @f_memberid
 
                               select f_id, f_name, f_badge from t_orderStatus with (NOLOCK)
@@ -57,15 +57,15 @@ namespace ShopStore.Models.Service
             List<OrderViewModel> orderViewModels = (from a in orderModels
                                                     select new OrderViewModel
                                                     {
-                                                        Num = a.f_num,
-                                                        Date = a.f_date.ToString(),
+                                                        Num = a.f_id,
+                                                        Date = a.f_orderTime.ToString(),
                                                         Status = orderStatuses.Where(x => x.f_id == a.f_status).SingleOrDefault().f_name,
                                                         StatusBadge = orderStatuses.Where(x => x.f_id == a.f_status).SingleOrDefault().f_badge,
                                                         ShippingMethod = orderShippings.Where(x => x.f_id == a.f_shippingMethod).SingleOrDefault().f_name,
                                                         ShippingBadge = orderShippings.Where(x => x.f_id == a.f_shippingMethod).SingleOrDefault().f_badge,
                                                         TotalAmountOfMoney = a.f_total,
-                                                        TotalAmountOfProducts = orderdetail.Where(b => b.f_ordernum == a.f_num).Sum(x => x.f_amount),
-                                                        ListOfItem = orderdetail.Where(b => b.f_ordernum == a.f_num).Select(x => new ItemDetail
+                                                        TotalAmountOfProducts = orderdetail.Where(b => b.f_orderId == a.f_id).Sum(x => x.f_amount),
+                                                        ListOfItem = orderdetail.Where(b => b.f_orderId == a.f_id).Select(x => new ItemDetail
                                                         {
                                                             Id = x.f_productid,
                                                             Name = x.f_name,
@@ -88,16 +88,16 @@ namespace ShopStore.Models.Service
             using var conn = _connection;            
             try
             {
-                //string strSql = @"update t_orders set f_isdel = 1 where f_num = @f_num";
-                //conn.Execute(strSql, new { f_num = ordernum });
+                //string strSql = @"update t_orders set f_isdel = 1 where f_id = @f_id";
+                //conn.Execute(strSql, new { f_id = ordernum });
 
-                //string strSql2 = @"update t_orderDetails set f_isdel = 1 where f_ordernum = @f_ordernum";
-                //conn.Execute(strSql2, new { f_ordernum = ordernum });
+                //string strSql2 = @"update t_orderDetails set f_isdel = 1 where f_orderId = @f_orderId";
+                //conn.Execute(strSql2, new { f_orderId = ordernum });
 
                 string strSql =
-                    @"update t_orders set f_status = 5, f_isdel = 1 where f_num = @f_num
-                      update t_orderDetails set f_isdel = 1 where f_ordernum = @f_ordernum";
-                conn.Execute(strSql, new { f_num = ordernum, f_ordernum = ordernum });
+                    @"update t_orders set f_status = 5, f_isdel = 1 where f_id = @f_id
+                      update t_orderDetails set f_isdel = 1 where f_orderId = @f_orderId";
+                conn.Execute(strSql, new { f_id = ordernum, f_orderId = ordernum });
             }
             catch (Exception ex)
             {

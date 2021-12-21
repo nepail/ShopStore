@@ -152,7 +152,7 @@ namespace ShopStore.Models.Service
             {
                 using var conn = _connection;
                 string sqlStr = @"pro_shopStore_Manager_removeOrderList";
-                bool result = conn.Query<bool>(sqlStr, new { f_num = ordernum }, commandType:System.Data.CommandType.StoredProcedure).FirstOrDefault();
+                bool result = conn.Query<bool>(sqlStr, new { f_id = ordernum }, commandType:System.Data.CommandType.StoredProcedure).FirstOrDefault();
                 return true;
             }
             catch (Exception ex)

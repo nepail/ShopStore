@@ -18,8 +18,6 @@ namespace ShopStore.Controllers
     [AllowAnonymous]
     public class MemberController : Controller
     {
-        #region 建構子
-
         private readonly IMembers _members;
         private readonly IDistributedCache _cache;
         private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -32,9 +30,8 @@ namespace ShopStore.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        #endregion
 
-        #region 註冊相關
+        #region 註冊
 
         /// <summary>
         /// 註冊頁面
@@ -50,7 +47,7 @@ namespace ShopStore.Controllers
                 f_phone = "0908609268",
                 f_mail = "linjim1101@gmail.com",
                 f_account = "admin01",
-                f_pwd = "admin01",
+                f_pcode = "admin01",
                 f_address = "台中市西屯區市政路388號",
             };
 
@@ -72,7 +69,7 @@ namespace ShopStore.Controllers
                 string verifyCode = MailHelper.SendMail(memberName, mailAddress);
                 //將認證碼寫入Redis
                 var options = new DistributedCacheEntryOptions();
-                options.SetAbsoluteExpiration(TimeSpan.FromMinutes(1)); //時間到即消失
+                options.SetAbsoluteExpiration(TimeSpan.FromMinutes(5)); //時間到即消失
                 //options.SetSlidingExpiration(TimeSpan.FromMinutes(5)); //重新讀取後會重新計時
                 _cache.SetString(memberName, verifyCode, options);
 
@@ -144,7 +141,7 @@ namespace ShopStore.Controllers
             catch (Exception ex)
             {
                 logger.Debug(ex, $"{model.f_name} AddNewMember Error");
-                return Json(new { success = false, message = "註冊失敗，系統發生錯誤" });
+                return Json(new { success = false, message = $"註冊失敗，信件系統發生錯誤：{ex.ToString()}" });
             }
 
             return Json(new { success = true, message = "系統已寄發認證信件至您的信箱" });
@@ -172,9 +169,9 @@ namespace ShopStore.Controllers
         /// <param name="returnUrl"></param>
         /// <returns></returns>        
         [HttpPost]
-        public async Task<IActionResult> Login(string account, string pwd, string returnUrl)
+        public async Task<IActionResult> Login(string account, string pcode, string returnUrl)
         {
-            var member = _members.FindUser(account, pwd);
+            var member = _members.FindUser(account, pcode);
 
             if (member == null)
             {
@@ -187,7 +184,7 @@ namespace ShopStore.Controllers
                 new Claim("Account", member.f_account),
                 new Claim(ClaimTypes.Name, member.f_nickname), //暱稱                
                 new Claim(ClaimTypes.NameIdentifier, member.f_id), //userId                
-                new Claim(ClaimTypes.Role, member.f_level),
+                new Claim(ClaimTypes.Role, member.f_groupid),
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

@@ -39,7 +39,7 @@ namespace ShopStore.Common
             //設定連線 gmail ("smtp Server", Port, SSL加密) 
             client.Connect("smtp.gmail.com", 587, false); // localhost 測試使用加密需先關閉 
             // Note: only needed if the SMTP server requires authentication
-            client.Authenticate("linjim1101@gmail.com", "jmjygxjclxuvtlaj");
+            client.Authenticate("linjim1101@gmail.com", "khprfzuhjhchpfnd");
             client.Send(mail); //發信            
             client.Disconnect(true); //結束連線
 

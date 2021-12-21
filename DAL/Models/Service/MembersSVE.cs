@@ -47,9 +47,9 @@ namespace ShopStore.Models.Service
         /// 登入查詢有無該User
         /// </summary>
         /// <param name="f_account"></param>
-        /// <param name="f_pwd"></param>
+        /// <param name="f_pcode"></param>
         /// <returns></returns>
-        public MemberViewModel FindUser(string f_account, string f_pwd)
+        public MemberViewModel FindUser(string f_account, string f_pcode)
         {
             //using var conn = _connection;            
             //return conn.QueryFirstOrDefault<MemberViewModel>("select * from t_members where f_account = @f_account and f_pwd = @f_pwd", new { f_account, f_pwd });
@@ -58,7 +58,7 @@ namespace ShopStore.Models.Service
             {
                 using var conn = _connection;
                 var result = conn.QueryFirstOrDefault<MemberViewModel>(@"pro_shopStore_getMember",
-                                                                          new { f_account, f_pwd, f_date = DateTime.Now },
+                                                                          new { f_account, f_pcode, f_date = DateTime.Now },
                                                                           commandType: System.Data.CommandType.StoredProcedure);
                 return result;
             }
@@ -83,28 +83,26 @@ namespace ShopStore.Models.Service
                                          f_name
                                         ,f_nickname
                                         ,f_account
-                                        ,f_pwd                                        
-                                        ,f_mail
-                                        ,f_mailConfirmed
-                                        ,f_registerDate
+                                        ,f_pcode                                        
                                         ,f_phone                                        
+                                        ,f_mail                                        
+                                        ,f_createTime
                                         ,f_address
-                                        ,f_level
+                                        ,f_groupid
                                         ,f_cash
-                                        ,f_isdel
+                                        ,f_isSuspend
                                         ) VALUES (                                                                                 
                                          @f_name
                                         ,@f_nickname
                                         ,@f_account
-                                        ,@f_pwd                                        
-                                        ,@f_mail
-                                        ,@f_mailConfirmed
-                                        ,@f_registerDate
+                                        ,@f_pcode                                        
                                         ,@f_phone                                        
+                                        ,@f_mail                                        
+                                        ,@f_createTime
                                         ,@f_address                                        
-                                        ,@f_level
+                                        ,@f_groupid
                                         ,@f_cash
-                                        ,@f_isdel                                        
+                                        ,@f_isSuspend                                     
                                         );";
                 conn.Execute(strSql, model);
             }

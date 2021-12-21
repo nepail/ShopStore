@@ -13,6 +13,6 @@ namespace ShopStore.Models.Interface
         Task<bool> VerifyEmailAsync(string f_mail);
 
         Task<bool> VerifyAccountAsync(string f_account);
-        public MemberViewModel FindUser(string f_account, string f_pwd);
+        public MemberViewModel FindUser(string f_account, string f_pcode);
     }
 }

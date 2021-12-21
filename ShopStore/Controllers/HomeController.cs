@@ -28,7 +28,6 @@ namespace ShopStore.Controllers
         public IActionResult Error()
         {
             return View();
-            //return Content("alert('Hello');", "application/javascript");
         }
 
         /// <summary>
@@ -39,7 +38,7 @@ namespace ShopStore.Controllers
         {
             return View();
         }
-        
+
         public IActionResult Privacy()
         {
             return View();
@@ -49,11 +48,5 @@ namespace ShopStore.Controllers
         {
             return View();
         }
-
-        //[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        //public IActionResult Error()
-        //{
-        //    return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        //}
     }
 }

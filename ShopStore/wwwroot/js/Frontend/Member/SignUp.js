@@ -11,11 +11,12 @@ let register = false
 $('label[required]').before('<span style="color:red">* </span>');
 
 
-$("form").submit(function (e) {
+$("form").off('submit').submit(function (e) {
     //阻止元素默認發生的行為
     e.preventDefault();
+    console.log('sign submit')
     $.ajax({
-        async: false,
+        async: true,
         type: $("form").attr("method"),
         url: $("form").attr("action"),
         data: $("form").serialize(),

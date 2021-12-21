@@ -94,22 +94,22 @@ namespace ShopStore.Models.Service
                 //將訂單編號寫入明細
                 foreach (OrderItem a in model.Orderlist)
                 {
-                    a.f_ordernum = model.f_num;
+                    a.f_orderId = model.f_id;
                 }
 
                 //寫入訂單主表
-                string strSql = @"insert into t_orders(f_num
+                string strSql = @"insert into t_orders(f_id
                                                       ,f_memberid
-                                                      ,f_date
+                                                      ,f_orderTime
                                                       ,f_status
                                                       ,f_shippingmethod
                                                       ,f_total
                                                       ,f_ispaid
                                                       ,f_isdel
                                                       ) values (
-                                                       @f_num
+                                                       @f_id
                                                       ,@f_memberid
-                                                      ,@f_date
+                                                      ,@f_orderTime
                                                       ,@f_status
                                                       ,@f_shippingmethod
                                                       ,@f_total
@@ -118,7 +118,7 @@ namespace ShopStore.Models.Service
                 int result = conn.Execute(strSql, model);
                 //將訂單明細寫入表
                 string strDetailSql = 
-                @"insert into t_orderDetails(f_ordernum, f_productid, f_amount, f_isdel) values (@f_ordernum, @f_productid, @f_amount, @f_isdel)";
+                @"insert into t_orderDetails(f_orderId, f_productid, f_amount, f_isdel) values (@f_orderId, @f_productid, @f_amount, @f_isdel)";
                 conn.Execute(strDetailSql, model.Orderlist);
                 
                 //交易完成

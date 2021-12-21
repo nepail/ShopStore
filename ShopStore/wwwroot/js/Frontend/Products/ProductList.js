@@ -9,9 +9,7 @@ const Product = {
         } catch {
             md5 = 0
         }
-
-        md5 = 0
-
+        
         $.ajax({
             async: false,
             type: 'GET',

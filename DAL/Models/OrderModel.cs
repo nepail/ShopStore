@@ -14,9 +14,9 @@ namespace ShopStore.Models
             f_ispaid = 0;
         }
 
-        public string f_num { get; set; }
+        public string f_id { get; set; }
         public string f_memberid { get; set; }
-        public DateTime f_date { get; set; }
+        public DateTime f_orderTime { get; set; }
         public int f_status { get; set; }
         public int f_shippingMethod{ get; set; }
         public int f_total { get; set; }
@@ -29,7 +29,7 @@ namespace ShopStore.Models
     public class OrderItem
     {
         //public string f_id { get; set; }
-        public string f_ordernum { get; set; }
+        public string f_orderId { get; set; }
         public string f_productid { get; set; }
         public int f_amount { get; set; }
         public string f_name { get; set; }

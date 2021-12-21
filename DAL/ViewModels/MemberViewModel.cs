@@ -14,7 +14,6 @@ namespace ShopStore.ViewModels
     {
         private string _f_level;
 
-
         /// <summary>
         /// 流水號
         /// </summary>
@@ -48,7 +47,7 @@ namespace ShopStore.ViewModels
         [StringLength(12, MinimumLength = 6, ErrorMessage = "密碼長度6~12碼")]
         [RegularExpression(@"[a-zA-Z]+[a-zA-Z0-9]*$", ErrorMessage = "密碼僅能有英文或數字，且開頭需為英文字母！")]
         [DataType(DataType.Password)]
-        public string f_pwd { get; set; }
+        public string f_pcode { get; set; }
 
         //[Display(Name = "確認會員密碼："), Required(ErrorMessage = "請您再次輸入密碼！")]                
         //[Compare("f_pwd", ErrorMessage = "兩次輸入的密碼必須相同")]
@@ -72,12 +71,10 @@ namespace ShopStore.ViewModels
         [Remote(action: "VerifyEmail", controller: "Verify")]
         public string f_mail { get; set; }
 
-        public int f_mailConfirmed { get; set; } = 0;
-
         /// <summary>
         /// 註冊時間
         /// </summary>
-        public DateTime f_registerDate { get; set; } = DateTime.Now;
+        public DateTime f_createTime { get; set; } = DateTime.Now;
 
         /// <summary>
         /// 通訊地址
@@ -85,7 +82,23 @@ namespace ShopStore.ViewModels
         [Display(Name = "通訊地址", Prompt = "ex: 台中市西屯區市政路400號"), Required(ErrorMessage = "請輸入通訊地址")]
         public string f_address { get; set; }
 
-        public string f_level
+        //public string f_level
+        //{
+        //    get
+        //    {
+        //        return _f_level ?? "0";
+        //    }
+        //    set
+        //    {
+        //        _f_level = value switch
+        //        {
+        //            "1" => "admin",
+        //            _ => "basic"
+        //        };
+        //    }
+        //}
+
+        public string f_groupid
         {
             get
             {
@@ -101,10 +114,14 @@ namespace ShopStore.ViewModels
             }
         }
 
-        public int f_isdel { get; set; } = 0;
+        /// <summary>
+        /// 是否停權
+        /// </summary>
+        public int f_isSuspend { get; set; } = 0;
 
+        /// <summary>
+        /// 購物金
+        /// </summary>
         public int f_cash { get; set; } = 0;
-
-        //public string ReturnUrl { get; set; }
     }
 }

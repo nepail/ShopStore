@@ -95,7 +95,7 @@ namespace ShopStore.Controllers
                     //如果已存在購物車: 檢查有無相同的商品，有的話只調整數量
                     List<CartItem> cart = SessionHelper.GetObjectFromJson<List<CartItem>>(HttpContext.Session, "cart");
 
-                    int index = cart.FindIndex(m => m.Product.f_id.Equals(id));
+                    int index = cart.FindIndex(m => m.Product.f_id.Equals(int.Parse(id)));
 
                     if (index != -1)
                     {
@@ -168,7 +168,7 @@ namespace ShopStore.Controllers
             List<CartItem> cart = SessionHelper.GetObjectFromJson<List<CartItem>>(HttpContext.Session, "cart");
 
             //用FindIndex查詢目標在List裡的位置
-            int index = cart.FindIndex(m => m.Product.f_id.Equals(id));
+            int index = cart.FindIndex(m => m.Product.f_id.Equals(int.Parse(id)));
             cart.RemoveAt(index);
 
             if (cart.Count < 1)
@@ -196,9 +196,9 @@ namespace ShopStore.Controllers
 
             OrderModel orderModel = new OrderModel()
             {
-                f_num = DateTime.Now.ToString("yyyyMMddHHmmss"),
+                f_id = DateTime.Now.ToString("yyyyMMddHHmmss"),
                 f_memberid = User.FindFirst(ClaimTypes.NameIdentifier).Value,
-                f_date = DateTime.Now,
+                f_orderTime = DateTime.Now,
                 f_status = 1,
                 f_shippingMethod = 1,
                 Orderlist = data
