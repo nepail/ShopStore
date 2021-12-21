@@ -23,7 +23,12 @@ namespace ShopStore.ViewModels
         /// <summary>
         /// 流水號
         /// </summary>        
-        public string f_id { get; set; }
+        public int f_id { get; set; }
+
+        /// <summary>
+        /// 產品編號
+        /// </summary>
+        public string f_pId { get; set; }
 
         /// <summary>
         /// 名稱
@@ -38,9 +43,9 @@ namespace ShopStore.ViewModels
         public int f_price { get; set; }
 
         /// <summary>
-        /// 圖片路徑
+        /// 圖片名稱
         /// </summary>
-        public string f_picPath { get; set; }
+        public string f_picName { get; set; }
 
         /// <summary>
         /// 描述
@@ -98,6 +103,8 @@ namespace ShopStore.ViewModels
             {
             }
         }
+
+        public string ContentText { get; set; }
         /// <summary>
         /// 類別清單
         /// </summary>
@@ -105,18 +112,17 @@ namespace ShopStore.ViewModels
 
         public class ProductModel
         {
-            public string f_id { get; set; }
+            public string f_pId { get; set; }
             public string f_name { get; set; }
             public int f_price { get; set; }
-            public string f_picPath { get; set; }
+            //public string f_picName { get; set; }
             public string f_description { get; set; }
             public int f_categoryId { get; set; }
             public int f_stock { get; set; }
             public int f_isdel { get; set; }
             public int f_isopen { get; set; }
-            public string f_content { get; set; }
-            public string f_updatetime { get; set; } = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");            
-            //public IFormFile ProductPic { get; set; }
+            //public string f_content { get; set; }
+            public string f_updatetime { get; set; } = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");                        
         }
     }
 }

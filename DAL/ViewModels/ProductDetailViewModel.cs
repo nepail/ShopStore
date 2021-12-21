@@ -12,6 +12,8 @@ namespace ShopStore.ViewModels
         /// </summary>
         public string Id { get; set; }
 
+        public string PId { get; set; }
+
         /// <summary>
         /// 名稱
         /// </summary>

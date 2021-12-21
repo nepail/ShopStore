@@ -12,6 +12,8 @@ namespace ShopStore.Models
         /// </summary>
         public string f_id { get; set; }
 
+        public string f_pId { get; set; }
+
         /// <summary>
         /// 名稱
         /// </summary>
@@ -40,6 +42,6 @@ namespace ShopStore.Models
         /// <summary>
         /// 圖片路徑
         /// </summary>
-        public string f_picPath { get; set; }
+        public string f_picName { get; set; }
     }
 }

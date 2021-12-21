@@ -62,15 +62,9 @@
                                 <li class="nav-item" style="float:right">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Member" asp-action="Login">登入</a>
                                 </li>
-
-
                             }
                             else
                             {
-                                @*<li class="nav-item" style="float:right">
-                                    <a class="nav-link text-dark">@User.Identity.Name 歡迎回來！</a>
-                                </li>*@
-
                                 <li class="nav-item" style="float:right">
                                     <a class="nav-link text-dark" asp-controller="Member" asp-action="Logout">登出</a>
                                 </li>
@@ -102,6 +96,7 @@
             </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="~/js/site.js"></script>
@@ -109,9 +104,7 @@
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
     <script src="~/lib/slick-carousel/slick.min.js"></script>
     <script src="~/lib/bootstrap-sweetalert/sweetalert.js"></script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/29.2.0/classic/ckeditor.js"></script>
-
-    @*<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>*@
+    <script src="https://cdn.ckeditor.com/ckeditor5/29.2.0/classic/ckeditor.js"></script>    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
 
 
@@ -121,31 +114,9 @@
         }
     </style>
 
-    <script src="~/js/Shared/_Layout.js" type="text/javascript"></script>
+    <script src="~/js/Frontend/Shared/_Layout.js" type="text/javascript"></script>
+    <script src="~/js/Frontend/Shared/_MainProperties.js" type="text/javascript"></script>
 
     @RenderSection("Scripts", required: false)
 </body>
 </html>
-
-<script>
-
-    toastr.options = {
-        // 參數設定[註1]
-        "positionClass": "toast-top-right",
-        "closeButton": false, // 顯示關閉按鈕
-        "debug": false, // 除錯
-        "newestOnTop": false,  // 最新一筆顯示在最上面
-        "progressBar": true, // 顯示隱藏時間進度條
-        "preventDuplicates": false, // 隱藏重覆訊息
-        "onclick": null, // 當點選提示訊息時，則執行此函式
-        "showDuration": "300", // 顯示時間(單位: 毫秒)
-        "hideDuration": "1000", // 隱藏時間(單位: 毫秒)
-        "timeOut": "5000", // 當超過此設定時間時，則隱藏提示訊息(單位: 毫秒)
-        "extendedTimeOut": "1000", // 當使用者觸碰到提示訊息時，離開後超過此設定時間則隱藏提示訊息(單位: 毫秒)
-        "showEasing": "swing", // 顯示動畫時間曲線
-        "hideEasing": "linear", // 隱藏動畫時間曲線
-        "showMethod": "fadeIn", // 顯示動畫效果
-        "hideMethod": "fadeOut" // 隱藏動畫效果
-    }
-
-</script>

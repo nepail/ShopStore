@@ -146,8 +146,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\Frontend\" />
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\img\slider\" />
+    <Folder Include="wwwroot\content\" />
   </ItemGroup>
 
   <ItemGroup>

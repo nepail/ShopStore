@@ -182,25 +182,36 @@ namespace ShopStore.Controllers
             {
                 if (model != null && ModelState.IsValid)
                 {
-                    if(model.ProductPic != null) model.f_picPath = await UploadedFile(model.ProductPic);
-
-                    if (model.f_picPath != "")
+                    if(model.ProductPic != null)
                     {
-                        bool result = await _products.EditProductById(model);
+                        UploadedFile(model.ProductPic, model.f_pId);
+                    }
 
-                        if (result)
-                        {
-                            return Json(new { success = true, message = "success" });
-                        }
-                        else
-                        {
-                            return Json(new { success = false, message = "fail" });
-                        }
+                    if(model.f_content != null)
+                    {
+                        EditProductContent(model.f_content, model.f_pId);
+                    }
+                                               
+                    //if (model.f_picName != "")
+                    //{
 
+
+                    //}
+                    //else
+                    //{
+                    //    return Json(new { success = false, message = "圖片上傳失敗" });
+                    //}
+
+
+                    bool result = await _products.EditProductById(model);
+
+                    if (result)
+                    {
+                        return Json(new { success = true, message = "success" });
                     }
                     else
                     {
-                        return Json(new { success = false, message = "圖片上傳失敗" });
+                        return Json(new { success = false, message = "fail" });
                     }
                 }
 
@@ -218,27 +229,42 @@ namespace ShopStore.Controllers
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        private async Task<string> UploadedFile(IFormFile file)
+        private async void UploadedFile(IFormFile file, string id)
         {
-            string uniqueFileName = null;
+            //string uniqueFileName = null;
             try
             {
                 if (file != null)
-                {
+                {                    
                     string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
-                    uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    //uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+                    string filePath = Path.Combine(uploadsFolder, id + ".jpg");
                     await using var fileStream = new FileStream(filePath, FileMode.Create);
                     file.CopyTo(fileStream);
                 }
 
-                return uniqueFileName;
+                //return uniqueFileName;
             }
             catch (Exception ex)
             {
                 logger.Debug(ex, "UploadFile Error");
-                return "";
+                //return "";
             }
+        }
+
+        /// <summary>
+        /// 編輯文字檔
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        private void EditProductContent(string contentText, string id)
+        {
+            string uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, "content");
+            string filePath = Path.Combine(uploadFolder, id + ".txt");
+            using StreamWriter file = new StreamWriter(filePath, false);
+            file.Write(contentText);
+
+            //return true;
         }
 
         /// <summary>
@@ -256,6 +282,7 @@ namespace ShopStore.Controllers
                                                             Value = a.f_id.ToString(),
                                                             Text = a.f_name,
                                                         });
+
             return Json(new { success = true, item = productsViewModels });
         }
 

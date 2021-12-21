@@ -5,6 +5,7 @@ using ShopStore.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
 using System.Threading.Tasks;
 using static ShopStore.ViewModels.ProductsViewModel;
 
@@ -55,11 +56,12 @@ namespace ShopStore.Models.Service
                 ProductDetailViewModel result = new ProductDetailViewModel()
                 {
                     Id = Model.f_id,
+                    PId = Model.f_pId,
                     Name = Model.f_name,
                     Content = Model.f_content,
                     Type = Model.f_categoryId.ToString(),
                     Price = Model.f_price,
-                    ImgPath = Model.f_picPath
+                    ImgPath = Model.f_picName
                 };
 
                 return result;
@@ -107,18 +109,19 @@ namespace ShopStore.Models.Service
                 using var conn = _connection;
                 ProductDetailsModel productsModel = new ProductDetailsModel
                 {
-                    f_id = Guid.NewGuid().ToString(),
+                    //f_id = Guid.NewGuid().ToString(),
+                    //f_pId = Guid.NewGuid().ToString(),
+                    f_pId = model.f_pId,
                     f_name = model.f_name,
                     f_price = model.f_price,
-                    f_picPath = model.f_picPath,
+                    //f_picName = model.f_picName,
                     f_description = model.f_description,
                     f_categoryId = model.f_categoryId,
                     f_stock = model.f_stock,
-                    f_isdel = model.f_isdel,
-                    f_isopen = model.f_isopen,
-                    f_content = model.f_content,
-                    f_updatetime = DateTime.Now,
-                    f_createtime = DateTime.Now
+                    f_isDel = model.f_isdel,
+                    f_isOpen = model.f_isopen,                    
+                    f_updateTime = DateTime.Now,
+                    f_createTime = DateTime.Now
                 };
 
                 var result = conn.Execute("pro_shopStore_addProduct", productsModel, commandType: System.Data.CommandType.StoredProcedure);
@@ -131,6 +134,8 @@ namespace ShopStore.Models.Service
             //scope.Complete();
             return true;
         }
+
+
 
         /// <summary>
         /// 確認是否有此產品
@@ -152,22 +157,29 @@ namespace ShopStore.Models.Service
         {
             ProductModel productModel = new ProductModel()
             {
-                f_id = model.f_id,
+                f_pId = model.f_pId,
                 f_name = model.f_name,
-                f_price = model.f_price,                
-                f_picPath = model.f_picPath,
+                f_price = model.f_price,
+                //f_picName = model.f_picName,
                 f_description = model.f_description,
                 f_categoryId = model.f_categoryId,
                 f_stock = model.f_stock,
                 f_isdel = model.f_isdel,
                 f_isopen = model.f_isopen,
-                f_content = model.f_content,                
+                f_updatetime = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")
+                //f_content = model.f_content,                
             };
 
             try
             {
                 using var conn = _connection;
-                return await conn.ExecuteAsync(@"pro_shopStore_updateProduct", productModel, commandType: System.Data.CommandType.StoredProcedure) == 2;                               
+
+                var result = await conn.ExecuteAsync(
+                    @"pro_shopStore_updateProduct",
+                    productModel,
+                    commandType: System.Data.CommandType.StoredProcedure);
+
+                return true;                               
             }
             catch (Exception ex)
             {

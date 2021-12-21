@@ -34,7 +34,7 @@
     {
         <div class="card" data-id="card_@product.f_id">
             <div class="card__image">
-                <img src="@Url.Content("~/images/" + product.f_picPath)" alt="" type="button" onclick="Product.ShowProductDetail('@product.f_name', '@product.f_id')">
+                <img src="@Url.Content($"~/images/{product.f_pId}.jpg")" alt="" type="button" onclick="Product.ShowProductDetail('@product.f_name', '@product.f_pId')">
             </div>
             <div class="card__contacts">
                 <div class="card-title">
@@ -159,5 +159,5 @@
 <link href="~/css/Products/_ProductPartial.css" rel="stylesheet" />
 
 @section scripts{
-    <script src="~/js/Products/ProductList.js" type="text/javascript"></script>
+    <script src="~/js/Frontend/Products/ProductList.js" type="text/javascript"></script>
 }
