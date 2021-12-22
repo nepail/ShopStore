@@ -67,17 +67,17 @@
 
                                             }
 
-                                            @if (order.Status == "已退貨" || order.Status == "已取消")
-                                            {
-
-                                            }
-                                            else
+                                            @if (order.Status == "待確認")
                                             {
                                                 <tr>
                                                     <td class="text-right" colspan="6">
                                                         <input type="button" class="btn btn-sm btn-outline-danger" value="取消訂單" onclick="CancelOrder(@order.Num)" />
                                                     </td>
                                                 </tr>
+                                            }
+                                            else
+                                            {
+                                                
                                             }
                                         </tbody>
                                     </table>

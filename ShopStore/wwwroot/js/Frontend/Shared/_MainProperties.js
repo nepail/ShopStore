@@ -1,6 +1,6 @@
 ﻿/*總緩存*/
 
-const Mainproties = {
+const Mainproperties = {
     //產品列表
     productData: [
         {            

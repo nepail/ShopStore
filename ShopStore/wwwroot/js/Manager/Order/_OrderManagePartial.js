@@ -1,55 +1,43 @@
-﻿$(document).ready(function () {
-    Order.GetOrderList()
-    //Order.SetSearch()
-    Order.SetBtnSave()
-    Order.SetDropDownList()
+﻿$(document).ready(function() {
+    Order.GetOrderList();
+    Order.SetBtnSave();
+    Order.SetDropDownList();
 })
 
-var orderList
 var postData = []
 
-var STATUS = {
-    tbd: 1,
-    shipped: 2,
-    transport: 3,
-    returned: 4,
-    chanceled: 5,
-    abnormal: 6
-}
-
-var SipMethod = {
-    postm: 1,
-    B2B: 2,
-    privateCargo: 3
-}
-
 var Order = {
-    GetOrderList: function () {
+    /**
+     * 取得所有Order資料
+     */
+    GetOrderList: function() {
         $.ajax({
             url: '/Manager/GetOrderList',
             type: 'get',
-            success: function (res) {
+            success: function(res) {
                 if (res.success) {
-                    orderList = res.result
-                    Order.InitOrderList()
+                    MainProperties.Order.data = res.result;
+                    Order.InitOrderList();
                 } else {
-                    swal('系統錯誤', '資料庫錯誤', 'error')
+                    swal('系統錯誤', '資料庫錯誤', 'error');
                 }
             },
-            error: function () {
-                swal('網路錯誤', '無法連上伺服器', 'error')
+            error: function() {
+                swal('網路錯誤', '無法連上伺服器', 'error');
             }
         })
     },
 
-    Return: function (item) {
-        Order.ReturnOfgood($(item).parent().siblings('.bcol:eq(1)').text())
+    Return: function(item) {
+        Order.ReturnOfgood($(item).parent().siblings('.bcol:eq(1)').text());
     },
-
-    InitOrderList: function () {
-        //$.each(orderList, function (i, v) {
+    /**
+     * 渲染Order列表
+     */
+    InitOrderList: function() {
+        //$.each(MainProperties.Order.data, function (i, v) {
         //    var btnSwitch = v.isDel == 1 ? 'style="visibility: hidden;"' : ''
-        //    $('#orderList')
+        //    $('#MainProperties.Order.data')
         //        .append(`
         //            <div id="ordernum_${v.num}" class="box brow order">
         //                <div class="box bcol rowckbox">
@@ -90,7 +78,7 @@ var Order = {
         //})
 
 
-        var odLength = orderList.length;
+        //var odLength = MainProperties.Order.data.length;
         var odContent = `
             <!--Title部分-->
             <div class="box brow boxtitle">
@@ -110,19 +98,20 @@ var Order = {
                 </div>
             </div>`;
 
-        for (var i = 0; i < odLength; i++) {
-            var btnSwitch = orderList[i].isDel == 1 ? 'style="visibility: hidden;"' : ''
+        for (var i = 0, odLength = MainProperties.Order.data.length; i < odLength; i++) {
+
+            var btnSwitch = MainProperties.Order.data[i].isDel == 1 ? 'style="visibility: hidden;"' : '';
             odContent += `
-                    <div id="ordernum_${orderList[i].num}" class="box brow order">
+                    <div id="ordernum_${MainProperties.Order.data[i].num}" class="box brow order">
                         <div class="box bcol rowckbox">
                             <input type="checkbox" class="visibility"/>
                         </div>
-                        <div class="box bcol tx"><span ordernum="${i}" >${orderList[i].num}</span></div>
-                        <div class="box bcol tx"><span>${orderList[i].date}</span></div>
-                        <div class="box bcol tx"><span>${orderList[i].memberName}</span></div>
+                        <div class="box bcol tx"><span ordernum="${i}" >${MainProperties.Order.data[i].num}</span></div>
+                        <div class="box bcol tx"><span>${MainProperties.Order.data[i].date}</span></div>
+                        <div class="box bcol tx"><span>${MainProperties.Order.data[i].memberName}</span></div>
                         <div class="box bcol">
                             <div class="size">
-                                <span class="bbadge field bg-${orderList[i].statusBadge}">${orderList[i].status}</span>
+                                <span class="bbadge field bg-${MainProperties.Order.data[i].statusBadge}">${MainProperties.Order.data[i].status}</span>
                                     <ul menu-type="0" class="list">
                                         <li data-type="1">待確認</li>
                                         <li data-type="2">已出貨</li>
@@ -135,7 +124,7 @@ var Order = {
                         </div>
                         <div class="box bcol">
                             <div class="size">
-                                <span class="bbadge field ${orderList[i].shippingBadge}">${orderList[i].shippingMethod}</span>
+                                <span class="bbadge field ${MainProperties.Order.data[i].shippingBadge}">${MainProperties.Order.data[i].shippingMethod}</span>
                                 <ul menu-type="1" class="list">
                                     <li data-type="1">郵寄</li>
                                     <li data-type="2">店到店</li>
@@ -143,49 +132,52 @@ var Order = {
                                 </ul>
                             </div>
                         </div>
-                        <div class="box bcol tx"><span>NT$ ${orderList[i].total}</span></div>
+                        <div class="box bcol tx"><span>NT$ ${MainProperties.Order.data[i].total}</span></div>
                         <div class="box bcol rowckbox">
                             <input id="btnReturn" type="button" class="btn btn-sm btn-outline-danger" value="退貨" onclick="Order.Return(this)" ${btnSwitch}/>
                         </div>
-                    </div>
-                `
+                    </div>`;
         }
 
-        $('#orderList').html(odContent)
-        Order.SetSearch()
+        $('#orderList').html(odContent);
+        Order.SetSearch();
     },
 
-    ReturnOfgood: function (ordernum) {
+    /**
+     * 退貨功能
+     * @param {Number} ordernum 
+     */
+    ReturnOfgood: function(ordernum) {
         swal({
-            title: '確定執行此操作?',
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: '確定',
-            cancelButtonText: '取消',
-            closeOnConfirm: false,
-            showLoaderOnConfirm: true,
-        },
-            function (isConfirm) {
+                title: '確定執行此操作?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '確定',
+                cancelButtonText: '取消',
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true,
+            },
+            function(isConfirm) {
                 if (isConfirm) {
-                    setTimeout(function () {
+                    setTimeout(function() {
                         $.ajax({
                             url: '/Manager/RemoveOrder?id=' + ordernum,
                             type: 'get',
                             success: (res) => {
                                 if (res.success) {
-                                    swal('執行成功', '訂單' + ordernum + '已退貨', 'success')
+                                    swal('執行成功', '訂單' + ordernum + '已退貨', 'success');
 
-                                    var targetItem = $('#ordernum_' + ordernum).find('.bcol:eq(4) span')
-                                    var targetClass = $('#ordernum_' + ordernum).find('.bcol:eq(4) span').attr('class').split(' ')[2]
-                                    targetItem.toggleClass(`${targetClass} bg-danger`)
-                                    targetItem.text('已退貨')
-                                    $('#ordernum_' + ordernum).find('input[type="button"]').css('visibility', 'hidden')
+                                    var targetItem = $('#ordernum_' + ordernum).find('.bcol:eq(4) span');
+                                    var targetClass = $('#ordernum_' + ordernum).find('.bcol:eq(4) span').attr('class').split(' ')[2];
+                                    targetItem.toggleClass(`${targetClass} bg-danger`);
+                                    targetItem.text('已退貨');
+                                    $('#ordernum_' + ordernum).find('input[type="button"]').css('visibility', 'hidden');
                                 } else {
-                                    swal('執行失敗', '資料庫錯誤', 'error')
+                                    swal('執行失敗', '資料庫錯誤', 'error');
                                 }
                             },
                             error: (res) => {
-                                swal('執行失敗', '伺服器錯誤', 'error')
+                                swal('執行失敗', '伺服器錯誤', 'error');
                             }
                         })
                     })
@@ -194,7 +186,18 @@ var Order = {
         )
     },
 
-    GetStatus: function (statusCode, type, ordernum, orderid) {
+    /**
+     * 狀態變更功能
+     * @param {Number} statusCode f_status 的狀態
+     * @param {Number} type Menu 的類型
+     * @param {Number} ordernum f_id
+     * @param {Number} orderid 
+     * @returns 狀態的的 CSS Style
+     */
+    GetStatus: function(statusCode, type, ordernum, orderid) {
+
+        var STATUS = MainProperties.Order.STATUS;
+        var SipMethod = MainProperties.Order.SipMethod;
 
         if (postData[ordernum] == undefined) {
             postData[ordernum] = {
@@ -214,10 +217,10 @@ var Order = {
                 [STATUS.abnormal]: 'bg-warning'
             }
 
-            postData[ordernum].f_id = orderid
-            postData[ordernum].f_status = statusCode
-            console.table(postData)
-            return statement[statusCode]
+            postData[ordernum].f_id = orderid;
+            postData[ordernum].f_status = statusCode;
+            console.table(postData);
+            return statement[statusCode];
         }
 
         if (type == 1) {
@@ -227,95 +230,109 @@ var Order = {
                 [SipMethod.privateCargo]: 'bgblue'
             }
 
-            postData[ordernum].f_id = orderid
-            postData[ordernum].f_ShippingMethod = statusCode
-            console.table(postData)
-            return shippingMethod[statusCode]
+            postData[ordernum].f_id = orderid;
+            postData[ordernum].f_ShippingMethod = statusCode;
+            console.table(postData);
+            return shippingMethod[statusCode];
         }
     },
 
-    SetSearch: function () {
-        $('#searchInput').on('keyup', function () {
-            var value = $(this).val().toLowerCase()
-            $('#orderList>.order').filter(function () {
+    /**
+     * 搜尋功能
+     */
+    SetSearch: function() {
+        $('#searchInput').on('keyup', function() {
+            var value = $(this).val().toLowerCase();
+            $('#MainProperties.Order.data>.order').filter(function() {
                 //console.log($(this).find('.tx, .field').text())
-                $(this).toggle($(this).find('.tx, .field').text().toLowerCase().indexOf(value) > -1)
+                $(this).toggle($(this).find('.tx, .field').text().toLowerCase().indexOf(value) > -1);
             })
         })
     },
 
-    SetBtnSave: function () {
-        $('#btnSave').click(function () {
-            Order.SendData()
+    /**
+     * 保存功能
+     */
+    SetBtnSave: function() {
+        $('#btnSave').click(function() {
+            Order.SendData();
         })
     },
 
-    SendData: function () {
+    /**
+     * 更新訂單資料
+     * @returns 成功與否
+     */
+    SendData: function() {
 
         if (postData.length == 0) {
             swal('沒有要變更的資料，請先選擇', ' ', 'info');
             return;
         }
 
-        postData = postData.filter(el => el)
+        postData = postData.filter(el => el);
 
         var data = {
             orders: postData
         }
+
         $.ajax({
             url: '/Manager/UpdateOrder',
             type: 'post',
             data: data,
             success: (res) => {
                 if (res.success) {
-                    swal('保存成功', ' ', 'success')
+                    swal('保存成功', ' ', 'success');
                 }
             },
             error: (res) => {
-                console.log('error')
+                console.log('error');
             }
         })
     },
 
-    SetDropDownList: function () {
-        $(document).off('click').on('click', '.size', function () {
+    /**
+     * 狀態清單下拉
+     */
+    SetDropDownList: function() {
+        $(document).off('click').on('click', '.size', function() {
             $('.size').styleddropdown();
         })
     }
 }
 
-$.fn.styleddropdown = function () {
-    return this.each(function () {
-        var obj = $(this).off('click')
-        obj.find('.field').off('click').click(function () { //onclick event, 'list' fadein            
+$.fn.styleddropdown = function() {
+    return this.each(function() {
+        var obj = $(this).off('click');
+        obj.find('.field').off('click').click(function() { //onclick event, 'list' fadein            
             obj.find('.list').fadeIn(400);
 
-            $(document).off('keyup').keyup(function (event) { //keypress event, fadeout on 'escape'                
+            $(document).off('keyup').keyup(function(event) { //keypress event, fadeout on 'escape'                
                 if (event.keyCode == 27) {
                     obj.find('.list').fadeOut(400);
                 }
             });
 
-            obj.find('.list').hover(function () { },
-                function () {
+            obj.find('.list').hover(function() {},
+                function() {
                     $(this).fadeOut(400);
                 });
         });
 
-        obj.find('.list li').off('click').click(function () { //onclick event, change field value with selected 'list' item and fadeout 'list'
+        obj.find('.list li').off('click').click(function() { //onclick event, change field value with selected 'list' item and fadeout 'list'
 
-            var type = $(this).attr('data-type')
-            var menuType = $(this).parent().attr('menu-type')
-            var orderid = obj.find('.field').parent().parent().siblings().eq(1).find('span').text()
-            var ordernum = obj.find('.field').parent().parent().siblings().eq(1).find('span').attr('ordernum')
-            var targetClass = obj.find('.field').attr('class').split(' ')[2]
+            var type = $(this).attr('data-type');
+            var menuType = $(this).parent().attr('menu-type');
+            var orderid = obj.find('.field').parent().parent().siblings().eq(1).find('span').text();
+            var ordernum = obj.find('.field').parent().parent().siblings().eq(1).find('span').attr('ordernum');
+            var targetClass = obj.find('.field').attr('class').split(' ')[2];
             obj.find('.field')
                 .text($(this).html())
                 //.css({
                 //    'background': 'black',
                 //})
                 .toggleClass(`${targetClass} ${Order.GetStatus(type, menuType, ordernum, orderid)}`);
-            console.log(orderid)
+            console.log(orderid);
 
             obj.find('.list').fadeOut(400);
         });

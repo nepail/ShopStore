@@ -31,7 +31,7 @@ $(document).ready(function() {
         //Sub menu
     $('.sidebar>.nav-links>li>.sub-menu>li>a').click(function(event) {
         event.preventDefault();
-        console.log($(this).attr('data-controller'))
+        // console.log($(this).attr('data-controller'))
         if ($(this).attr('data-controller') != '') {
             $('#app').load($(this).attr('data-controller'))
         }

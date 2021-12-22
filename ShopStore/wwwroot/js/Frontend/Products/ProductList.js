@@ -18,14 +18,14 @@ const Product = {
             success: function (result) {
                 var data = JSON.parse(result);
                 if (data.success) {
-                    Mainproties.productData = data
-                    localStorage.setItem('item', JSON.stringify(Mainproties.productData))
+                    Mainproperties.productData = data
+                    localStorage.setItem('item', JSON.stringify(Mainproperties.productData))
                     console.log('%c MD5檢查碼不同，成功更新 localStorage', 'color:orange; font-size:20px;');
-                    console.table(Mainproties.productData.item);
+                    console.table(Mainproperties.productData.item);
                 } else {
-                    Mainproties.productData = JSON.parse(localStorage.getItem('item'));
+                    Mainproperties.productData = JSON.parse(localStorage.getItem('item'));
                     console.error('檢查碼相同，從localStorage 取出')
-                    console.table(Mainproties.productData.item);
+                    console.table(Mainproperties.productData.item);
                 }
             },
             error: function () {
@@ -35,7 +35,7 @@ const Product = {
     },
 
     ShowProductDetail: function (itemName, itemid) {
-        var product = $.grep(Mainproties.productData.item, (e, i) => {
+        var product = $.grep(Mainproperties.productData.item, (e, i) => {
             return e.f_pId == itemid
         })
 
