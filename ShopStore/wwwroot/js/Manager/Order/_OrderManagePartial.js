@@ -1,23 +1,12 @@
 ﻿$(document).ready(function () {
     Order.GetOrderList()
+    //Order.SetSearch()
+    Order.SetBtnSave()
+    Order.SetDropDownList()
 })
-
-$(document).off('click').on('click', '#btnReturn', function () {
-    Order.ReturnOfgood($(this).parent().siblings('.bcol:eq(1)').text())
-})
-
-$(document).off('click').on('click', '.size', function () {
-    $('.size').styleddropdown();
-})
-
-$('#btnSave').click(function () {
-    Order.SendData()
-})
-
 
 var orderList
 var postData = []
-var upitemnum = -1
 
 var STATUS = {
     tbd: 1,
@@ -44,30 +33,96 @@ var Order = {
                     orderList = res.result
                     Order.InitOrderList()
                 } else {
-
+                    swal('系統錯誤', '資料庫錯誤', 'error')
                 }
             },
             error: function () {
-
+                swal('網路錯誤', '無法連上伺服器', 'error')
             }
         })
     },
 
+    Return: function (item) {
+        Order.ReturnOfgood($(item).parent().siblings('.bcol:eq(1)').text())
+    },
+
     InitOrderList: function () {
-        $.each(orderList, function (i, v) {
-            var btnSwitch = v.isDel == 1 ? 'style="visibility: hidden;"' : ''
-            $('#orderList')
-                .append(`
-                    <div id="ordernum_${v.num}" class="box brow">
+        //$.each(orderList, function (i, v) {
+        //    var btnSwitch = v.isDel == 1 ? 'style="visibility: hidden;"' : ''
+        //    $('#orderList')
+        //        .append(`
+        //            <div id="ordernum_${v.num}" class="box brow order">
+        //                <div class="box bcol rowckbox">
+        //                    <input type="checkbox" class="visibility"/>
+        //                </div>
+        //                <div class="box bcol tx"><span ordernum="${i}" >${v.num}</span></div>
+        //                <div class="box bcol tx"><span>${v.date}</span></div>
+        //                <div class="box bcol tx"><span>${v.memberName}</span></div>
+        //                <div class="box bcol">
+        //                    <div class="size">
+        //                        <span class="bbadge field bg-${v.statusBadge}">${v.status}</span>
+        //                            <ul menu-type="0" class="list">
+        //                                <li data-type="1">待確認</li>
+        //                                <li data-type="2">已出貨</li>
+        //                                <li data-type="3">運輸中</li>
+        //                                <li data-type="4">已退貨</li>
+        //                                <li data-type="5">已取消</li>
+        //                                <li data-type="6">貨物異常</li>
+        //                            </ul>
+        //                    </div>
+        //                </div>
+        //                <div class="box bcol">
+        //                    <div class="size">
+        //                        <span class="bbadge field ${v.shippingBadge}">${v.shippingMethod}</span>
+        //                        <ul menu-type="1" class="list">
+        //                            <li data-type="1">郵寄</li>
+        //                            <li data-type="2">店到店</li>
+        //                            <li data-type="3">私人集運</li>
+        //                        </ul>
+        //                    </div>
+        //                </div>
+        //                <div class="box bcol tx"><span>NT$ ${v.total}</span></div>
+        //                <div class="box bcol rowckbox">
+        //                    <input id="btnReturn" type="button" class="btn btn-sm btn-outline-danger" value="退貨" onclick="Order.Return(this)" ${btnSwitch}/>
+        //                </div>
+        //            </div>
+        //        `)
+        //})
+
+
+        var odLength = orderList.length;
+        var odContent = `
+            <!--Title部分-->
+            <div class="box brow boxtitle">
+                <div class="box bcol rowckbox">
+                    <input type="checkbox" class="visibility" />
+                </div>
+                <div class="box bcol">訂單編號</div>
+                <div class="box bcol">日期</div>
+                <div class="box bcol">會員ID</div>
+                <div class="box bcol">狀態</div>
+                <div class="box bcol">運送方式</div>
+                <div class="box bcol">總金額</div>
+                <div class="box bcol rowckbox">
+                    <input type="button" class="btn btn-sm btn-outline-danger" value="退貨" style="visibility: hidden" />
+                    <i class="bx bx-search"></i>
+                    <input id="searchInput" type="search" placeholder="Search..." />
+                </div>
+            </div>`;
+
+        for (var i = 0; i < odLength; i++) {
+            var btnSwitch = orderList[i].isDel == 1 ? 'style="visibility: hidden;"' : ''
+            odContent += `
+                    <div id="ordernum_${orderList[i].num}" class="box brow order">
                         <div class="box bcol rowckbox">
                             <input type="checkbox" class="visibility"/>
                         </div>
-                        <div class="box bcol"><span ordernum="${i}" >${v.num}</span></div>
-                        <div class="box bcol"><span>${v.date}</span></div>
-                        <div class="box bcol"><span>${v.memberName}</span></div>
+                        <div class="box bcol tx"><span ordernum="${i}" >${orderList[i].num}</span></div>
+                        <div class="box bcol tx"><span>${orderList[i].date}</span></div>
+                        <div class="box bcol tx"><span>${orderList[i].memberName}</span></div>
                         <div class="box bcol">
                             <div class="size">
-                                <span class="bbadge field bg-${v.statusBadge}">${v.status}</span>
+                                <span class="bbadge field bg-${orderList[i].statusBadge}">${orderList[i].status}</span>
                                     <ul menu-type="0" class="list">
                                         <li data-type="1">待確認</li>
                                         <li data-type="2">已出貨</li>
@@ -80,7 +135,7 @@ var Order = {
                         </div>
                         <div class="box bcol">
                             <div class="size">
-                                <span class="bbadge field ${v.shippingBadge}">${v.shippingMethod}</span>
+                                <span class="bbadge field ${orderList[i].shippingBadge}">${orderList[i].shippingMethod}</span>
                                 <ul menu-type="1" class="list">
                                     <li data-type="1">郵寄</li>
                                     <li data-type="2">店到店</li>
@@ -88,13 +143,16 @@ var Order = {
                                 </ul>
                             </div>
                         </div>
-                        <div class="box bcol"><span>NT$ ${v.total}</span></div>
+                        <div class="box bcol tx"><span>NT$ ${orderList[i].total}</span></div>
                         <div class="box bcol rowckbox">
-                            <input id="btnReturn" type="button" class="btn btn-sm btn-outline-danger" value="退貨" ${btnSwitch}/>
+                            <input id="btnReturn" type="button" class="btn btn-sm btn-outline-danger" value="退貨" onclick="Order.Return(this)" ${btnSwitch}/>
                         </div>
                     </div>
-                `)
-        })
+                `
+        }
+
+        $('#orderList').html(odContent)
+        Order.SetSearch()
     },
 
     ReturnOfgood: function (ordernum) {
@@ -117,8 +175,8 @@ var Order = {
                                 if (res.success) {
                                     swal('執行成功', '訂單' + ordernum + '已退貨', 'success')
 
-                                    var targetItem = $('#ordernum_' + ordernum).find('.bcol:eq(4)>span')
-                                    var targetClass = $('#ordernum_' + ordernum).find('.bcol:eq(4)>span').attr('class').split(' ')[1]
+                                    var targetItem = $('#ordernum_' + ordernum).find('.bcol:eq(4) span')
+                                    var targetClass = $('#ordernum_' + ordernum).find('.bcol:eq(4) span').attr('class').split(' ')[2]
                                     targetItem.toggleClass(`${targetClass} bg-danger`)
                                     targetItem.text('已退貨')
                                     $('#ordernum_' + ordernum).find('input[type="button"]').css('visibility', 'hidden')
@@ -141,8 +199,8 @@ var Order = {
         if (postData[ordernum] == undefined) {
             postData[ordernum] = {
                 f_id: '',
-                f_status: NaN,
-                f_ShippingMethod: NaN
+                f_status: 0,
+                f_ShippingMethod: 0
             }
         }
 
@@ -174,12 +232,55 @@ var Order = {
             console.table(postData)
             return shippingMethod[statusCode]
         }
+    },
 
+    SetSearch: function () {
+        $('#searchInput').on('keyup', function () {
+            var value = $(this).val().toLowerCase()
+            $('#orderList>.order').filter(function () {
+                //console.log($(this).find('.tx, .field').text())
+                $(this).toggle($(this).find('.tx, .field').text().toLowerCase().indexOf(value) > -1)
+            })
+        })
+    },
+
+    SetBtnSave: function () {
+        $('#btnSave').click(function () {
+            Order.SendData()
+        })
     },
 
     SendData: function () {
-        alert('send Data ~')
 
+        if (postData.length == 0) {
+            swal('沒有要變更的資料，請先選擇', ' ', 'info');
+            return;
+        }
+
+        postData = postData.filter(el => el)
+
+        var data = {
+            orders: postData
+        }
+        $.ajax({
+            url: '/Manager/UpdateOrder',
+            type: 'post',
+            data: data,
+            success: (res) => {
+                if (res.success) {
+                    swal('保存成功', ' ', 'success')
+                }
+            },
+            error: (res) => {
+                console.log('error')
+            }
+        })
+    },
+
+    SetDropDownList: function () {
+        $(document).off('click').on('click', '.size', function () {
+            $('.size').styleddropdown();
+        })
     }
 }
 

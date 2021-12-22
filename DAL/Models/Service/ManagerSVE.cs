@@ -152,7 +152,7 @@ namespace ShopStore.Models.Service
             {
                 using var conn = _connection;
                 string sqlStr = @"pro_shopStore_Manager_removeOrderList";
-                bool result = conn.Query<bool>(sqlStr, new { f_id = ordernum }, commandType:System.Data.CommandType.StoredProcedure).FirstOrDefault();
+                bool result = conn.Query<bool>(sqlStr, new { f_id = ordernum }, commandType: System.Data.CommandType.StoredProcedure).FirstOrDefault();
                 return true;
             }
             catch (Exception ex)
@@ -160,6 +160,28 @@ namespace ShopStore.Models.Service
                 logger.Debug(ex, "Debug");
                 return false;
             }
+        }
+
+        /// <summary>
+        /// 更新訂單
+        /// </summary>
+        /// <param name="orders"></param>
+        /// <returns></returns>
+        public bool UpdateOrder(List<Order> orders)
+        {
+            try
+            {
+                using var conn = _connection;
+                string sqlStr = @"pro_shopStore_Manager_UpdateOrder";
+                var result = conn.Execute(sqlStr, orders, commandType: System.Data.CommandType.StoredProcedure);
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "Debug");
+                return false;
+            }
+
+            return true;
         }
     }
 }

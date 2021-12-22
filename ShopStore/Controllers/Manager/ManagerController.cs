@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using static ShopStore.ViewModels.ProductsViewModel;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using DAL.Models.Manager;
 
 namespace ShopStore.Controllers
 {
@@ -353,6 +354,21 @@ namespace ShopStore.Controllers
 
             return Json(new { success = result });
         }
+
+        /// <summary>
+        /// 更新訂單
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult UpdateOrder(List<Order> orders)
+        {
+
+            _manager.UpdateOrder(orders);
+            
+            return Json(new { success = true });
+        }
+
+
 
         #endregion
     }

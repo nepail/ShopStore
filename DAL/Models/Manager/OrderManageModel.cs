@@ -15,4 +15,11 @@ namespace DAL.Models.Manager
         public int f_ispaid { get; set; }
         public int f_isdel { get; set; }
     }
+
+    public class Order
+    {
+        public string f_id { get; set; }
+        public int f_status { get; set; }
+        public int f_shippingMethod { get; set; }
+    }
 }

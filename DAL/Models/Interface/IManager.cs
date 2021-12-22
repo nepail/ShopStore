@@ -41,5 +41,12 @@ namespace ShopStore.Models.Interface
         /// <param name="ordernum"></param>
         /// <returns></returns>
         public bool RemoveOrder(string ordernum);
+
+        /// <summary>
+        /// 更新訂單
+        /// </summary>
+        /// <param name="orders"></param>
+        /// <returns></returns>
+        public bool UpdateOrder(List<Order> orders);
     }
 }
