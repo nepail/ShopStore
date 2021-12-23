@@ -34,10 +34,48 @@ namespace ShopStore.Models.Service
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");                
+                logger.Debug(ex, "Debug");
+                return null;
             }            
-            return null;
         }
+
+        /// <summary>
+        /// 檢查購物車商品
+        /// </summary>
+        /// <param name="cartItems"></param>
+        /// <returns></returns>
+        public List<CartItem> CheckCartItem(List<CartItem> cartItems)
+        {
+            try
+            {
+                List<string> prolist = cartItems.Select(x => x.Product.f_id.ToString()).ToList();
+
+
+                using var conn = _connection;
+                var strSql = @"SELECT * FROM t_products WHERE f_id in @f_id";
+                List<ProductsViewModel> result = conn.Query<ProductsViewModel>(strSql, new {f_id = prolist}).ToList();
+                
+
+
+                List<CartItem> items = (
+                                        from a in cartItems                                                                                     
+                                        select new CartItem
+                                        {
+                                            Id = result.Where(x => x.f_id == a.Product.f_id).Single().f_id,
+                                            Amount = a.Amount,
+                                            SubTotal = result.Where(x => x.f_id == a.Product.f_id).Single().f_isopen == 1? a.SubTotal : 0,                                            
+                                            Product = a.Product,
+                                            IsOpen = result.Where(x => x.f_id == a.Product.f_id).Single().f_isopen,
+                                        }).ToList();
+
+                return items;
+            } 
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "Debug");
+                return null;
+            }
+        } 
 
         /// <summary>
         /// 取得產品資訊
@@ -76,26 +114,37 @@ namespace ShopStore.Models.Service
             using var conn = _connection;
             try
             {
-                //計算此筆訂單的總金額
-
-                //List<string> prolist = new List<string>();
-                //foreach(var itemid in model.Orderlist)
-                //{
-                //    prolist.Add(itemid.f_productid);
-                //}
 
                 List<string> prolist = model.Orderlist.Select(itemid => itemid.f_productid).ToList();
 
-                string strSql1 = @"select f_price from t_products where f_id in @f_ids";
+                string strSql1 = @"select f_id, f_pid, f_price, f_isopen from t_products where f_id in @f_ids";
                 IEnumerable<ProductsViewModel> prolists = _connection.Query<ProductsViewModel>(strSql1, new { f_ids = prolist });
                 
-                model.f_total = prolists.Sum(x => x.f_price);
+                //總計金額不包含已下架商品
+                model.f_total = prolists.Where(x=> x.f_isopen == 1).Sum(x => x.f_price);
+
+                var itemRemove = prolists.Where(x => x.f_isopen == 0);
+
+                //將已下架商品從訂單明細移除
+                foreach(var a in itemRemove)
+                {
+                    if(a.f_isopen == 0)
+                    {
+                        model.Orderlist.RemoveAll(x => x.f_productid == a.f_id.ToString());
+                    }
+                }
+                
 
                 //將訂單編號寫入明細
                 foreach (OrderItem a in model.Orderlist)
-                {
+                {                   
                     a.f_orderId = model.f_id;
                 }
+
+                //訂單中沒有已上架商品
+                if (model.Orderlist.Count <= 0) return 0;
+
+
 
                 //寫入訂單主表
                 string strSql = @"insert into t_orders(f_id

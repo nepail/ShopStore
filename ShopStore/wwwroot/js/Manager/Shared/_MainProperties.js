@@ -40,5 +40,23 @@ const MainProperties = {
             privateCargo: 3
         }
         /*切換狀態*/
+    },
+
+    //帳號管理
+    User: {
+        data: [{
+            id: 0,
+            name: '',
+            account: '',
+            groupId: 0,
+            groupName: 'Admin',
+            createTime: '',
+            updateTime: '',
+            userPermissions: [{
+                f_groupId: 0,
+                menuName: '',
+                permissionCode: ''
+            }]
+        }]
     }
 }

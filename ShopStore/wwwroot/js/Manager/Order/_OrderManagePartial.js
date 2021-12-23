@@ -243,7 +243,7 @@ var Order = {
     SetSearch: function() {
         $('#searchInput').on('keyup', function() {
             var value = $(this).val().toLowerCase();
-            $('#MainProperties.Order.data>.order').filter(function() {
+            $('#orderList>.order').filter(function() {
                 //console.log($(this).find('.tx, .field').text())
                 $(this).toggle($(this).find('.tx, .field').text().toLowerCase().indexOf(value) > -1);
             })

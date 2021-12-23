@@ -1,4 +1,4 @@
-﻿<link rel="stylesheet" href="~/css/Manager/Member/_MemberQueryPartial.css" />
+﻿<link rel="stylesheet" href="~/css/Manager/User/_UserQueryPartial.css" />
 
 
 <div class="container">
@@ -6,7 +6,7 @@
     <div class="box a">
         <div class="search-box">
             <i class="bx bx-search"></i>
-            <input type="text" placeholder="Search" />
+            <input id="userSearch" type="text" placeholder="Search" />
         </div>
     </div>
 
@@ -18,17 +18,17 @@
         <div class="box box-visible"></div>
         <div class="box box-visible"></div>
         <div class="box box-visible"></div>
-        <div class="box box-fn btn-primary">
+        <div id="btnAddUser" class="box box-fn btn-primary">
             Create User
         </div>
     </div>
 
-    <div class="box b">
+    <div id="userList" class="box b">
         <div class="box box-content">
             <div class="box-section">
                 <div class="box-img">陳</div>
             </div>
-            <div class="box-section">
+            <div class="box-section info">
                 陳其邁
                 <p>admin09191902</p>
                 <p>ID:0112</p>
@@ -37,86 +37,46 @@
 
         <div class="box box-content">
             <div class="box-section">
-                <div class="box-img">菜</div>
+                <div class="box-img">陳</div>
             </div>
-            <div class="box-section">
-                菜逼八
-                <p>lyenenii66</p>
-                <p>ID:0113</p>
-            </div>
-        </div>
-        <div class="box box-content">
-            <div class="box-section">
-                <div class="box-img"></div>
-            </div>
-            <div class="box-section">
-                蔡嘿美
-                <p>popoLin012</p>
-                <p>ID:0114</p>
+            <div class="box-section info">
+                陳其邁
+                <p>admin09191902</p>
+                <p>ID:0112</p>
             </div>
         </div>
-
-        <div class="box box-content">
-            <div class="box-section">
-                <div class="box-img"></div>
-            </div>
-            <div class="box-section">
-                蔡嘿美
-                <p>popoLin012</p>
-                <p>ID:0114</p>
-            </div>
-        </div>
-
-        <div class="box box-content">
-            <div class="box-section">
-                <div class="box-img"></div>
-            </div>
-            <div class="box-section">
-                蔡嘿美
-                <p>popoLin012</p>
-                <p>ID:0114</p>
-            </div>
-        </div>
-
-        <div class="box box-content">
-            <div class="box-section">
-                <div class="box-img"></div>
-            </div>
-            <div class="box-section">
-                蔡嘿美
-                <p>popoLin012</p>
-                <p>ID:0114</p>
-            </div>
-        </div>
+        
     </div>
     <!--右側面板-->
     <div  class="box c">
         <div id="box-main-content" class="box">
-          @*<div class="right-section">
+          <div id="containerP" class="right-section">
                 <div class="section-topic">詳細資料</div>
 
                 <div class="section-content">
-                    <div class="box-img">陳</div>
+                    <div id="smWord" class="box-img">陳</div>
                     <div class="inline-content">
 
-                        <span>陳其邁</span>
-
-                        <span>Phone：+886917365712</span>
-                        <span>Email：djleleein0909@gmail.com</span>
-                        <span>Address：台中市西屯區市政路100號</span>
-
+                        <span id="userName">陳其邁</span>
+                        <span id="userAccount">admin09191902</span>
+                        <span id="userId">0112</span>
+                        <span id="userGName">Admin</span>
+                        @*<span>Email：djleleein0909@gmail.com</span>*@
+                        @*<span>Address：台中市西屯區市政路100號</span>*@                        
                     </div>
 
                     <div class="inline-content"></div>
 
                     <div class="inline-content">
                         <span>　　　</span>
-                        <span>建立日期：2020/11/20</span>
-                        <span>修改日期：2020/11/25</span>
-                        <span>最後登入：2021/03/01</span>
+                        <span>　　　</span>
+                        <span id="userCreatTime">建立日期：2020/11/20</span>
+                        <span id="userUpdateTime">修改日期：2020/11/25</span>
+                        @*<span>最後登入：2021/03/01</span>*@
                     </div>
-
                 </div>
+
+
 
                 <div class="line"></div>
 
@@ -272,7 +232,7 @@
                         </div>
                     </div>
                 </div>
-            </div>*@
+            </div>
 
             
 
@@ -298,36 +258,38 @@
 
             <div id="containerR">
                 <div class="title">註冊帳號</div>
-                <form action="#">
+                <form id="rgForm">
                     <div class="user-details">
                         <div class="input-box">
-                            <span class="details">姓名</span>
-                            <input type="text" placeholder="Enter your name" required/>
+                            <span class="details">名稱</span>
+                            <input id="rgName" type="text" name="name" placeholder="輸入名稱" required/>
                         </div>
                         <div class="input-box">
-                            <span class="details">暱稱</span>
-                            <input type="text" placeholder="Enter your username" required/>
+                            <span class="details">帳號</span>
+                            <input id="rgAccount" type="text" name="account" placeholder="輸入帳號" required/>
                         </div>
                         <div class="input-box">
-                            <span class="details">Email</span>
-                            <input type="text" placeholder="Enter your email" required/>
-                        </div>
-                        <div class="input-box">
-                            <span class="details">電話</span>
-                            <input type="text" placeholder="Enter your number" required/>
-                        </div>
-                        <div class="input-box">
-                            <span class="details">密碼</span>
-                            <input type="text" placeholder="Enter your password" required/>
+                            <span class="details">密碼</span>                            
+                            <input id="rgpCode" type="password" name="password" placeholder="輸入密碼" required/>
                         </div>
                         <div class="input-box">
                             <span class="details">確認密碼</span>
-                            <input type="text" placeholder="Enter your password" required/>
+                            <input type="password" name="password_confirm" placeholder="再次確認密碼" required/>
+                        </div>
+
+                        <div class="input-box">
+                            <span class="details">權限設定</span>
+                            <select id="rgSelect" name="select" class="required">
+                                <option selected value="">請選擇</option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </select>
                         </div>
                     </div>
                     
-
-                    <div class="gender-details">
+                    
+@*                    <div class="gender-details">
                         <input type="radio" name="gender" id="dot-1" />
                         <input type="radio" name="gender" id="dot-2" />
                         <input type="radio" name="gender" id="dot-3" />
@@ -346,19 +308,16 @@
                                 <span class="gender">Prefer not to say</span>
                             </label>
                         </div>
-                    </div>
+                    </div>*@
                     <div class="button">
-                        <input type="submit" value="Register"/>
+                        <input id="submit" type="submit" value="新增"/>
                     </div>
                 </form>
-            </div>
-
-            
-
-  
-
-
+            </div>          
         </div>
     </div>
 </div>
+
+<script src="~/js/Manager/User/_UserQueryPartial.js" type="text/javascript"></script>
+
 

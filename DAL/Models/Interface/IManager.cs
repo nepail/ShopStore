@@ -1,5 +1,6 @@
 ﻿using DAL.Models;
 using DAL.Models.Manager;
+using DAL.Models.Manager.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,7 +14,7 @@ namespace ShopStore.Models.Interface
         /// 取得菜單
         /// </summary>
         /// <returns></returns>
-        Task <IEnumerable<MenuModel>> GetMenu(int userid);
+        Task<IEnumerable<MenuModel>> GetMenu(int userid);
 
         /// <summary>
         /// 新增菜單
@@ -27,7 +28,7 @@ namespace ShopStore.Models.Interface
         /// </summary>
         /// <param name="menuModel"></param>
         /// <returns></returns>
-        Task <bool> AddSubMenu(MenuViewModel model);
+        Task<bool> AddSubMenu(MenuViewModel model);
 
         /// <summary>
         /// 取訂單列表
@@ -48,5 +49,18 @@ namespace ShopStore.Models.Interface
         /// <param name="orders"></param>
         /// <returns></returns>
         public bool UpdateOrder(List<Order> orders);
+
+        /// <summary>
+        /// 新增後台帳號
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public bool AddUser(UserManageModel model);
+
+        /// <summary>
+        /// 取得後台使用者
+        /// </summary>
+        /// <returns></returns>
+        public List<UserManageViewModels> GetUsers();
     }
 }

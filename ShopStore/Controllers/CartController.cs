@@ -26,9 +26,12 @@ namespace ShopStore.Controllers
             //向 Session 取得商品列表
             List<CartItem> CartItems = SessionHelper.GetObjectFromJson<List<CartItem>>(HttpContext.Session, "cart");
 
+
             //計算商品總額
             if (CartItems != null)
             {
+                //檢查商品
+                CartItems = _cart.CheckCartItem(CartItems);
                 ViewBag.Total = CartItems.Sum(m => m.SubTotal);
             }
             else
@@ -207,6 +210,9 @@ namespace ShopStore.Controllers
             try
             {
                 var result = _cart.InsertOrderItem(orderModel);
+
+                if (result <= 0) return Json(new { success = false, message = "訂單建立失敗" });
+
                 return Json(new { success = true, message = $"成功新增 {result} 筆訂單" });
             }
             catch (Exception ex)

@@ -1,5 +1,6 @@
 ﻿using DAL.Models;
 using DAL.Models.Manager;
+using DAL.Models.Manager.ViewModels;
 using Dapper;
 using NLog;
 using ShopStore.Models.Interface;
@@ -182,6 +183,64 @@ namespace ShopStore.Models.Service
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// 新增後台帳號
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public bool AddUser(UserManageModel model)
+        {
+            try
+            {
+                using var conn = _connection;
+                return conn.Execute(@"pro_shopStore_Manager_AddUser", model, commandType: System.Data.CommandType.StoredProcedure) == 1;
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "Debug");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 取得後台使用者
+        /// </summary>
+        /// <returns></returns>
+        public List<UserManageViewModels> GetUsers()
+        {
+            try
+            {
+                using var conn = _connection;
+                //List<UserManageViewModel> result = new List<UserManageViewModel>();
+                //result = (List<UserManageViewModel>)conn.Query<UserManageViewModel>(@"pro_shopStore_Manager_getUsers", commandType: System.Data.CommandType.StoredProcedure);
+
+                var result = conn.QueryMultiple(@"pro_shopStore_Manager_getUsers", commandType: System.Data.CommandType.StoredProcedure);
+
+                //這段要修改
+                List<UserManageViewModel> userManageViewModels = result.Read<UserManageViewModel>().ToList();
+                List<UserPermission> permissionList = result.Read<UserPermission>().ToList();
+
+                List<UserManageViewModels> model = userManageViewModels.Select(x => new UserManageViewModels
+                {
+                    ID = x.ID,
+                    Account = x.Account,
+                    Name = x.Name,
+                    GroupId = x.GroupId,
+                    GroupName = x.GroupName,
+                    CreateTime = x.f_createTime.ToString("yyyy/MM/dd HH:mm:ss"),
+                    UpdateTime = x.f_updateTime.ToString("yyyy/MM/dd HH:mm:ss"),
+                    UserPermissions = permissionList.Where(s => s.f_groupId == x.GroupId).ToList()
+                }).ToList();
+                              
+                return model;
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "Debug");
+                return null;
+            }
         }
     }
 }

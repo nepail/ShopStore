@@ -30,19 +30,49 @@
                 {
                     foreach (var item in Model)
                     {
-                        <tr id="item_@item.Product.f_id">
+                        if (item.IsOpen == 0)
+                        {
+                            <tr id="item_@item.Product.f_id">
 
-                            <td align="center" class="align-middle"><img type="button" src="@Url.Content($"~/images/{item.Product.f_pId}.jpg")" style="width: 150px; align-items:center" /></td>
-                            <td class="align-middle"><a href="javascript: void(0)" onclick="showProductDetail('@item.Product.f_name', '@item.Product.f_id')">@item.Product.f_name</a></td>
-                            <td align="center" class="align-middle">NT$ <span class="txtUniPrice">@item.Product.f_price</span></td>
-                            <td align="center" class="align-middle" style="width: 250px;">
-                                <input style="width:30px; display:inline" type="button" class="btn btn-outline-primary" value="-" onclick="minus('#item_@item.Product.f_id')" />
-                                <input style="width:50px; display:inline; color:black;" type="text" class="btn btn-outline-primary" onchange="inputRecalculate(this.value, '#item_@item.Product.f_id')" value="@item.Amount" />
-                                <input style="width:30px; display:inline" type="button" class="btn btn-outline-primary" value="+" onclick="add('#item_@item.Product.f_id')" />
-                            </td>
-                            <td align="center" class="align-middle">NT$ <span class="txtSubTotal" onchange="subTotalRecalculate()">@item.SubTotal</span></td>
-                            <td align="center" class="align-middle"><input class="btn btn-outline-danger" data-id="@item.Product.f_id" type="button" value="刪除" onclick="btnDelItem(this)" /></td>
-                        </tr>
+                                <td align="center" class="align-middle">
+                                    <img type="button" src="@Url.Content($"~/images/{item.Product.f_pId}.jpg")" style="width: 150px; align-items:center" />
+                                </td>
+                                <td class="align-middle">
+                                    <a><del>@item.Product.f_name</del></a><br>
+                                    <b style="color: red">商品已暫時下架</b>
+                                </td>
+                                <td align="center" class="align-middle">NT$ 
+                                    <span class="txtUniPrice"><del>@item.Product.f_price</del></span>
+                                </td>
+                                <td align="center" class="align-middle" style="width: 250px;">
+                                    <input style="width:30px; display:inline" type="button" class="btn btn-outline-primary" value="-" onclick="minus('#item_@item.Product.f_id')" disabled/>
+                                    <input style="width:50px; display:inline; color:black;" type="text" class="btn btn-outline-primary" onchange="inputRecalculate(this.value, '#item_@item.Product.f_id')" value="@item.Amount" disabled/>
+                                    <input style="width:30px; display:inline" type="button" class="btn btn-outline-primary" value="+" onclick="add('#item_@item.Product.f_id')" disabled/>
+                                </td>
+                                <td align="center" class="align-middle">NT$ 
+                                    <span class="txtSubTotal" onchange="subTotalRecalculate()">@item.SubTotal</span>
+                                </td>
+                                <td align="center" class="align-middle">
+                                    <input class="btn btn-outline-danger" data-id="@item.Product.f_id" type="button" value="刪除" onclick="btnDelItem(this)" />
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr id="item_@item.Product.f_id">
+
+                                <td align="center" class="align-middle"><img type="button" src="@Url.Content($"~/images/{item.Product.f_pId}.jpg")" style="width: 150px; align-items:center" /></td>
+                                <td class="align-middle"><a href="javascript: void(0)" onclick="showProductDetail('@item.Product.f_name', '@item.Product.f_id')">@item.Product.f_name</a></td>
+                                <td align="center" class="align-middle">NT$ <span class="txtUniPrice">@item.Product.f_price</span></td>
+                                <td align="center" class="align-middle" style="width: 250px;">
+                                    <input style="width:30px; display:inline" type="button" class="btn btn-outline-primary" value="-" onclick="minus('#item_@item.Product.f_id')" />
+                                    <input style="width:50px; display:inline; color:black;" type="text" class="btn btn-outline-primary" onchange="inputRecalculate(this.value, '#item_@item.Product.f_id')" value="@item.Amount" />
+                                    <input style="width:30px; display:inline" type="button" class="btn btn-outline-primary" value="+" onclick="add('#item_@item.Product.f_id')" />
+                                </td>
+                                <td align="center" class="align-middle">NT$ <span class="txtSubTotal" onchange="subTotalRecalculate()">@item.SubTotal</span></td>
+                                <td align="center" class="align-middle"><input class="btn btn-outline-danger" data-id="@item.Product.f_id" type="button" value="刪除" onclick="btnDelItem(this)" /></td>
+                            </tr>                            
+                        }
                     }
                     <tr id="trTotal">
                         <td></td>

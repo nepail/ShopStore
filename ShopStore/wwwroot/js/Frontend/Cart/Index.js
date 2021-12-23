@@ -112,10 +112,14 @@ function orderIn() {
                         contentType: "application/json",
                         data: countOrder(),
                         success: (res) => {
-                            swal("成功", "已成功新增訂單", "success");
-                            emptyCart();
-                            $("#myOrder").append('<span id="cartItemCount" class="badge badge-info">1</span>');
-                            $("#mymenu").attr("class", "dropdown-menu show");
+                            if (res.success) {                                
+                                swal("成功", "已成功新增訂單", "success");
+                                emptyCart();
+                                $("#myOrder").append('<span id="cartItemCount" class="badge badge-info">1</span>');
+                                $("#mymenu").attr("class", "dropdown-menu show");
+                            } else {
+                                swal("訂單建立失敗", res.message, "error")
+                            }
                         },
                         error: (res) => {
                             alert("server side error")

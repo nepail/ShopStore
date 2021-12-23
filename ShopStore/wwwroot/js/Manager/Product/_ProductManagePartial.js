@@ -47,11 +47,10 @@ fn = {
         //        <td>${v.createTime}</td>
         //     </tr>`)
         //})
-
-        var pdLength = productData.length;
+        
         var pdContent = '';
 
-        for (var i = 0; i < pdLength; i++) {
+        for (var i = 0, pdLength = productData.length; i < pdLength; i++) {
             var v = productData[i];
             var openStr = ''
             v.f_isopen == 1 ? openStr = '開放中' : openStr = '不開放'
@@ -86,6 +85,7 @@ fn = {
             var f_price = $('#itemPrice').val();
             var f_categoryId = $('#selectForm').val();
             var f_stock = $('#itemStock').val();
+            var f_isopen = $('input#click').prop('checked') == true ? 1 : 0;
 
             var formData = new FormData();
                 formData.append('ProductPic', file_data);
@@ -94,7 +94,7 @@ fn = {
                 formData.append('f_price', f_price);
                 formData.append('f_categoryId', f_categoryId);
                 formData.append('f_stock', f_stock);
-                formData.append('f_isopen', $('input#click').prop('checked') == true ? 1 : 0);
+                formData.append('f_isopen', f_isopen);
                 formData.append('f_content', pdEditor.getData());
                 formData.append('f_description', $('#itemDescription').val());
 
@@ -105,8 +105,11 @@ fn = {
                 $(`#pd_${id} td:eq(2)`).text($('#selectForm :selected').text());
                 $(`#pd_${id} td:eq(3)`).text(f_stock);
                 $(`#pd_${id} td:eq(4)`).text($('input#click').prop('checked') == true ? '開放中' : '不開放');
-
-
+            
+            //更新緩存
+            var index = productData.findIndex(el => el.f_id == id);
+            productData[index].f_isopen = f_isopen;
+            
             fn.UpProdata(formData);
         })
     },

@@ -15,6 +15,7 @@ using static ShopStore.ViewModels.ProductsViewModel;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using DAL.Models.Manager;
+using DAL.Models.Manager.ViewModels;
 
 namespace ShopStore.Controllers
 {
@@ -289,13 +290,28 @@ namespace ShopStore.Controllers
 
         #endregion
 
-        #region 會員管理
+        #region 後台使用者管理
 
         /// <summary>
         /// Manager 會員查詢
         /// </summary>
         /// <returns></returns>
-        public IActionResult MemberQuery() => PartialView("PartialView/Member/_MemberQueryPartial");
+        public IActionResult UserQuery() => PartialView("PartialView/User/_UserQueryPartial");
+
+
+        [HttpPost]
+        public IActionResult AddUser(UserManageModel postData)
+        {
+            bool result = _manager.AddUser(postData);
+            return Json(new { success = result });
+        }
+
+        [HttpGet]
+        public IActionResult GetUsers()
+        {
+            List<UserManageViewModels> userManageViewModel = _manager.GetUsers();
+            return Json(new {success = true, item = userManageViewModel });
+        }
 
         /// <summary>
         /// Manager 等級設定
