@@ -39,10 +39,9 @@ var Wish = {
             //            </tr>`)
             //})
 
-            var content;
-            var wishLength = wishList.item.length;
+            var content;            
 
-            for (var i = 0; i < wishLength; i++) {
+            for (var i = 0, wishLength = wishList.item.length; i < wishLength; i++) {
 
                 var p = $.grep(productList.item, function (e) {
                     return e.f_id == wishList.item[i];
@@ -85,10 +84,8 @@ var Wish = {
                 //    Wish.RemoveWishItem(itemid)
                 //    postdata.push(itemid)
                 //})
-
-                var cartLength = addtoCartList.length;
-
-                for (var i = 0; i < cartLength; i++) {
+               
+                for (var i = 0, cartLength = addtoCartList.length; i < cartLength; i++) {
                     var thisitem = $(addtoCartList[i]).parent().parent();
                     var itemid = thisitem.attr('data-id');                    
                     Wish.RemoveWishItem(itemid);
@@ -117,8 +114,6 @@ var Wish = {
     RemoveWishItem: function (item) {
 
         $('#' + item).remove();
-        console.log('rem')
-        console.log(item)
         wishList.item = $.grep(wishList.item, function (e) {
             return e != item;
         });
@@ -168,8 +163,7 @@ var Wish = {
                         $('#cartItemCount').text(cartNum);
                     } else {
                         //$('#myCart').append(`<span id='cartItemCount' class='badge badge-info'>${res.addedItem}</span>`);
-                        $('#myCart').html(`購物車 <span id='cart
-ItemCount' class='badge badge-info'>${res.addedItem}</span>`);
+                        $('#myCart').html(`購物車 <span id='cartItemCount' class='badge badge-info'>${res.addedItem}</span>`);
                         $('#mymenu').attr('class', 'dropdown-menu show');
                     }
 
