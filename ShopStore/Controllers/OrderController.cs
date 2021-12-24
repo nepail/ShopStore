@@ -35,6 +35,7 @@ namespace ShopStore.Controllers
 
             try
             {
+                var user = User.Identity.Name;                
                 userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 model = _orders.GetOrderList(userId);
                 return View(model);

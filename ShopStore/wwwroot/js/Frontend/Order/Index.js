@@ -50,8 +50,8 @@ function ShowProductDetail(itemname, itemid) {
     $("#orderTable").toggle("normal");
     $("#prodetail").toggle("normal");
     if (itemid != undefined) {
-        $("#prodetailConent").load("/Products/GetProductDetailById/?id=" + itemid, function () {            
-        });
+        $("#prodetailConent").load("/Products/GetProductDetailById/?id=" + itemid);
+/*        $("#prodetailConent").load("/Products/GetProductDetailById/?id=" + itemid);*/
 
     }
 }

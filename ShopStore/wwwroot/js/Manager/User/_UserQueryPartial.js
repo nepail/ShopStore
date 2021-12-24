@@ -94,7 +94,6 @@ var User = {
             $('#userUpdateTime').text('修改時間：' + u.updateTime);
         })
 
-
         User.UC.SetSearch();
     },
 
@@ -102,7 +101,7 @@ var User = {
         GetUsers: function () {
             $.ajax({
                 url: '/Manager/GetUsers',
-                type: 'get',                
+                type: 'get',
                 success: (res) => {
                     if (res.success) {
                         MainProperties.User.data = res.item;
@@ -171,7 +170,7 @@ var User = {
         SetSearch: function () {
             $('#userSearch').on('keyup', function () {
                 var value = $(this).val().toLowerCase();
-                $('#userList>.box-content').filter(function () {                    
+                $('#userList>.box-content').filter(function () {
                     $(this).toggle($(this).find('.tx').text().toLowerCase().indexOf(value) > -1);
                 })
             })
@@ -181,7 +180,7 @@ var User = {
             if ($('#containerP').is(':visible')) {
                 $('#containerP').toggle()
             }
-            $('#containerR').toggle();            
+            $('#containerR').toggle();
             $('form')[0].reset();
         }
     }
