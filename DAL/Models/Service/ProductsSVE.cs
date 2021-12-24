@@ -39,40 +39,40 @@ namespace ShopStore.Models.Service
             }
         }
 
-        /// <summary>
-        /// 取得商品明細
-        /// </summary>
-        /// <returns></returns>
-        public async Task<ProductDetailViewModel> GetProductDetailByIdAsync(string id)
-        {
-            try
-            {
-                using var conn = _connection;
-                var Model = await conn.QuerySingleAsync<ProductDetailModel>(@"pro_shopStore_getProductByID",
-                                                                          new { ID = new DbString { Value = id, Length = 36, IsAnsi = true, IsFixedLength = true } },
-                                                                          commandType: System.Data.CommandType.StoredProcedure);
+        ///// <summary>
+        ///// 取得商品明細
+        ///// </summary>
+        ///// <returns></returns>
+        //public async Task<ProductDetailViewModel> GetProductDetailByIdAsync(string id)
+        //{
+        //    try
+        //    {
+        //        using var conn = _connection;
+        //        var Model = await conn.QuerySingleAsync<ProductDetailModel>(@"pro_shopStore_getProductByID",
+        //                                                                  new { ID = new DbString { Value = id, Length = 36, IsAnsi = true, IsFixedLength = true } },
+        //                                                                  commandType: System.Data.CommandType.StoredProcedure);
 
 
-                ProductDetailViewModel result = new ProductDetailViewModel()
-                {
-                    Id = Model.f_id,
-                    PId = Model.f_pId,
-                    Name = Model.f_name,
-                    Content = Model.f_content,
-                    Type = Model.f_categoryId.ToString(),
-                    Price = Model.f_price,
-                    ImgPath = Model.f_picName
-                };
+        //        ProductDetailViewModel result = new ProductDetailViewModel()
+        //        {
+        //            Id = Model.f_id,
+        //            PId = Model.f_pId,
+        //            Name = Model.f_name,
+        //            Content = Model.f_content,
+        //            Type = Model.f_categoryId.ToString(),
+        //            Price = Model.f_price,
+        //            ImgPath = Model.f_picName
+        //        };
 
-                return result;
-            }
-            catch (Exception ex)
-            {
-                logger.Debug(ex, "Debug");
-            }
+        //        return result;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logger.Debug(ex, "Debug");
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
         /// <summary>
         /// 取得類別列表

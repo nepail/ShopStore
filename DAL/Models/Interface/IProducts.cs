@@ -34,11 +34,11 @@ namespace ShopStore.Models.Interface
         /// <returns></returns>
         public bool Any(string id);
 
-        /// <summary>
-        /// 取得商品明細
-        /// </summary>
-        /// <returns></returns>
-        Task<ProductDetailViewModel> GetProductDetailByIdAsync(string id);
+        ///// <summary>
+        ///// 取得商品明細
+        ///// </summary>
+        ///// <returns></returns>
+        //Task<ProductDetailViewModel> GetProductDetailByIdAsync(string id);
 
         /// <summary>
         /// 更新商品
