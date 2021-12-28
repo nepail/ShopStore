@@ -45,15 +45,15 @@
                 <p>ID:0112</p>
             </div>
         </div>
-        
+
     </div>
     <!--右側面板-->
-    <div  class="box c">
+    <div class="box c">
         <div id="box-main-content" class="box">
-          <div id="containerP" class="right-section">
+            <div id="containerP" class="right-section">
                 <div class="section-topic">詳細資料</div>
 
-                <div class="section-content">
+                <div id="userId" class="section-content">
                     <div id="smWord" class="box-img">陳</div>
                     <div class="inline-content">
 
@@ -64,22 +64,23 @@
                         <div class="userdetail">
                             <i class='bx bxs-user'></i>
                             <span id="userGName">Admin</span>
+
+
                         </div>
                         <span id="userAccount">admin09191902</span>
-                        
+
                         @*<span>Email：djleleein0909@gmail.com</span>*@
-                        @*<span>Address：台中市西屯區市政路100號</span>*@                        
+                        @*<span>Address：台中市西屯區市政路100號</span>*@
                     </div>
 
                     <div class="inline-content">
-
                     </div>
 
                     <div class="inline-content">
                         <span></span>
                         <div class="user-control">
-                            <i class='bx bxs-pencil'></i>
-                            <i class='bx bxs-trash' ></i>
+                            <i id="userEdit" class='bx bxs-pencil'></i>
+                            <i id="userDelete" class='bx bxs-trash'></i>
                         </div>
                         <span>　　</span>
 
@@ -93,181 +94,190 @@
 
                 <div class="line"></div>
 
-                <div class="section-function">
-                    <div class="main-row">
-                        <div class="function-content"><span>產品管理</span></div>
-                        <div class="function-content">
-                            讀取<br />
+                <div id="group_permissions">
 
-                            <div>
-                                <label>
-                                    <input type="checkbox" name="" id="" class="checkbox" />
-                                    <span class="btn-box">
-                                        <span class="btnb"></span>
-                                    </span>
-                                </label>
+                    <div class="section-function">
+                        <div class="main-row">
+                            <div class="function-content"><span>產品管理</span></div>
+                            <div class="function-content">
+                                讀取<br />
+
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="" id="" class="checkbox" />
+                                        <span class="btn-box">
+                                            <span class="btnb"></span>
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="function-content">
-                            新增<br />
-                            <div>
-                                <label>
-                                    <input type="checkbox" name="" id="" class="checkbox" />
-                                    <span class="btn-box">
-                                        <span class="btnb"></span>
-                                    </span>
-                                </label>
+                            <div class="function-content">
+                                新增<br />
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="" id="" class="checkbox" />
+                                        <span class="btn-box">
+                                            <span class="btnb"></span>
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="function-content">
-                            修改<br />
-                            <div>
-                                <label>
-                                    <input type="checkbox" name="" id="" class="checkbox" />
-                                    <span class="btn-box">
-                                        <span class="btnb"></span>
-                                    </span>
-                                </label>
+                            <div class="function-content">
+                                修改<br />
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="" id="" class="checkbox" />
+                                        <span class="btn-box">
+                                            <span class="btnb"></span>
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="function-content">
-                            刪除<br />
-                            <div>
-                                <label>
-                                    <input type="checkbox" name="" id="" class="checkbox" />
-                                    <span class="btn-box">
-                                        <span class="btnb"></span>
-                                    </span>
-                                </label>
+                            <div class="function-content">
+                                刪除<br />
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="" id="" class="checkbox" />
+                                        <span class="btn-box">
+                                            <span class="btnb"></span>
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="section-function">
-                    <div class="main-row">
-                        <div class="function-content"><span>會員管理</span></div>
-                        <div class="function-content">
-                            讀取<br />
+                    <div class="section-function">
+                        <div class="main-row">
+                            <div class="function-content"><span>會員管理</span></div>
+                            <div class="function-content">
+                                讀取<br />
 
-                            <div>
-                                <label>
-                                    <input type="checkbox" name="" id="" class="checkbox" />
-                                    <span class="btn-box">
-                                        <span class="btnb"></span>
-                                    </span>
-                                </label>
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="" id="" class="checkbox" />
+                                        <span class="btn-box">
+                                            <span class="btnb"></span>
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="function-content">
-                            新增<br />
-                            <div>
-                                <label>
-                                    <input type="checkbox" name="" id="" class="checkbox" />
-                                    <span class="btn-box">
-                                        <span class="btnb"></span>
-                                    </span>
-                                </label>
+                            <div class="function-content">
+                                新增<br />
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="" id="" class="checkbox" />
+                                        <span class="btn-box">
+                                            <span class="btnb"></span>
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="function-content">
-                            修改<br />
-                            <div>
-                                <label>
-                                    <input type="checkbox" name="" id="" class="checkbox" />
-                                    <span class="btn-box">
-                                        <span class="btnb"></span>
-                                    </span>
-                                </label>
+                            <div class="function-content">
+                                修改<br />
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="" id="" class="checkbox" />
+                                        <span class="btn-box">
+                                            <span class="btnb"></span>
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="function-content">
-                            刪除<br />
-                            <div>
-                                <label>
-                                    <input type="checkbox" name="" id="" class="checkbox" />
-                                    <span class="btn-box">
-                                        <span class="btnb"></span>
-                                    </span>
-                                </label>
+                            <div class="function-content">
+                                刪除<br />
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="" id="" class="checkbox" />
+                                        <span class="btn-box">
+                                            <span class="btnb"></span>
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="section-function">
-                    <div class="main-row">
-                        <div class="function-content"><span>訂單管理</span></div>
-                        <div class="function-content">
-                            讀取<br />
+                    <div class="section-function">
+                        <div class="main-row">
+                            <div class="function-content"><span>訂單管理</span></div>
+                            <div class="function-content">
+                                讀取<br />
 
-                            <div>
-                                <label>
-                                    <input type="checkbox" name="" id="" class="checkbox" />
-                                    <span class="btn-box">
-                                        <span class="btnb"></span>
-                                    </span>
-                                </label>
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="" id="" class="checkbox" />
+                                        <span class="btn-box">
+                                            <span class="btnb"></span>
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="function-content">
-                            新增<br />
-                            <div>
-                                <label>
-                                    <input type="checkbox" name="" id="" class="checkbox" />
-                                    <span class="btn-box">
-                                        <span class="btnb"></span>
-                                    </span>
-                                </label>
+                            <div class="function-content">
+                                新增<br />
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="" id="" class="checkbox" />
+                                        <span class="btn-box">
+                                            <span class="btnb"></span>
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="function-content">
-                            修改<br />
-                            <div>
-                                <label>
-                                    <input type="checkbox" name="" id="" class="checkbox" />
-                                    <span class="btn-box">
-                                        <span class="btnb"></span>
-                                    </span>
-                                </label>
+                            <div class="function-content">
+                                修改<br />
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="" id="" class="checkbox" />
+                                        <span class="btn-box">
+                                            <span class="btnb"></span>
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="function-content">
-                            刪除<br />
-                            <div>
-                                <label>
-                                    <input type="checkbox" name="" id="" class="checkbox" />
-                                    <span class="btn-box">
-                                        <span class="btnb"></span>
-                                    </span>
-                                </label>
+                            <div class="function-content">
+                                刪除<br />
+                                <div>
+                                    <label>
+                                        <input type="checkbox" name="" id="" class="checkbox" />
+                                        <span class="btn-box">
+                                            <span class="btnb"></span>
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+
+
+
                 </div>
+
+
             </div>
 
-            
 
-@*            <div id="userSection" style="display:flex; justify-content:center;">
-                    <div class="box box-reg">
-                        <div class="box box-sm">
-                            <div class="box-rg-content">
-                                <input />
-                                <input />
-                                <input />
-                            </div>
-                        </div>                
-                        <div class="box box-sm box-line"></div>                
-                        <div class="box box-sm">
-                            <div>
-                                <input />
-                                <input />
-                                <input />
-                            </div>                            
-                        </div>                
-                    </div>                
-            </div>*@
+
+            @*            <div id="userSection" style="display:flex; justify-content:center;">
+                <div class="box box-reg">
+                <div class="box box-sm">
+                <div class="box-rg-content">
+                <input />
+                <input />
+                <input />
+                </div>
+                </div>
+                <div class="box box-sm box-line"></div>
+                <div class="box box-sm">
+                <div>
+                <input />
+                <input />
+                <input />
+                </div>
+                </div>
+                </div>
+                </div>*@
 
             <div id="containerR">
                 <div class="title">註冊帳號</div>
@@ -275,58 +285,55 @@
                     <div class="user-details">
                         <div class="input-box">
                             <span class="details">名稱</span>
-                            <input id="rgName" type="text" name="name" placeholder="輸入名稱" required/>
+                            <input id="rgName" type="text" name="name" placeholder="輸入名稱" required />
                         </div>
                         <div class="input-box">
                             <span class="details">帳號</span>
-                            <input id="rgAccount" type="text" name="account" placeholder="輸入帳號" required/>
+                            <input id="rgAccount" type="text" name="account" placeholder="輸入帳號" required />
                         </div>
                         <div class="input-box">
-                            <span class="details">密碼</span>                            
-                            <input id="rgpCode" type="password" name="password" placeholder="輸入密碼" required/>
+                            <span class="details">密碼</span>
+                            <input id="rgpCode" type="password" name="password" placeholder="輸入密碼" required />
                         </div>
                         <div class="input-box">
                             <span class="details">確認密碼</span>
-                            <input type="password" name="password_confirm" placeholder="再次確認密碼" required/>
+                            <input type="password" name="password_confirm" placeholder="再次確認密碼" required />
                         </div>
 
                         <div class="input-box">
                             <span class="details">權限設定</span>
                             <select id="rgSelect" name="select" class="required">
                                 <option selected value="">請選擇</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
                             </select>
                         </div>
                     </div>
-                    
-                    
-@*                    <div class="gender-details">
+
+
+                    @*                    <div class="gender-details">
                         <input type="radio" name="gender" id="dot-1" />
                         <input type="radio" name="gender" id="dot-2" />
                         <input type="radio" name="gender" id="dot-3" />
                         <span class="gender-title">Gender</span>
                         <div class="category">
-                            <label for="dot-1">
-                                <span class="dot one"></span>
-                                <span class="gender">Male</span>
-                            </label>
-                            <label for="dot-2">
-                                <span class="dot two"></span>
-                                <span class="gender">Female</span>
-                            </label>
-                            <label for="dot-3">
-                                <span class="dot three"></span>
-                                <span class="gender">Prefer not to say</span>
-                            </label>
+                        <label for="dot-1">
+                        <span class="dot one"></span>
+                        <span class="gender">Male</span>
+                        </label>
+                        <label for="dot-2">
+                        <span class="dot two"></span>
+                        <span class="gender">Female</span>
+                        </label>
+                        <label for="dot-3">
+                        <span class="dot three"></span>
+                        <span class="gender">Prefer not to say</span>
+                        </label>
                         </div>
-                    </div>*@
+                        </div>*@
                     <div class="button">
-                        <input id="submit" type="submit" value="新增"/>
+                        <input id="submit" type="submit" value="新增" />
                     </div>
                 </form>
-            </div>          
+            </div>
         </div>
     </div>
 </div>

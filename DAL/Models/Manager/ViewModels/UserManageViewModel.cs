@@ -37,14 +37,19 @@ namespace DAL.Models.Manager.ViewModels
         public string CreateTime { get; set; }
         public string UpdateTime { get; set; }
 
-        public List<UserPermission> UserPermissions { get; set; }
+        //public List<UserPermission> UserPermissions { get; set; }
     }
 
     public class UserPermission
     {
-        public int f_groupId { get; set; }
+        public int MenuId { get; set; }
 
+        public UserPermissionDetail PermissionDetail { get; set; }
+    }
+
+    public class UserPermissionDetail
+    {
         public string MenuName { get; set; }
-        public string PermissionCode { get; set; }
+        public int PermissionCode { get; set; }
     }
 }

@@ -16,6 +16,8 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using DAL.Models.Manager;
 using DAL.Models.Manager.ViewModels;
+using static DAL.Models.Manager.PermissionDataModel;
+using Nancy.Json;
 
 namespace ShopStore.Controllers
 {
@@ -184,16 +186,16 @@ namespace ShopStore.Controllers
             {
                 if (model != null && ModelState.IsValid)
                 {
-                    if(model.ProductPic != null)
+                    if (model.ProductPic != null)
                     {
                         UploadedFile(model.ProductPic, model.f_pId);
                     }
 
-                    if(model.f_content != null)
+                    if (model.f_content != null)
                     {
                         EditProductContent(model.f_content, model.f_pId);
                     }
-                                               
+
                     //if (model.f_picName != "")
                     //{
 
@@ -237,7 +239,7 @@ namespace ShopStore.Controllers
             try
             {
                 if (file != null)
-                {                    
+                {
                     string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
                     //uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
                     string filePath = Path.Combine(uploadsFolder, id + ".jpg");
@@ -298,7 +300,11 @@ namespace ShopStore.Controllers
         /// <returns></returns>
         public IActionResult UserQuery() => PartialView("PartialView/User/_UserQueryPartial");
 
-
+        /// <summary>
+        /// 新增用戶
+        /// </summary>
+        /// <param name="postData"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult AddUser(UserManageModel postData)
         {
@@ -306,11 +312,87 @@ namespace ShopStore.Controllers
             return Json(new { success = result });
         }
 
+        /// <summary>
+        /// 取得用戶
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult GetUsers()
         {
             List<UserManageViewModels> userManageViewModel = _manager.GetUsers();
-            return Json(new {success = true, item = userManageViewModel });
+
+            return Json(new { success = true, item = userManageViewModel });
+        }
+
+        /// <summary>
+        /// 取得群組列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult GetUserGroup(string md5)
+        {
+            string sign = "ssddsds";
+
+            if(md5 != sign)
+            {
+                var groupDic = new Dictionary<string, string>
+                {
+                    { "1", "Admin" },
+                    { "2", "Normal" }                
+                };
+
+                return Json(new { success = true, item = groupDic, sign });
+            }
+
+            return Json(new { success = false });
+
+        }
+
+        /// <summary>
+        /// 取得用戶權限
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult GetUserPermissionsByID(int userId)
+        {
+
+            var a = HttpContext.Session;
+
+            try
+            {
+                var groupList = _manager.GetUserPermissionsByID(userId);
+                return Json(new { success = true, groupList });
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex);
+                return Json(new { success = false});
+            }
+        }
+
+        /// <summary>
+        /// 更新用戶權限
+        /// </summary>
+        /// <param name="permissionData"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult UpdatePermissionsByID(PermissionData permissionData)
+        {
+            _manager.UpdatePermissionsByID(permissionData);
+            return Json(new { success = true });
+        }
+
+        /// <summary>
+        /// 刪除使用者
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult DeleteUserByID(string userId)
+        {
+
+            return Json(new { success = true });
         }
 
         /// <summary>
@@ -380,7 +462,7 @@ namespace ShopStore.Controllers
         {
 
             _manager.UpdateOrder(orders);
-            
+
             return Json(new { success = true });
         }
 

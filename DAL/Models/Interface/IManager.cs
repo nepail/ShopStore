@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using static DAL.Models.Manager.PermissionDataModel;
 
 namespace ShopStore.Models.Interface
 {
@@ -58,9 +59,22 @@ namespace ShopStore.Models.Interface
         public bool AddUser(UserManageModel model);
 
         /// <summary>
-        /// 取得後台使用者
+        /// 取得所有後台使用者
         /// </summary>
         /// <returns></returns>
         public List<UserManageViewModels> GetUsers();
+
+        /// <summary>
+        /// 取得後台使用者
+        /// </summary>
+        /// <returns></returns>
+        public List<UserPermission> GetUserPermissionsByID(int userId);
+
+        /// <summary>
+        /// 更新使用者權限
+        /// </summary>
+        /// <param name="permissionData"></param>
+        /// <returns></returns>
+        public bool UpdatePermissionsByID(PermissionData permissionData);
     }
 }

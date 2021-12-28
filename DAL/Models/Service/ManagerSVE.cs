@@ -10,6 +10,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
+using static DAL.Models.Manager.PermissionDataModel;
 
 namespace ShopStore.Models.Service
 {
@@ -220,7 +221,7 @@ namespace ShopStore.Models.Service
 
                 //這段要修改
                 List<UserManageViewModel> userManageViewModels = result.Read<UserManageViewModel>().ToList();
-                List<UserPermission> permissionList = result.Read<UserPermission>().ToList();
+                //List<UserPermission> permissionList = result.Read<UserPermission>().ToList();
 
                 List<UserManageViewModels> model = userManageViewModels.Select(x => new UserManageViewModels
                 {
@@ -231,9 +232,9 @@ namespace ShopStore.Models.Service
                     GroupName = x.GroupName,
                     CreateTime = x.f_createTime.ToString("yyyy/MM/dd HH:mm:ss"),
                     UpdateTime = x.f_updateTime.ToString("yyyy/MM/dd HH:mm:ss"),
-                    UserPermissions = permissionList.Where(s => s.f_groupId == x.GroupId).ToList()
+                    //UserPermissions = permissionList.Where(s => s.f_groupId == x.GroupId).ToList()
                 }).ToList();
-                              
+
                 return model;
             }
             catch (Exception ex)
@@ -241,6 +242,93 @@ namespace ShopStore.Models.Service
                 logger.Debug(ex, "Debug");
                 return null;
             }
+        }
+
+        /// <summary>
+        /// 取得用戶權限
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public List<UserPermission> GetUserPermissionsByID(int userId)
+        {
+            try
+            {
+                using var conn = _connection;
+                var userPermission = conn.Query<UserPermission, UserPermissionDetail, UserPermission>
+                    ("pro_shopStore_Manager_getUsersPermissions",
+                    (o, c) =>
+                    {
+                        o.PermissionDetail = c;
+                        return o;
+                    },
+                    new { userId }, splitOn: "MenuName", commandType: System.Data.CommandType.StoredProcedure).ToList();
+
+                //var dic = conn.Query("pro_shopStore_Manager_getUsersPermissions", new { userId }, commandType: System.Data.CommandType.StoredProcedure)
+                //            .ToDictionary
+                //            (x => x.MenuId,
+                //             x => new { x.MenuName, x.PermissionCode });
+
+                return userPermission;
+
+
+                //return conn.Query("pro_shopStore_Manager_getUsersPermissions", new { userId }, commandType: System.Data.CommandType.StoredProcedure)
+                //            .ToDictionary(x => (string)x.MenuName.ToString(), x => (int)x.PermissionCode);
+
+                //Dictionary<int, Dictionary<string, int>>
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "Debug");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 更新使用者權限
+        /// </summary>
+        /// <param name="permissionData"></param>
+        /// <returns></returns>
+        public bool UpdatePermissionsByID(PermissionData permissionData)
+        {
+            try
+            {
+                var updateTime = DateTime.Now;
+
+                List<PermissionModel> permissionModels = permissionData.PermissionDetails.Select(x => new PermissionModel
+                {
+                    f_userId = permissionData.UserId,
+                    f_menuSubId = x.MenuId,
+                    f_permissionCode = x.PermissionsCode,
+                    f_updateTime = DateTime.Now,
+                    f_groupId = permissionData.GroupId,
+                    UpdateType = 1
+                }).ToList();
+
+
+                if(permissionModels.Count == 0)
+                {
+                    permissionModels.Add(new PermissionModel()
+                    {
+                        f_userId = permissionData.UserId,
+                        f_menuSubId = 0,
+                        f_permissionCode = 0,
+                        f_updateTime = DateTime.Now,
+                        f_groupId = permissionData.GroupId,
+                        UpdateType = 0
+                    });
+                }
+
+
+                using var conn = _connection;
+                var result = conn.Execute("pro_shopStore_Manager_UserPermissionsUpdate", permissionModels, commandType: System.Data.CommandType.StoredProcedure);
+
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "Debug");
+                return false;
+            }            
         }
     }
 }

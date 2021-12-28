@@ -170,7 +170,7 @@
         /*margin-left: 20px;*/
         height: 85%;
         width: 30%;
-        border: 1px solid;
+        /*border: 1px solid;*/
         overflow: auto;
         position: relative;
         font-size: 22px;
@@ -315,12 +315,17 @@
 
     .checkbox:checked + .btn-box .btnb {
         margin-left: 20px;
+        
     }
 
     .checkbox:checked + .btn-box {
         background-color: #00BFFF;
+        /*border: 1px solid black;*/
     }
 
+/*    .checkbox:checked + .btn-box {
+        background-color: darkgray;
+    }*/
 
 
 .box-reg {
@@ -495,6 +500,11 @@ form .button input {
 
 form .error {
     color: red;
+}
+
+.userIdentityEdit{
+    height: 110%;
+    width: 30%;
 }
 
 @media (max-width: 584px) {
