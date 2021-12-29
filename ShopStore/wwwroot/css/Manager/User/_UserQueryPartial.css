@@ -29,41 +29,60 @@
     cursor: pointer;
 }
 
-    .box-content:hover {
-        box-shadow: 0px 0px 50px 8px #E5E5E5;
+.listfn {
+    height: 40px !important;
+    /*max-height: 4%;*/
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: flex-end;
+    cursor: pointer;
+}
+
+    .listfn i {
+        margin-right: 10px;
     }
 
-    .box-content .box-section {
-        height: 100%;
-        width: 30%;
-        padding: 10px;
-    }
-
-        .box-content .box-section p {
-            font-size: 6px;
-            margin: 3px 0px 3px;
-            display: flex;
+        .listfn i:hover {
+            box-shadow: 3px 3px 5px gray;
         }
 
-        .box-content .box-section .box-img {
-            background: #444;
-            height: 80px;
-            width: 80px;
-            border-radius: 20%;
-            font-size: 30px;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
 
-    .box-content span {
-        height: 0px;
-        font-size: 15px;
-        margin-bottom: 10px;
-        display: block;
-        padding: 6px;
+
+.box-content:hover {
+    box-shadow: 0px 0px 50px 8px #E5E5E5;
+}
+
+.box-content .box-section {
+    height: 100%;
+    width: 30%;
+    padding: 10px;
+}
+
+    .box-content .box-section p {
+        font-size: 6px;
+        margin: 3px 0px 3px;
+        display: flex;
     }
+
+    .box-content .box-section .box-img {
+        background: #444;
+        height: 80px;
+        width: 80px;
+        border-radius: 20%;
+        font-size: 30px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+.box-content span {
+    height: 0px;
+    font-size: 15px;
+    margin-bottom: 10px;
+    display: block;
+    padding: 6px;
+}
 
 .search-box {
     height: 100%;
@@ -229,14 +248,14 @@
     justify-content: flex-end;
 }
 
-.inline-content .user-control i {
-    margin-left: 20px;
-    cursor: pointer;
-}
-
-    .inline-content .user-control i:active {
-        padding: 1px;        
+    .inline-content .user-control i {
+        margin-left: 20px;
+        cursor: pointer;
     }
+
+        .inline-content .user-control i:active {
+            padding: 1px;
+        }
 
 .box .right-section .section-content p {
     margin-left: 20px;
@@ -315,7 +334,6 @@
 
     .checkbox:checked + .btn-box .btnb {
         margin-left: 20px;
-        
     }
 
     .checkbox:checked + .btn-box {
@@ -502,7 +520,7 @@ form .error {
     color: red;
 }
 
-.userIdentityEdit{
+.userIdentityEdit {
     height: 110%;
     width: 30%;
 }

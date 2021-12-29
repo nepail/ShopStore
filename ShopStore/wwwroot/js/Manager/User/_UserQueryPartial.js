@@ -4,16 +4,7 @@
 })
 
 
-//var postData = {
-//    f_account: '',
-//    f_pcode: '',
-//    f_groupId: 0,
-//    f_name: ''
-//}
-
-var postData = {};
-
-
+var postData = MainProperties.User.postData;
 var identity;
 
 var User = {
@@ -113,8 +104,6 @@ var User = {
 
         UpdateUserPermissions: function (item) {
 
-
-
             if (postData['PermissionData'] != undefined) {
                 $.ajax({
                     url: '/Manager/UpdatePermissionsByID',
@@ -211,12 +200,23 @@ var User = {
             ($(item).is(':checked')) == true ? $(item).attr('data-id', '1') : $(item).attr('data-id', '0')
         },
 
-        SetUserList: function () {
+        SetUserList: function (arr) {
 
-            var userContent = '';
+            var userList;
+            if (arr == undefined) {
+                userList = MainProperties.User.data;
+            } else {
+                userList = arr;
+            }
+          
+            var userContent =
+            `<div class="box listfn">
+                <i id="btnSortAtoZ" class='bx bx-sort-a-z'></i>
+                <i id="btnSortDown" class='bx bx-sort-down' ></i>
+             </div>`;
 
-            for (var i = 0, len = MainProperties.User.data.length; i < len; i++) {
-                var r = MainProperties.User.data[i];
+            for (var i = 0, len = userList.length; i < len; i++) {
+                var r = userList[i];
                 userContent += `
                     <div class="box box-content" data-id="${r.id}">
                         <div class="box-section">
@@ -331,22 +331,65 @@ var User = {
          * 設定按鈕
          * */
         SetBtnClick: function () {
-            $('#btnAddUser').click(function () {
+            $('#btnAddUser').off('click').click(function () {
                 User.UC.ResetForm();
                 User.UC.SetUserGroupSelect();
             });
 
-            $(document).on('click', '.box-content', function () {
+            $(document).on('click', '.box-content' ,function () {
                 User.UC.ShowUserDetail(this);
             });
+
+            $(document).on('click', '#btnSortAtoZ', function () {
+                var arr = MainProperties.User.data;
+
+
+                arr.sort(function (a, b) {
+                    //a = (a.querySelector('.tx').firstChild.nodeValue).trim()[0];
+                    //b = (b.querySelector('.tx').firstChild.nodeValue).trim()[0];
+                    a = a.name[0];
+                    b = b.name[0];
+
+                    var reg = /[a-zA-Z0-9]/;
+                    if (reg.test(a) || reg.test(b)) {                        
+                        if (a > b) return 1;
+                        if (a < b) return -1;
+                        return 0;
+                    } else {                        
+                        return a.localeCompare(b);
+                    }
+
+                    //return a.localeCompare(b)
+                    //return b.localeCompare(b)
+
+                    //if (a > b) return 1;
+                    //if (a < b) return -1;
+                    //return 0;
+                });
+                
+                User.UC.SetUserList(arr)                               
+            });
+
+            $(document).on('click', '#btnSortDown', function () {
+                var arr = MainProperties.User.data;
+                arr.sort(function (a, b) {
+                    return a.id - b.id;
+                });
+
+                User.UC.SetUserList(arr);
+            })
 
             User.UC.SetUserEditBtn();
             User.UC.SetUserDeleteBtn();
         },
 
+        SwitchSort: function () {
+            $('#btnSortAtoZ').toggleClass('bx-sort-z-a bx-sort-a-z');
+            console.log('111')
+        },
+
+
         ShowUserDetail: function (item) {
-
-
 
             if ($('#userEdit').hasClass('bxs-save')) User.UC.SetUserEditSwitch();
 
@@ -389,9 +432,12 @@ var User = {
                                 <option value="2">Normal</option>
                             </select>`);
 
-                    $('#userGName').val(MainProperties.User.data.filter(function (e) {
+                    var useritem = MainProperties.User.data.filter(function (e) {
                         return e.id == $('#userId').attr('data-id')
-                    })[0].groupId);
+                    })[0];
+
+                    //刷新使用者資訊
+                    $('#userGName').val(useritem.groupId)                                        
                 }
 
                 $(this).toggleClass('bxs-pencil bxs-save')
@@ -438,7 +484,7 @@ var User = {
                         ///Manager/DeleteUserByID
                         if (isConfirm) {
                             $.ajax({
-                                url: '/Manager/DeleteUserByID?userId=' + userId,
+                                url: '/Manager/RemoveUserByID?userId=' + userId,
                                 type: 'get',
                                 success: (res) => {
                                     if (res.success) {
@@ -566,10 +612,14 @@ var User = {
             var userGroup = JSON.parse(localStorage.getItem('UserGroup'));
             User.DATA.GetUserGroup(userGroup.sign);
 
-            //todo init
+            var selectContent = '<option selected value="" class="required">請選擇</option>';
+
             for (key in userGroup.group) {
-                $('#rgSelect').append(new Option(userGroup.group[key], key))
+
+                selectContent += `<option value="${key}">${userGroup.group[key]}</option>`;                
             }
+
+            $('#rgSelect').html(selectContent);
         },
 
         TempIdentity: function () {

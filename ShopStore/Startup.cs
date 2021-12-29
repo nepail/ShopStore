@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -55,7 +56,8 @@ namespace ShopStore
             services.AddScoped<ActionFilter>();
             services.AddScoped<AuthorizationFilter>();
 
-
+            //¼Ó½âÃÜƒ¦´æ¿Õég
+            services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(@"D:\DataProtection\"));
 
             //òž×C
             //services.AddTransient<SysUserDal>();

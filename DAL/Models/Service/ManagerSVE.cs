@@ -305,7 +305,7 @@ namespace ShopStore.Models.Service
                 }).ToList();
 
 
-                if(permissionModels.Count == 0)
+                if (permissionModels.Count == 0)
                 {
                     permissionModels.Add(new PermissionModel()
                     {
@@ -328,7 +328,27 @@ namespace ShopStore.Models.Service
             {
                 logger.Debug(ex, "Debug");
                 return false;
-            }            
+            }
+        }
+
+        /// <summary>
+        /// 刪除使用者
+        /// </summary>
+        /// <returns></returns>
+        public bool RemoveUserByID(string userId)
+        {
+            try
+            {
+                using var conn = _connection;
+                return conn.Execute("pro_shopStore_Manager_UserRemove",
+                                    new { userId },
+                                    commandType: System.Data.CommandType.StoredProcedure) == 1;
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "RemoveUserByID");
+                return false;
+            }
         }
     }
 }

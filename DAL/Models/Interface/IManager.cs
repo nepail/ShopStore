@@ -76,5 +76,12 @@ namespace ShopStore.Models.Interface
         /// <param name="permissionData"></param>
         /// <returns></returns>
         public bool UpdatePermissionsByID(PermissionData permissionData);
+
+        /// <summary>
+        /// 刪除使用者
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public bool RemoveUserByID(string userId);
     }
 }

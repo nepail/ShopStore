@@ -52,13 +52,6 @@ const MainProperties = {
             groupName: 'Admin',
             createTime: '',
             updateTime: '',
-            //userPermissions: []
-
-            //{
-            //    f_groupId: 0,
-            //    menuName: '',
-            //    permissionCode: 8
-            //}
         }],
 
         group: {
@@ -66,22 +59,19 @@ const MainProperties = {
             '2': 'Normal'
         },
 
-        //傳入GroupId 回傳可操作的menuSub
-        group_default_permission: {
-            '1': {
-                '產品管理': 0,
-                '會員管理': 0,
-                '訂單管理': 0,
-                '測試用': 0
-            },
 
-            '2': {
-                '產品管理': 0,
-            }
-        },
-
-        user_permission: {
+        postData: {
 
         }
+
+        //postData = {
+        //    PermissionData: {
+        //        userId: userid,
+        //        PermissionDetails: [{
+        //            menuId: menuid,
+        //            permissionsCode: code,
+        //        }]
+        //    }
+        //}
     }
 }

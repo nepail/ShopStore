@@ -196,17 +196,6 @@ namespace ShopStore.Controllers
                         EditProductContent(model.f_content, model.f_pId);
                     }
 
-                    //if (model.f_picName != "")
-                    //{
-
-
-                    //}
-                    //else
-                    //{
-                    //    return Json(new { success = false, message = "圖片上傳失敗" });
-                    //}
-
-
                     bool result = await _products.EditProductById(model);
 
                     if (result)
@@ -235,24 +224,19 @@ namespace ShopStore.Controllers
         /// <returns></returns>
         private async void UploadedFile(IFormFile file, string id)
         {
-            //string uniqueFileName = null;
             try
             {
                 if (file != null)
                 {
                     string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
-                    //uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
                     string filePath = Path.Combine(uploadsFolder, id + ".jpg");
                     await using var fileStream = new FileStream(filePath, FileMode.Create);
                     file.CopyTo(fileStream);
                 }
-
-                //return uniqueFileName;
             }
             catch (Exception ex)
             {
                 logger.Debug(ex, "UploadFile Error");
-                //return "";
             }
         }
 
@@ -320,7 +304,6 @@ namespace ShopStore.Controllers
         public IActionResult GetUsers()
         {
             List<UserManageViewModels> userManageViewModel = _manager.GetUsers();
-
             return Json(new { success = true, item = userManageViewModel });
         }
 
@@ -333,19 +316,18 @@ namespace ShopStore.Controllers
         {
             string sign = "ssddsds";
 
-            if(md5 != sign)
+            if (md5 != sign)
             {
                 var groupDic = new Dictionary<string, string>
                 {
                     { "1", "Admin" },
-                    { "2", "Normal" }                
+                    { "2", "Normal" }
                 };
 
                 return Json(new { success = true, item = groupDic, sign });
             }
 
             return Json(new { success = false });
-
         }
 
         /// <summary>
@@ -356,7 +338,7 @@ namespace ShopStore.Controllers
         [HttpGet]
         public IActionResult GetUserPermissionsByID(int userId)
         {
-
+            //測試
             var a = HttpContext.Session;
 
             try
@@ -367,7 +349,7 @@ namespace ShopStore.Controllers
             catch (Exception ex)
             {
                 logger.Debug(ex);
-                return Json(new { success = false});
+                return Json(new { success = false });
             }
         }
 
@@ -379,8 +361,16 @@ namespace ShopStore.Controllers
         [HttpPost]
         public IActionResult UpdatePermissionsByID(PermissionData permissionData)
         {
-            _manager.UpdatePermissionsByID(permissionData);
-            return Json(new { success = true });
+            try
+            {
+                _manager.UpdatePermissionsByID(permissionData);
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex);
+                return Json(new { success = false });
+            }
         }
 
         /// <summary>
@@ -389,10 +379,18 @@ namespace ShopStore.Controllers
         /// <param name="userId"></param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult DeleteUserByID(string userId)
+        public IActionResult RemoveUserByID(string userId)
         {
-
-            return Json(new { success = true });
+            try
+            {
+                _manager.RemoveUserByID(userId);
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex);
+                return Json(new { success = false });
+            }
         }
 
         /// <summary>
@@ -435,9 +433,16 @@ namespace ShopStore.Controllers
         [HttpGet]
         public IActionResult GetOrderList()
         {
-            var item = _manager.GetOrderList();
-
-            return Json(new { success = true, result = item });
+            try
+            {
+                var item = _manager.GetOrderList();
+                return Json(new { success = true, result = item });
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "GetOrderList");
+                return Json(new { success = false });
+            }
         }
 
         /// <summary>
@@ -448,9 +453,16 @@ namespace ShopStore.Controllers
         [HttpGet]
         public IActionResult RemoveOrder(string id)
         {
-            bool result = _manager.RemoveOrder(id);
-
-            return Json(new { success = result });
+            try
+            {
+                bool result = _manager.RemoveOrder(id);
+                return Json(new { success = result });
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "RemoveOrder");
+                return Json(new { success = false });
+            }
         }
 
         /// <summary>
@@ -460,13 +472,17 @@ namespace ShopStore.Controllers
         [HttpPost]
         public IActionResult UpdateOrder(List<Order> orders)
         {
-
-            _manager.UpdateOrder(orders);
-
-            return Json(new { success = true });
+            try
+            {
+                _manager.UpdateOrder(orders);
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "UpdateOrder");
+                return Json(new { success = false });
+            }
         }
-
-
 
         #endregion
     }
