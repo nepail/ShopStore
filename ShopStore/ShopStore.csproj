@@ -6,12 +6,16 @@
 
   <ItemGroup>
     <Compile Remove="wwwroot\js\bootstrap\**" />
+    <Compile Remove="wwwroot\Scripts\**" />
     <Compile Remove="wwwroot\Script\**" />
     <Content Remove="wwwroot\js\bootstrap\**" />
+    <Content Remove="wwwroot\Scripts\**" />
     <Content Remove="wwwroot\Script\**" />
     <EmbeddedResource Remove="wwwroot\js\bootstrap\**" />
+    <EmbeddedResource Remove="wwwroot\Scripts\**" />
     <EmbeddedResource Remove="wwwroot\Script\**" />
     <None Remove="wwwroot\js\bootstrap\**" />
+    <None Remove="wwwroot\Scripts\**" />
     <None Remove="wwwroot\Script\**" />
   </ItemGroup>
 
@@ -147,7 +151,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Frontend\" />
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\img\slider\" />
     <Folder Include="wwwroot\content\" />
@@ -1624,30 +1627,6 @@
     <None Include="node_modules\vue-functional-data-merge\dist\lib.js.map" />
     <None Include="node_modules\vue-functional-data-merge\LICENSE.md" />
     <None Include="node_modules\vue-functional-data-merge\readme.md" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\dist\vue-sidebar-menu.css.map" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\dist\vue-sidebar-menu.esm.js" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\dist\vue-sidebar-menu.esm.js.map" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\dist\vue-sidebar-menu.js" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\dist\vue-sidebar-menu.js.map" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\dist\vue-sidebar-menu.min.js" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\dist\vue-sidebar-menu.min.js.map" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\LICENSE" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\README.md" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\src\components\SidebarMenu.vue" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\src\components\SidebarMenuBadge.vue" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\src\components\SidebarMenuIcon.vue" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\src\components\SidebarMenuItem.vue" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\src\components\SidebarMenuLink.vue" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\src\components\SidebarMenuScroll.vue" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\src\index.js" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\src\scss\themes\default-theme.scss" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\src\scss\themes\white-theme.scss" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\src\scss\vue-sidebar-menu.scss" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\src\scss\_base.scss" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\src\scss\_variables.scss" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\src\use\useItem.js" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\src\use\useMenu.js" />
-    <None Include="wwwroot\Scripts\vue-sidebar-menu\src\use\useRouterLink.js" />
     <None Include="node_modules\vue\dist\README.md" />
     <None Include="node_modules\vue\dist\vue.common.dev.js" />
     <None Include="node_modules\vue\dist\vue.common.js" />
@@ -1868,7 +1847,7 @@
     <None Include="node_modules\whatwg-url\lib\URL.js" />
     <None Include="node_modules\whatwg-url\lib\utils.js" />
     <None Include="node_modules\whatwg-url\README.md" />
-    <None Include="wwwroot\Scripts\Home\index.js" />
+    <None Include="wwwroot\js\Manager\Home\index.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -2031,7 +2010,6 @@
     <TypeScriptCompile Include="node_modules\portal-vue\types\lib\utils\index.d.ts" />
     <TypeScriptCompile Include="node_modules\vue-functional-data-merge\dist\index.d.ts" />
     <TypeScriptCompile Include="node_modules\vue-functional-data-merge\src\index.ts" />
-    <TypeScriptCompile Include="wwwroot\Scripts\vue-sidebar-menu\types\index.d.ts" />
     <TypeScriptCompile Include="node_modules\vue\types\index.d.ts" />
     <TypeScriptCompile Include="node_modules\vue\types\options.d.ts" />
     <TypeScriptCompile Include="node_modules\vue\types\plugin.d.ts" />

@@ -51,7 +51,7 @@ namespace ShopStore.Controllers
                 f_address = "台中市西屯區市政路388號",
             };
 
-            return View(memberviewmodel);
+            return View("/Views/Frontend/Member/SignUp.cshtml", memberviewmodel);
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace ShopStore.Controllers
             ViewBag.account = "admin01";
             ViewBag.pwd = "admin01";
 
-            return View();
+            return View("/Views/Frontend/Member/Login.cshtml");
         }
 
         /// <summary>

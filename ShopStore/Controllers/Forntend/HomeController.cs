@@ -18,7 +18,7 @@ namespace ShopStore.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return View("/Views/Frontend/Home/Index.cshtml");
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace ShopStore.Controllers
         /// <returns></returns>
         public IActionResult Error()
         {
-            return View();
+            return View("/Views/Frontend/Home/Error.cshtml");
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace ShopStore.Controllers
         /// <returns></returns>
         public IActionResult AccessDenied()
         {
-            return View();
+            return View("/Views/Frontend/Home/AccessDenied.cshtml");
         }
 
         public IActionResult Privacy()
@@ -46,7 +46,7 @@ namespace ShopStore.Controllers
 
         public IActionResult WishList()
         {
-            return View();
+            return View("/Views/Frontend/Home/WishList.cshtml");
         }
     }
 }

@@ -38,7 +38,7 @@ namespace ShopStore.Controllers
                 var user = User.Identity.Name;                
                 userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 model = _orders.GetOrderList(userId);
-                return View(model);
+                return View("/Views/Frontend/Order/Index.cshtml", model);
             }
             catch (Exception ex)
             {

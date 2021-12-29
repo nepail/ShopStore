@@ -33,7 +33,7 @@ namespace ShopStore.Controllers
         [AllowAnonymous]
         public IActionResult Index()
         {
-            return View();
+            return View("/Views/Frontend/Products/Index.cshtml");
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace ShopStore.Controllers
         public async Task<IActionResult> ProductList(int type)
         {
             var isopen = 1;
-            return View(await _products.GetProductsAsync(isopen));
+            return View("/Views/Frontend/Products/ProductList.cshtml", await _products.GetProductsAsync(isopen));
         }
 
         [HttpGet]
@@ -96,7 +96,7 @@ namespace ShopStore.Controllers
                                                             Value = a.f_id.ToString(),
                                                             Text = a.f_name,
                                                         });
-            return View(productsViewModels);
+            return View("/Views/Frontend/Products/AddNewProduct.cshtml", productsViewModels);
         }
 
         [Route("Products/AddProducts")]

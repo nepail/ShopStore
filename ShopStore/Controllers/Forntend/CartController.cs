@@ -39,7 +39,7 @@ namespace ShopStore.Controllers
                 ViewBag.Total = 0;
             }
 
-            return View(CartItems);
+            return View("/Views/Frontend/Cart/Index.cshtml", CartItems);
         }
 
         /// <summary>
