@@ -24,8 +24,7 @@ var User = {
                     if (res.success) {
                         MainProperties.User.data = res.item;
                         MainProperties.User.group = res.group;
-                        User.UC.SetUserList();
-                        //swal('新增成功', ' ', 'success');                        
+                        User.UC.SetUserList();                                    
                     } else {
                         swal('載入失敗', '資料庫出現錯誤', 'error');
                     }
@@ -50,7 +49,7 @@ var User = {
                         }
                         localStorage.setItem('UserGroup', JSON.stringify(userGroup))
                     } else {
-                        //swal('群組資料載入失敗', '資料庫出現錯誤', 'error');
+                        swal('群組資料載入失敗', '資料庫出現錯誤', 'error');
                     }
                 },
                 error: (res) => {
@@ -247,12 +246,10 @@ var User = {
 
                 var permissionsCode = (groupList[i].permissionDetail.permissionCode).toString('2').padStart(4, 0);
 
-
                 var _read = {
                     switchStr: permissionsCode[0] == 1 ? 'checked' : '',
                     value: permissionsCode[0] == 1 ? 1 : 0
                 }
-
 
                 var _insert = {
                     switchStr: permissionsCode[1] == 1 ? 'checked' : '',
@@ -637,8 +634,7 @@ var User = {
 
             postData['PermissionData']['userId'] = parseInt($('#userId').attr('data-id'));
             postData['PermissionData']['groupId'] = parseInt($('#userGName :selected').val());
-
-        },
+        }
     }
 }
 
