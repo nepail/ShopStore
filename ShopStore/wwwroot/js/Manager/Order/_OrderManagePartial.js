@@ -218,8 +218,7 @@ var Order = {
             }
 
             postData[ordernum].f_id = orderid;
-            postData[ordernum].f_status = statusCode;
-            console.table(postData);
+            postData[ordernum].f_status = statusCode;            
             return statement[statusCode];
         }
 
@@ -231,8 +230,7 @@ var Order = {
             }
 
             postData[ordernum].f_id = orderid;
-            postData[ordernum].f_ShippingMethod = statusCode;
-            console.table(postData);
+            postData[ordernum].f_ShippingMethod = statusCode;            
             return shippingMethod[statusCode];
         }
     },
@@ -243,8 +241,7 @@ var Order = {
     SetSearch: function() {
         $('#searchInput').on('keyup', function() {
             var value = $(this).val().toLowerCase();
-            $('#orderList>.order').filter(function() {
-                //console.log($(this).find('.tx, .field').text())
+            $('#orderList>.order').filter(function() {                
                 $(this).toggle($(this).find('.tx, .field').text().toLowerCase().indexOf(value) > -1);
             })
         })
@@ -286,7 +283,7 @@ var Order = {
                 }
             },
             error: (res) => {
-                console.log('error');
+                swal('保存失敗', '網路異常', 'error');
             }
         })
     },
@@ -304,10 +301,10 @@ var Order = {
 $.fn.styleddropdown = function() {
     return this.each(function() {
         var obj = $(this).off('click');
-        obj.find('.field').off('click').click(function() { //onclick event, 'list' fadein            
+        obj.find('.field').off('click').click(function() {
             obj.find('.list').fadeIn(400);
 
-            $(document).off('keyup').keyup(function(event) { //keypress event, fadeout on 'escape'                
+            $(document).off('keyup').keyup(function(event) {
                 if (event.keyCode == 27) {
                     obj.find('.list').fadeOut(400);
                 }
@@ -319,7 +316,7 @@ $.fn.styleddropdown = function() {
                 });
         });
 
-        obj.find('.list li').off('click').click(function() { //onclick event, change field value with selected 'list' item and fadeout 'list'
+        obj.find('.list li').off('click').click(function() {
 
             var type = $(this).attr('data-type');
             var menuType = $(this).parent().attr('menu-type');
@@ -328,11 +325,7 @@ $.fn.styleddropdown = function() {
             var targetClass = obj.find('.field').attr('class').split(' ')[2];
             obj.find('.field')
                 .text($(this).html())
-                //.css({
-                //    'background': 'black',
-                //})
-                .toggleClass(`${targetClass} ${Order.GetStatus(type, menuType, ordernum, orderid)}`);
-            console.log(orderid);
+                .toggleClass(`${targetClass} ${Order.GetStatus(type, menuType, ordernum, orderid)}`);            
 
             obj.find('.list').fadeOut(400);
         });
