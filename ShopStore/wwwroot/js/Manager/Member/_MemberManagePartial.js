@@ -1,6 +1,6 @@
-﻿$(document).ready(function() {
+﻿$(document).ready(function () {
     Member.GetMemberList();
-    //Order.SetBtnSave();
+    Member.SetBtnSave();
     Member.SetDropDownList();
 })
 
@@ -10,11 +10,11 @@ var Member = {
     /**
      * 取得所有Order資料
      */
-    GetMemberList: function() {
+    GetMemberList: function () {
         $.ajax({
             url: '/Manager/GetMemberList',
             type: 'get',
-            success: function(res) {
+            success: function (res) {
                 if (res.success) {
                     MainProperties.Member.data = res.result;
                     Member.InitMemberList();
@@ -22,20 +22,20 @@ var Member = {
                     swal('系統錯誤', '資料庫錯誤', 'error');
                 }
             },
-            error: function() {
+            error: function () {
                 swal('網路錯誤', '無法連上伺服器', 'error');
             }
         })
     },
 
-    Suspend: function(item) {
+    Suspend: function (item) {
         //Order.ReturnOfgood($(item).parent().siblings('.bcol:eq(1)').text());
         alert('會員停權設定')
     },
     /**
      * 渲染Order列表
      */
-    InitMemberList: function() {
+    InitMemberList: function () {
 
         var listContent = `
             <!--Title部分-->
@@ -83,7 +83,7 @@ var Member = {
                                     </div>
                                 </div>
                                 <div class="box bcol">NT$<span>${m.money}</span></div>
-                                <div class="box bcol tx"><span>${m.isSuspend == 1?'是':'否'}</span></div>
+                                <div class="box bcol tx"><span>${m.isSuspend == 1 ? '是' : '否'}</span></div>
                                 <div class="box bcol rowckbox">
                                     <input id="btnSuspend" type="button" class="btn btn-sm btn-outline-danger" value="停權" onclick="Member.Suspend(this)"/>
                                 </div>
@@ -98,19 +98,19 @@ var Member = {
      * 退貨功能
      * @param {Number} ordernum 
      */
-    ReturnOfgood: function(ordernum) {
+    ReturnOfgood: function (ordernum) {
         swal({
-                title: '確定執行此操作?',
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonText: '確定',
-                cancelButtonText: '取消',
-                closeOnConfirm: false,
-                showLoaderOnConfirm: true,
-            },
-            function(isConfirm) {
+            title: '確定執行此操作?',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '確定',
+            cancelButtonText: '取消',
+            closeOnConfirm: false,
+            showLoaderOnConfirm: true,
+        },
+            function (isConfirm) {
                 if (isConfirm) {
-                    setTimeout(function() {
+                    setTimeout(function () {
                         $.ajax({
                             url: '/Manager/RemoveOrder?id=' + ordernum,
                             type: 'get',
@@ -138,61 +138,42 @@ var Member = {
     },
 
     /**
-     * 狀態變更功能
+     * 等級變更功能
      * @param {Number} statusCode f_status 的狀態
-     * @param {Number} type Menu 的類型
-     * @param {Number} ordernum f_id
-     * @param {Number} orderid 
+     * @param {Number} type Menu 的類型     
+     * @param {Number} menuid 
      * @returns 狀態的的 CSS Style
      */
-    GetStatus: function(statusCode, type, ordernum, orderid) {
+    GetStatus: function (statusCode, type, memberid) {
 
-        var STATUS = MainProperties.Order.STATUS;
-        var SipMethod = MainProperties.Order.SipMethod;
 
-        if (postData[ordernum] == undefined) {
-            postData[ordernum] = {
-                f_id: '',
-                f_status: 0,
-                f_ShippingMethod: 0
-            }
+        console.log({ memberid })
+        console.log({ statusCode })
+
+        var STATUS = MainProperties.Order.STATUS;                
+        var target = (MainProperties.Member.data.filter(x => x.id == memberid))[0];
+        target.level = parseInt(statusCode);
+        target.isUpdate = 1; //註記已更新
+
+        const statement = {
+            [STATUS.tbd]: 'bg-info',
+            [STATUS.shipped]: 'bg-primary',
+            [STATUS.transport]: 'bg-success',
+            [STATUS.returned]: 'bg-danger',
+            [STATUS.chanceled]: 'bg-secondary',
+            [STATUS.abnormal]: 'bg-warning'
         }
 
-        if (type == 0) {
-            const statement = {
-                [STATUS.tbd]: 'bg-info',
-                [STATUS.shipped]: 'bg-primary',
-                [STATUS.transport]: 'bg-success',
-                [STATUS.returned]: 'bg-danger',
-                [STATUS.chanceled]: 'bg-secondary',
-                [STATUS.abnormal]: 'bg-warning'
-            }
-
-            postData[ordernum].f_id = orderid;
-            postData[ordernum].f_status = statusCode;            
-            return statement[statusCode];
-        }
-
-        if (type == 1) {
-            const shippingMethod = {
-                [SipMethod.postm]: 'bgreen',
-                [SipMethod.B2B]: 'bgyellow',
-                [SipMethod.privateCargo]: 'bgblue'
-            }
-
-            postData[ordernum].f_id = orderid;
-            postData[ordernum].f_ShippingMethod = statusCode;            
-            return shippingMethod[statusCode];
-        }
+        return statement[statusCode];
     },
 
     /**
      * 搜尋功能
      */
-    SetSearch: function() {
-        $('#searchInput').on('keyup', function() {
+    SetSearch: function () {
+        $('#searchInput').on('keyup', function () {
             var value = $(this).val().toLowerCase();
-            $('#orderList>.order').filter(function() {                
+            $('#orderList>.order').filter(function () {
                 $(this).toggle($(this).find('.tx, .field').text().toLowerCase().indexOf(value) > -1);
             })
         })
@@ -201,9 +182,9 @@ var Member = {
     /**
      * 保存功能
      */
-    SetBtnSave: function() {
-        $('#btnSave').click(function() {
-            Order.SendData();
+    SetBtnSave: function () {
+        $('#btnSave').click(function () {            
+            Member.SendData();
         })
     },
 
@@ -211,18 +192,13 @@ var Member = {
      * 更新訂單資料
      * @returns 成功與否
      */
-    SendData: function() {
+    SendData: function () {
 
-        if (postData.length == 0) {
-            swal('沒有要變更的資料，請先選擇', ' ', 'info');
-            return;
-        }
+        var postTarget = MainProperties.Member.data.filter(t => t.isUpdate == 1);
 
-        postData = postData.filter(el => el);
+        console.table(postTarget)
 
-        var data = {
-            orders: postData
-        }
+        return;
 
         $.ajax({
             url: '/Manager/UpdateMember',
@@ -242,41 +218,41 @@ var Member = {
     /**
      * 狀態清單下拉
      */
-    SetDropDownList: function() {
-        $(document).off('click').on('click', '.size', function() {
+    SetDropDownList: function () {
+        $(document).off('click').on('click', '.size', function () {
             $('.size').styleddropdown();
         })
     }
 }
 
-$.fn.styleddropdown = function() {
-    return this.each(function() {
+$.fn.styleddropdown = function () {
+    return this.each(function () {
         var obj = $(this).off('click');
-        obj.find('.field').off('click').click(function() { 
+        obj.find('.field').off('click').click(function () {
             obj.find('.list').fadeIn(400);
 
-            $(document).off('keyup').keyup(function(event) {
+            $(document).off('keyup').keyup(function (event) {
                 if (event.keyCode == 27) {
                     obj.find('.list').fadeOut(400);
                 }
             });
 
-            obj.find('.list').hover(function() {},
-                function() {
+            obj.find('.list').hover(function () { },
+                function () {
                     $(this).fadeOut(400);
                 });
         });
 
-        obj.find('.list li').off('click').click(function() {
+        obj.find('.list li').off('click').click(function () {
 
             var type = $(this).attr('data-type');
             var menuType = $(this).parent().attr('menu-type');
-            var orderid = obj.find('.field').parent().parent().siblings().eq(1).find('span').text();
-            var ordernum = obj.find('.field').parent().parent().siblings().eq(1).find('span').attr('ordernum');
+            var memberid = obj.find('.field').parent().parent().siblings().eq(1).find('span').text();
+            //var ordernum = obj.find('.field').parent().parent().siblings().eq(1).find('span').attr('ordernum');
             var targetClass = obj.find('.field').attr('class').split(' ')[2];
             obj.find('.field')
                 .text($(this).html())
-                .toggleClass(`${targetClass} ${Order.GetStatus(type, menuType, ordernum, orderid)}`);            
+                .toggleClass(`${targetClass} ${Member.GetStatus(type, menuType, memberid)}`);
 
             obj.find('.list').fadeOut(400);
         });
