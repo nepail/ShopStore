@@ -176,7 +176,7 @@ namespace ShopStore.Controllers
             if (member == null)
             {
                 ViewBag.errMsg = "無此會員";
-                return View();
+                return View("/Views/Frontend/Home/LoginError.cshtml");
             }
 
             var claims = new List<Claim>

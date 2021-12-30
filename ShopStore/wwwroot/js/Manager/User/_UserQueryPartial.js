@@ -49,7 +49,8 @@ var User = {
                         }
                         localStorage.setItem('UserGroup', JSON.stringify(userGroup))
                     } else {
-                        swal('群組資料載入失敗', '資料庫出現錯誤', 'error');
+                        //從localstroage取出
+                        
                     }
                 },
                 error: (res) => {

@@ -73,5 +73,16 @@ const MainProperties = {
         //        }]
         //    }
         //}
+    },
+
+    Member: {
+        data: [{
+            id: 0,
+            name: '',
+            account: '',
+            level: 0,
+            money: 0,
+            isSuspend: 0,            
+        }]
     }
 }

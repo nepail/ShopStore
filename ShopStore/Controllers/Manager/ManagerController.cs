@@ -417,7 +417,6 @@ namespace ShopStore.Controllers
 
         #endregion
 
-
         #region 訂單管理
 
         /// <summary>
@@ -482,6 +481,82 @@ namespace ShopStore.Controllers
                 logger.Debug(ex, "UpdateOrder");
                 return Json(new { success = false });
             }
+        }
+
+        #endregion
+
+        #region 會員管理
+        /// <summary>
+        /// 回傳View
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult MemberManage()
+        {
+            return PartialView("PartialView/Member/_MemberManagePartial");
+        }
+
+        [HttpGet]
+        public IActionResult GetMemberList()
+        {
+            //var result = new
+            //{
+            //    ID = 1,
+            //    Name = "王力宏",
+            //    Account = "leehongwang8891",
+            //    Level = 1,
+            //    Money = 100,
+            //    IsSuspend = 0
+            //};
+
+
+            var result = new List<MemberViewModel>()
+            {
+                new MemberViewModel()
+                {
+                    ID = 1,
+                    Name = "王力宏",
+                    Account = "leehongwang8891",
+                    Level = 1,
+                    Money = 100,
+                    IsSuspend = 0
+                },
+                new MemberViewModel()
+                {
+                    ID = 2,
+                    Name = "王建民",
+                    Account = "jangmingwang8591",
+                    Level = 2,
+                    Money = 1000,
+                    IsSuspend = 0
+                },
+                new MemberViewModel()
+                {
+                    ID = 3,
+                    Name = "王傳一",
+                    Account = "tranyeewang6666",
+                    Level = 3,
+                    Money = 10000,
+                    IsSuspend = 0
+                },
+            };
+
+            return Json(new { success = true, result });
+        }
+
+
+        public class MemberManageModel
+        {
+            public List<MemberViewModel> MemberModel { get; set; }
+        }
+
+        public class MemberViewModel
+        {
+            public int ID { get; set; }
+            public string Name { get; set; }
+            public string Account { get; set; }
+            public int Level { get; set; }
+            public int Money { get; set; }
+            public int IsSuspend { get; set; }
         }
 
         #endregion

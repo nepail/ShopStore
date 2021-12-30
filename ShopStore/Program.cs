@@ -17,7 +17,11 @@ namespace ShopStore
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder
+                    .UseIISIntegration() //Out-Proccess
+                    //.UseIIS() In-Proccess
+                    .UseStartup<Startup>();
+                    
                 });
     }
 }
