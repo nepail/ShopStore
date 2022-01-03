@@ -83,5 +83,25 @@ namespace ShopStore.Models.Interface
         /// <param name="userId"></param>
         /// <returns></returns>
         public bool RemoveUserByID(string userId);
+
+        /// <summary>
+        /// 取得會員列表
+        /// </summary>
+        /// <returns></returns>
+        public List<MemberManagerViewModel> GetMemberList();
+
+        /// <summary>
+        /// 會員停權
+        /// </summary>
+        /// <param name="memberId"></param>
+        /// <returns></returns>
+        public bool SuspendByMemberId(int memberId, int isSuspend);
+
+        /// <summary>
+        /// 更新會員
+        /// </summary>
+        /// <param name="memberManageModel"></param>
+        /// <returns></returns>
+        public bool UpdateByMemberId(MemberManageModel memberManageModel);
     }
 }

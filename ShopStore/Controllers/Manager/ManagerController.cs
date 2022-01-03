@@ -495,69 +495,37 @@ namespace ShopStore.Controllers
             return PartialView("PartialView/Member/_MemberManagePartial");
         }
 
+        /// <summary>
+        /// 取得會員列表
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult GetMemberList()
         {
-            //var result = new
-            //{
-            //    ID = 1,
-            //    Name = "王力宏",
-            //    Account = "leehongwang8891",
-            //    Level = 1,
-            //    Money = 100,
-            //    IsSuspend = 0
-            //};
-
-
-            var result = new List<MemberViewModel>()
-            {
-                new MemberViewModel()
-                {
-                    ID = 1,
-                    Name = "王力宏",
-                    Account = "leehongwang8891",
-                    Level = 1,
-                    Money = 100,
-                    IsSuspend = 0
-                },
-                new MemberViewModel()
-                {
-                    ID = 2,
-                    Name = "王建民",
-                    Account = "jangmingwang8591",
-                    Level = 2,
-                    Money = 1000,
-                    IsSuspend = 0
-                },
-                new MemberViewModel()
-                {
-                    ID = 3,
-                    Name = "王傳一",
-                    Account = "tranyeewang6666",
-                    Level = 3,
-                    Money = 10000,
-                    IsSuspend = 0
-                },
-            };
-
-            return Json(new { success = true, result });
+            var result = _manager.GetMemberList();
+            return result != null ? Json(new { success = true, result }) : Json(new { success = false });
         }
 
 
-        public class MemberManageModel
+        /// <summary>
+        /// 更新會員
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IActionResult UpdateMember(MemberManageModel data)
         {
-            public List<MemberViewModel> MemberModel { get; set; }
+            
+            return _manager.UpdateByMemberId(data)? Json(new { Success = true }): Json(new { Success = false });
         }
 
-        public class MemberViewModel
-        {
-            public int ID { get; set; }
-            public string Name { get; set; }
-            public string Account { get; set; }
-            public int Level { get; set; }
-            public int Money { get; set; }
-            public int IsSuspend { get; set; }
-        }
+        /// <summary>
+        /// 會員停權
+        /// </summary>
+        /// <param name="memberId"></param>
+        /// <returns></returns>
+        [HttpPut]
+        public IActionResult SuspendByMemberId(int memberId, int isSuspend) => _manager.SuspendByMemberId(memberId, isSuspend) ? Json(new { Success = true }) : Json(new { Success = false });
 
         #endregion
     }

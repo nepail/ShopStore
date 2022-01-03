@@ -10,7 +10,7 @@ namespace DAL.Models.Manager
 
         public string Num { get; set; }
         public string MemberId { get; set; }
-        public string MemberName { get; set; }
+        public string MemberAccount { get; set; }
         public string Date { get => _date.ToString("yyyy/MM/dd HH:mm:ss"); set { } }
         public string Status { get; set; }
         public string StatusBadge { get; set; }

@@ -34,51 +34,8 @@ var Order = {
     /**
      * 渲染Order列表
      */
-    InitOrderList: function() {
-        //$.each(MainProperties.Order.data, function (i, v) {
-        //    var btnSwitch = v.isDel == 1 ? 'style="visibility: hidden;"' : ''
-        //    $('#MainProperties.Order.data')
-        //        .append(`
-        //            <div id="ordernum_${v.num}" class="box brow order">
-        //                <div class="box bcol rowckbox">
-        //                    <input type="checkbox" class="visibility"/>
-        //                </div>
-        //                <div class="box bcol tx"><span ordernum="${i}" >${v.num}</span></div>
-        //                <div class="box bcol tx"><span>${v.date}</span></div>
-        //                <div class="box bcol tx"><span>${v.memberName}</span></div>
-        //                <div class="box bcol">
-        //                    <div class="size">
-        //                        <span class="bbadge field bg-${v.statusBadge}">${v.status}</span>
-        //                            <ul menu-type="0" class="list">
-        //                                <li data-type="1">待確認</li>
-        //                                <li data-type="2">已出貨</li>
-        //                                <li data-type="3">運輸中</li>
-        //                                <li data-type="4">已退貨</li>
-        //                                <li data-type="5">已取消</li>
-        //                                <li data-type="6">貨物異常</li>
-        //                            </ul>
-        //                    </div>
-        //                </div>
-        //                <div class="box bcol">
-        //                    <div class="size">
-        //                        <span class="bbadge field ${v.shippingBadge}">${v.shippingMethod}</span>
-        //                        <ul menu-type="1" class="list">
-        //                            <li data-type="1">郵寄</li>
-        //                            <li data-type="2">店到店</li>
-        //                            <li data-type="3">私人集運</li>
-        //                        </ul>
-        //                    </div>
-        //                </div>
-        //                <div class="box bcol tx"><span>NT$ ${v.total}</span></div>
-        //                <div class="box bcol rowckbox">
-        //                    <input id="btnReturn" type="button" class="btn btn-sm btn-outline-danger" value="退貨" onclick="Order.Return(this)" ${btnSwitch}/>
-        //                </div>
-        //            </div>
-        //        `)
-        //})
-
-
-        //var odLength = MainProperties.Order.data.length;
+    InitOrderList: function () {
+        
         var odContent = `
             <!--Title部分-->
             <div class="box brow boxtitle">
@@ -87,7 +44,7 @@ var Order = {
                 </div>
                 <div class="box bcol">訂單編號</div>
                 <div class="box bcol">日期</div>
-                <div class="box bcol">會員ID</div>
+                <div class="box bcol">會員帳號</div>
                 <div class="box bcol">狀態</div>
                 <div class="box bcol">運送方式</div>
                 <div class="box bcol">總金額</div>
@@ -106,9 +63,9 @@ var Order = {
                         <div class="box bcol rowckbox">
                             <input type="checkbox" class="visibility"/>
                         </div>
-                        <div class="box bcol tx"><span ordernum="${i}" >${MainProperties.Order.data[i].num}</span></div>
+                        < div class="box bcol tx"><span ordernum="${i}" >${MainProperties.Order.data[i].num}</span></div>
                         <div class="box bcol tx"><span>${MainProperties.Order.data[i].date}</span></div>
-                        <div class="box bcol tx"><span>${MainProperties.Order.data[i].memberName}</span></div>
+                        <div class="box bcol tx"><span>${MainProperties.Order.data[i].memberAccount}</span></div>
                         <div class="box bcol">
                             <div class="size">
                                 <span class="bbadge field bg-${MainProperties.Order.data[i].statusBadge}">${MainProperties.Order.data[i].status}</span>

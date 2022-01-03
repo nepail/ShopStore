@@ -34,8 +34,6 @@ namespace ShopStore.Models.Service
             try
             {
                 using var conn = _connection;
-                //var result = await conn.QueryAsync<MenuModel>(@"pro_shopStore_getMenu");
-
                 SqlMapper.GridReader result = await conn.QueryMultipleAsync(@"pro_shopStore_getMenu", new { userid = userid }, commandType: System.Data.CommandType.StoredProcedure);
                 List<MenuModel> menuModels = result.Read<MenuModel>().ToList();
                 List<MenuSubModel> menuSubModels = result.Read<MenuSubModel>().ToList();
@@ -51,7 +49,6 @@ namespace ShopStore.Models.Service
                                             MenuSubModels = menuSubModels.Where(x => x.f_menuid == a.f_id).ToList()
 
                                         }).ToList();
-
 
                 return menu;
             }
@@ -103,6 +100,7 @@ namespace ShopStore.Models.Service
                 {
                     var result = await conn.ExecuteAsync("pro_shopStore_Manager_addSubMenu", model.SubItems, commandType: System.Data.CommandType.StoredProcedure);
                 }
+
                 if (model.MenuSubModels != null && model.MenuSubModels.Count > 0)
                 {
                     var result = await conn.ExecuteAsync("pro_shopStore_Manager_updateSubMenu", model.MenuSubModels, commandType: System.Data.CommandType.StoredProcedure);
@@ -129,10 +127,8 @@ namespace ShopStore.Models.Service
                 using var conn = _connection;
                 string sqlStr = @"pro_shopStore_Manager_getOrderList";
 
-                //var result = conn.QueryMultiple(sqlStr);
                 var result = conn.Query(sqlStr);
                 List<OrderManageViewModel> model = (List<OrderManageViewModel>)conn.Query<OrderManageViewModel>(sqlStr);
-                //List<OrderManageModel> orderManageModels = (List<OrderManageModel>)result.Read<OrderManageModel>();
 
                 return model;
             }
@@ -263,18 +259,7 @@ namespace ShopStore.Models.Service
                     },
                     new { userId }, splitOn: "MenuName", commandType: System.Data.CommandType.StoredProcedure).ToList();
 
-                //var dic = conn.Query("pro_shopStore_Manager_getUsersPermissions", new { userId }, commandType: System.Data.CommandType.StoredProcedure)
-                //            .ToDictionary
-                //            (x => x.MenuId,
-                //             x => new { x.MenuName, x.PermissionCode });
-
                 return userPermission;
-
-
-                //return conn.Query("pro_shopStore_Manager_getUsersPermissions", new { userId }, commandType: System.Data.CommandType.StoredProcedure)
-                //            .ToDictionary(x => (string)x.MenuName.ToString(), x => (int)x.PermissionCode);
-
-                //Dictionary<int, Dictionary<string, int>>
             }
             catch (Exception ex)
             {
@@ -347,6 +332,67 @@ namespace ShopStore.Models.Service
             catch (Exception ex)
             {
                 logger.Debug(ex, "RemoveUserByID");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 取得會員列表
+        /// </summary>
+        /// <returns></returns>
+        public List<MemberManagerViewModel> GetMemberList()
+        {
+            try
+            {
+                using var conn = _connection;
+                return (List<MemberManagerViewModel>)conn.Query<MemberManagerViewModel>("pro_shopStore_Manager_Member_GetList",
+                                    commandType: System.Data.CommandType.StoredProcedure);
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "GetMemberList");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 會員停權
+        /// </summary>
+        /// <param name="memberId"></param>
+        /// <returns></returns>
+        public bool SuspendByMemberId(int memberId, int isSuspend)
+        {
+            try
+            {
+                using var conn = _connection;
+                return conn.Execute("pro_shopStore_Manager_Member_SuspendByID",
+                    new { memberId, isSuspend },
+                    commandType: System.Data.CommandType.StoredProcedure) == 1;
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, $"SuspendByID={memberId}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 會員停權
+        /// </summary>
+        /// <param name="memberId"></param>
+        /// <returns></returns>
+        public bool UpdateByMemberId(MemberManageModel memberManageModel)
+        {
+            try
+            {
+                using var conn = _connection;
+                return conn.Execute("pro_shopStore_Manager_Member_UpdateByID",
+                    memberManageModel.MemberModel,
+                    commandType: System.Data.CommandType.StoredProcedure) > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, $"SuspendByID={memberManageModel}");
                 return false;
             }
         }
