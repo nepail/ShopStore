@@ -86,15 +86,15 @@
 
     }
 
-    .bgreen{
+    .bg-green{
         background-color: green !important;
     }
 
-    .bgyellow{
+    .bg-yellow{
         background-color: orange !important;
     }
 
-    .bgblue{
+    .bg-blue{
         background-color: deepskyblue !important;
     }
 

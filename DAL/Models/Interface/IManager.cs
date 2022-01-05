@@ -38,6 +38,12 @@ namespace ShopStore.Models.Interface
         public List<OrderManageViewModel> GetOrderList();
 
         /// <summary>
+        /// 取所有狀態
+        /// </summary>
+        /// <returns></returns>
+        public OrderStatusModel GetOrderStatus();
+
+        /// <summary>
         /// 刪除訂單
         /// </summary>
         /// <param name="ordernum"></param>

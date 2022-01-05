@@ -10,6 +10,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
+using static DAL.Models.Manager.OrderStatusModel;
 using static DAL.Models.Manager.PermissionDataModel;
 
 namespace ShopStore.Models.Service
@@ -135,6 +136,32 @@ namespace ShopStore.Models.Service
             catch (Exception ex)
             {
                 logger.Debug(ex, "Debug");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 取所有狀態
+        /// </summary>
+        /// <returns></returns>
+        public OrderStatusModel GetOrderStatus()
+        {
+            try
+            {
+                using var conn = _connection;                
+                var result = conn.QueryMultiple("pro_shopStore_Manager_Order_getStatus", commandType: System.Data.CommandType.StoredProcedure);
+
+                OrderStatusModel model = new OrderStatusModel() 
+                { 
+                    cartgoState = result.Read<StatusProp>().ToDictionary(x => x.Code, x => x),
+                    sipState = result.Read<StatusProp>().ToDictionary(x => x.Code, x => x)
+                 };
+
+                return model;
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "GetOrderStatus");
                 return null;
             }
         }

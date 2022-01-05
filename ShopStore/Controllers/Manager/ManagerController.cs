@@ -1,23 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using DAL.Models;
+using DAL.Models.Manager;
+using DAL.Models.Manager.ViewModels;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Caching.Distributed;
+using NLog;
 using ShopStore.Models;
 using ShopStore.Models.Interface;
 using ShopStore.ViewModels;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Authorization;
-using NLog;
-using DAL.Models;
-using Microsoft.AspNetCore.Http;
-using static ShopStore.ViewModels.ProductsViewModel;
+using System;
+using System.Collections.Generic;
 using System.IO;
-using Microsoft.AspNetCore.Hosting;
-using DAL.Models.Manager;
-using DAL.Models.Manager.ViewModels;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using static DAL.Models.Manager.PermissionDataModel;
-using Nancy.Json;
 
 namespace ShopStore.Controllers
 {
@@ -25,15 +27,68 @@ namespace ShopStore.Controllers
     {
         private readonly IProducts _products;
         private readonly IManager _manager;
+        private readonly IDistributedCache _cache;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        public ManagerController(IProducts products, IManager manager, IWebHostEnvironment webHostEnvironment)
+        public ManagerController(IProducts products, IManager manager, IWebHostEnvironment webHostEnvironment, IDistributedCache cache)
         {
             _products = products;
             _manager = manager;
             _webHostEnvironment = webHostEnvironment;
+            _cache = cache;
         }
+
+        /// <summary>
+        /// 後台登入頁面
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
+        {
+            //從session 取得 username
+            var userid = 2;
+
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult Login()
+        {
+
+            //todo finduser
+
+
+
+            var claims = new List<Claim>
+            {
+                new Claim("Account", "test"),
+                new Claim(ClaimTypes.Name, "test"), //暱稱                
+                new Claim(ClaimTypes.NameIdentifier, "1121"), //userId                
+                new Claim(ClaimTypes.Role, "1"),
+            };
+
+            //var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            
+            //防止重複登入
+            var userGuid = Guid.NewGuid().ToString();
+            Response.Cookies.Append("test", userGuid);            
+            var options = new DistributedCacheEntryOptions();
+                options.SetSlidingExpiration(TimeSpan.FromMinutes(30)); //重新讀取後會重新計時
+                _cache.SetString("test", userGuid, options);
+
+            //呼叫登入管理員登入
+            HttpContext.SignInAsync(
+                //CookieAuthenticationDefaults.AuthenticationScheme,
+                "manager",
+                new ClaimsPrincipal(new ClaimsIdentity(claims, "manager")),
+                new AuthenticationProperties { IsPersistent = false });
+
+            return RedirectToAction("Home");
+        }
+
+        [Authorize(AuthenticationSchemes = "manager")]
+        public async Task<IActionResult> Home()
         {
             //從session 取得 username
             var userid = 2;
@@ -483,6 +538,17 @@ namespace ShopStore.Controllers
             }
         }
 
+        /// <summary>
+        /// 取所有狀態
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult GetOrderStatus()
+        {
+            OrderStatusModel result = _manager.GetOrderStatus();
+            return Json(new { success = true, result });
+        }
+
         #endregion
 
         #region 會員管理
@@ -515,8 +581,8 @@ namespace ShopStore.Controllers
         [HttpPost]
         public IActionResult UpdateMember(MemberManageModel data)
         {
-            
-            return _manager.UpdateByMemberId(data)? Json(new { Success = true }): Json(new { Success = false });
+
+            return _manager.UpdateByMemberId(data) ? Json(new { Success = true }) : Json(new { Success = false });
         }
 
         /// <summary>

@@ -24,22 +24,17 @@ const MainProperties = {
                 f_shippingMethod: 0
             }],
 
-        /*切換狀態*/
-        STATUS: {
-            tbd: 1,
-            shipped: 2,
-            transport: 3,
-            returned: 4,
-            chanceled: 5,
-            abnormal: 6
-        },
 
-        SipMethod: {
-            postm: 1,
-            B2B: 2,
-            privateCargo: 3
-        }
-        /*切換狀態*/
+        OrderStatus: {
+            //0
+            cartgoState: {
+                '0306001': {code:'0306001', name: '待確認', style: 'bg-info' },                
+            },
+            //1
+            sipState: {
+                '0306101': { code: '0306101', name: '郵寄', style: 'bg-green' },
+            }
+        },
     },
 
     //帳號管理
@@ -97,7 +92,7 @@ const MainProperties = {
             }
 
             return statement[statusCode]
-            
+
         },
 
 

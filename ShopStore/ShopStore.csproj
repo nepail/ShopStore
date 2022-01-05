@@ -1849,7 +1849,7 @@
     <None Include="node_modules\whatwg-url\lib\URL.js" />
     <None Include="node_modules\whatwg-url\lib\utils.js" />
     <None Include="node_modules\whatwg-url\README.md" />
-    <None Include="wwwroot\js\Manager\Home\index.js" />
+    <None Include="wwwroot\js\Manager\Home\Home.js" />
   </ItemGroup>
 
   <ItemGroup>

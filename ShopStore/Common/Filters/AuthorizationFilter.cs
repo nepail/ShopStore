@@ -30,14 +30,17 @@ namespace ShopStore.Common.Filters
 
                 if (!context.HttpContext.Request.Cookies[userid].Equals(_cache.GetString(userid)))
                 {
+                    string cookieType = context.HttpContext.User.Identity.AuthenticationType;
+                    string controller = cookieType == "manager" ? cookieType : "Home";
+
                     //將使用者登出
-                    await context.HttpContext.SignOutAsync();
+                    await context.HttpContext.SignOutAsync(context.HttpContext.User.Identity.AuthenticationType);
                     //導至錯誤頁面
                     context.Result = new RedirectToRouteResult(
                         new RouteValueDictionary
                         {
-                            {"controller", "Home" },
-                            {"action", "Error" }
+                            {"controller", controller },
+                            {"action", "Index" }
                         });
                 }
             }

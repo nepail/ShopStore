@@ -1,5 +1,6 @@
 ﻿$(document).ready(function() {
     Order.GetOrderList();
+    Order.GetOrderStatus();
     Order.SetBtnSave();
     Order.SetDropDownList();
 })
@@ -23,6 +24,25 @@ var Order = {
                 }
             },
             error: function() {
+                swal('網路錯誤', '無法連上伺服器', 'error');
+            }
+        })
+    },
+
+
+    GetOrderStatus: function () {
+        $.ajax({
+            url: '/Manager/GetOrderStatus',
+            type: 'get',
+            success: function (res) {
+                if (res.success) {
+                    MainProperties.Order.OrderStatus.cartgoState = res.result.cartgoState;
+                    MainProperties.Order.OrderStatus.sipState = res.result.sipState;
+                } else {
+                    swal('系統錯誤', '資料庫錯誤', 'error');
+                }
+            },
+            error: function () {
                 swal('網路錯誤', '無法連上伺服器', 'error');
             }
         })
@@ -54,6 +74,18 @@ var Order = {
                     <input id="searchInput" type="search" placeholder="Search..." />
                 </div>
             </div>`;
+        
+
+        var cartgoState = '';
+
+        for(keys in MainProperties.Order.OrderStatus.cartgoState){
+            cartgoState += `<li data-type="${keys}">${MainProperties.Order.OrderStatus.cartgoState[keys].name}</li>`;
+        }
+
+        var sipState = '';
+        for (keys in MainProperties.Order.OrderStatus.sipState) {
+            sipState += `<li data-type="${keys}">${MainProperties.Order.OrderStatus.sipState[keys].name}</li>`;
+        }
 
         for (var i = 0, odLength = MainProperties.Order.data.length; i < odLength; i++) {
 
@@ -63,19 +95,14 @@ var Order = {
                         <div class="box bcol rowckbox">
                             <input type="checkbox" class="visibility"/>
                         </div>
-                        < div class="box bcol tx"><span ordernum="${i}" >${MainProperties.Order.data[i].num}</span></div>
+                        <div class="box bcol tx"><span ordernum="${i}" >${MainProperties.Order.data[i].num}</span></div>
                         <div class="box bcol tx"><span>${MainProperties.Order.data[i].date}</span></div>
                         <div class="box bcol tx"><span>${MainProperties.Order.data[i].memberAccount}</span></div>
                         <div class="box bcol">
                             <div class="size">
                                 <span class="bbadge field bg-${MainProperties.Order.data[i].statusBadge}">${MainProperties.Order.data[i].status}</span>
                                     <ul menu-type="0" class="list">
-                                        <li data-type="1">待確認</li>
-                                        <li data-type="2">已出貨</li>
-                                        <li data-type="3">運輸中</li>
-                                        <li data-type="4">已退貨</li>
-                                        <li data-type="5">已取消</li>
-                                        <li data-type="6">貨物異常</li>
+                                        ${cartgoState}
                                     </ul>
                             </div>
                         </div>
@@ -83,9 +110,7 @@ var Order = {
                             <div class="size">
                                 <span class="bbadge field ${MainProperties.Order.data[i].shippingBadge}">${MainProperties.Order.data[i].shippingMethod}</span>
                                 <ul menu-type="1" class="list">
-                                    <li data-type="1">郵寄</li>
-                                    <li data-type="2">店到店</li>
-                                    <li data-type="3">私人集運</li>
+                                    ${sipState}
                                 </ul>
                             </div>
                         </div>
@@ -153,42 +178,28 @@ var Order = {
      */
     GetStatus: function(statusCode, type, ordernum, orderid) {
 
-        var STATUS = MainProperties.Order.STATUS;
-        var SipMethod = MainProperties.Order.SipMethod;
-
         if (postData[ordernum] == undefined) {
             postData[ordernum] = {
                 f_id: '',
                 f_status: 0,
                 f_ShippingMethod: 0
             }
-        }
+        }        
 
         if (type == 0) {
-            const statement = {
-                [STATUS.tbd]: 'bg-info',
-                [STATUS.shipped]: 'bg-primary',
-                [STATUS.transport]: 'bg-success',
-                [STATUS.returned]: 'bg-danger',
-                [STATUS.chanceled]: 'bg-secondary',
-                [STATUS.abnormal]: 'bg-warning'
-            }
 
             postData[ordernum].f_id = orderid;
-            postData[ordernum].f_status = statusCode;            
-            return statement[statusCode];
+            postData[ordernum].f_status = parseInt(statusCode.slice(-1));
+
+            return MainProperties.Order.OrderStatus.cartgoState[statusCode].style;
         }
 
         if (type == 1) {
-            const shippingMethod = {
-                [SipMethod.postm]: 'bgreen',
-                [SipMethod.B2B]: 'bgyellow',
-                [SipMethod.privateCargo]: 'bgblue'
-            }
 
             postData[ordernum].f_id = orderid;
-            postData[ordernum].f_ShippingMethod = statusCode;            
-            return shippingMethod[statusCode];
+            postData[ordernum].f_ShippingMethod = parseInt(statusCode.slice(-1));
+
+            return MainProperties.Order.OrderStatus.sipState[statusCode].style;
         }
     },
 
@@ -275,6 +286,7 @@ $.fn.styleddropdown = function() {
 
         obj.find('.list li').off('click').click(function() {
 
+            //var type = $(this).attr('data-type').slice(-1);            
             var type = $(this).attr('data-type');
             var menuType = $(this).parent().attr('menu-type');
             var orderid = obj.find('.field').parent().parent().siblings().eq(1).find('span').text();

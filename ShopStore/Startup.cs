@@ -28,12 +28,17 @@ namespace ShopStore
         {
             double LoginExpireMinute = this.Configuration.GetValue<double>("LoginExpireMinute");
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(option =>
-            {
-                option.LoginPath = new PathString("/Member/Login");
-                option.LogoutPath = new PathString("/Member/Logout");
-                option.AccessDeniedPath = new PathString("/Home/AccessDenied");
-            });
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(option =>
+                {
+                    option.LoginPath = new PathString("/Member/Login");
+                    option.LogoutPath = new PathString("/Member/Logout");
+                    option.AccessDeniedPath = new PathString("/Home/AccessDenied");
+                })
+                .AddCookie("manager", option =>
+                {
+                    option.LoginPath = new PathString("/Manager/Index");
+                });
 
             services.AddStackExchangeRedisCache(option =>
             {
@@ -52,7 +57,7 @@ namespace ShopStore
             services.AddTransient(e => new SqlConnection(connectionString));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            
+
             services.AddScoped<ActionFilter>();
             services.AddScoped<AuthorizationFilter>();
 
