@@ -1,8 +1,5 @@
-﻿using ShopStore.Models.Service;
+﻿using DAL.ViewModels;
 using ShopStore.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ShopStore.Models.Interface
@@ -14,5 +11,13 @@ namespace ShopStore.Models.Interface
 
         Task<bool> VerifyAccountAsync(string f_account);
         public MemberViewModel FindUser(string f_account, string f_pcode);
+
+        /// <summary>
+        /// 取得該Member的資料
+        /// </summary>
+        /// <param name="f_account"></param>
+        /// <param name="f_pcode"></param>
+        /// <returns></returns>
+        public UserProfileViewModel GetMemberProfile(int memberId);
     }
 }

@@ -173,7 +173,7 @@ namespace ShopStore.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string account, string pcode, string returnUrl)
         {
-            var member = _members.FindUser(account, pcode);
+            MemberViewModel member = _members.FindUser(account, pcode);
 
             if (member == null)
             {

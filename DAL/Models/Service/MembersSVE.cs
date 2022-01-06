@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using DAL.ViewModels;
+using Dapper;
 using NLog;
 using ShopStore.Models.Interface;
 using ShopStore.ViewModels;
@@ -51,14 +52,34 @@ namespace ShopStore.Models.Service
         /// <returns></returns>
         public MemberViewModel FindUser(string f_account, string f_pcode)
         {
-            //using var conn = _connection;            
-            //return conn.QueryFirstOrDefault<MemberViewModel>("select * from t_members where f_account = @f_account and f_pwd = @f_pwd", new { f_account, f_pwd });
-
             try
             {
                 using var conn = _connection;
                 var result = conn.QueryFirstOrDefault<MemberViewModel>(@"pro_shopStore_getMember",
                                                                           new { f_account, f_pcode, f_date = DateTime.Now },
+                                                                          commandType: System.Data.CommandType.StoredProcedure);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "Debug");
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 取得該Member的資料
+        /// </summary>
+        /// <param name="f_account"></param>
+        /// <param name="f_pcode"></param>
+        /// <returns></returns>
+        public UserProfileViewModel GetMemberProfile(int memberId)
+        {
+            try
+            {
+                using var conn = _connection;
+                UserProfileViewModel result = conn.QueryFirstOrDefault<UserProfileViewModel>(@"pro_shopStore_getMemberProfile",
+                                                                          new { memberId },
                                                                           commandType: System.Data.CommandType.StoredProcedure);
                 return result;
             }
