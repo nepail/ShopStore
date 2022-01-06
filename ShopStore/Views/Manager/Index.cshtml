@@ -9,10 +9,12 @@
     <title>ShopStore 後台管理系統</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://kit.fontawesome.com/a81368914c.js"></script>
+    <script src="~/lib/bootstrap-sweetalert/sweetalert.js"></script>
     <link rel="stylesheet" type="text/css" href="~/css/Manager/Home/index.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+    <link href="~/lib/bootstrap-sweetalert/sweetalert.css" rel="stylesheet" />
 
 </head>
 <body>
@@ -31,7 +33,7 @@
                     </div>
                     <div>
                         <h5>帳號</h5>
-                        <input class="input" type="text" />
+                        <input name="Account" class="input" type="text" />
                     </div>
                 </div>
 
@@ -41,7 +43,7 @@
                     </div>
                     <div>
                         <h5>密碼</h5>
-                        <input class="input" type="password" />
+                        <input name="Pcode" class="input" type="password" />
                     </div>
                 </div>
                 <input type="submit" class="btn" value="登入" />
@@ -49,7 +51,7 @@
         </div>
     </div>
 
-    
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
     <script type="text/javascript" src="~/js/Manager/Home/index.js"></script>

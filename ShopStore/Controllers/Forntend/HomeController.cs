@@ -6,7 +6,6 @@ using System.Diagnostics;
 
 namespace ShopStore.Controllers
 {
-    [AllowAnonymous]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -16,6 +15,7 @@ namespace ShopStore.Controllers
             _logger = logger;
         }
 
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View("/Views/Frontend/Home/Index.cshtml");
@@ -25,6 +25,8 @@ namespace ShopStore.Controllers
         /// 帳號重複登入
         /// </summary>
         /// <returns></returns>
+        //[AllowAnonymous]
+        [Authorize(Roles = "Normal")]
         public IActionResult Error()
         {
             return View("/Views/Frontend/Home/Error.cshtml");
@@ -33,17 +35,21 @@ namespace ShopStore.Controllers
         /// <summary>
         /// 授權拒絕
         /// </summary>
-        /// <returns></returns>
+        /// <returns></returns>        
+        //[AllowAnonymous]
         public IActionResult AccessDenied()
         {
             return View("/Views/Frontend/Home/AccessDenied.cshtml");
         }
 
+        //[AllowAnonymous]
+        [Authorize(Policy = "RequireAdministratorRole")]
         public IActionResult Privacy()
         {
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult WishList()
         {
             return View("/Views/Frontend/Home/WishList.cshtml");

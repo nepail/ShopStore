@@ -210,8 +210,7 @@ namespace ShopStore.Controllers
 
 
 
-        [HttpGet]
-        [AllowAnonymous]
+        [HttpGet]        
         public IActionResult GetProductDetailById(string id)
         {
             try
@@ -229,7 +228,7 @@ namespace ShopStore.Controllers
             return NotFound();
         }
 
-        public static string Md5(string s)
+        private static string Md5(string s)
         {
             using var md5 = MD5.Create();
             var result = md5.ComputeHash(Encoding.UTF8.GetBytes(s));

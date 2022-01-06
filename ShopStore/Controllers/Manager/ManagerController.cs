@@ -1,12 +1,15 @@
 ﻿using DAL.Models;
 using DAL.Models.Manager;
 using DAL.Models.Manager.ViewModels;
+using DAL.Models.Manager.ViewModels.User;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Caching.Distributed;
 using NLog;
@@ -23,19 +26,26 @@ using static DAL.Models.Manager.PermissionDataModel;
 
 namespace ShopStore.Controllers
 {
+    [Authorize(AuthenticationSchemes = "manager")]
     public class ManagerController : Controller
     {
         private readonly IProducts _products;
         private readonly IManager _manager;
         private readonly IDistributedCache _cache;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IWebHostEnvironment _webHostEnvironment;        
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        public ManagerController(IProducts products, IManager manager, IWebHostEnvironment webHostEnvironment, IDistributedCache cache)
+        public ManagerController
+        (
+            IProducts products,
+            IManager manager,
+            IWebHostEnvironment webHostEnvironment,
+            IDistributedCache cache
+        )
         {
             _products = products;
             _manager = manager;
             _webHostEnvironment = webHostEnvironment;
-            _cache = cache;
+            _cache = cache;            
         }
 
         /// <summary>
@@ -43,58 +53,73 @@ namespace ShopStore.Controllers
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            //從session 取得 username
-            var userid = 2;
-
             return View();
         }
 
+
+        /// <summary>
+        /// 後台登入
+        /// </summary>
+        /// <param name="userLogin"></param>
+        /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult Login()
+        public IActionResult Login(UserLoginViewModel userLogin)
         {
 
-            //todo finduser
+            UserManageViewModels user = _manager.GetUser(userLogin);
 
+            if (user == null)
+            {
+                return Json(new { success = false });
+            }
 
 
             var claims = new List<Claim>
             {
-                new Claim("Account", "test"),
-                new Claim(ClaimTypes.Name, "test"), //暱稱                
-                new Claim(ClaimTypes.NameIdentifier, "1121"), //userId                
-                new Claim(ClaimTypes.Role, "1"),
+                new Claim("Account", user.Account),
+                new Claim(ClaimTypes.Name, user.Name), //暱稱                
+                new Claim(ClaimTypes.NameIdentifier, user.ID.ToString()), //userId                
+                new Claim(ClaimTypes.Role, user.GroupId.ToString()),
             };
 
-            //var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            
+
             //防止重複登入
-            var userGuid = Guid.NewGuid().ToString();
-            Response.Cookies.Append("test", userGuid);            
+            string userGuid = Guid.NewGuid().ToString();
+            Response.Cookies.Append(user.Account, userGuid);
             var options = new DistributedCacheEntryOptions();
-                options.SetSlidingExpiration(TimeSpan.FromMinutes(30)); //重新讀取後會重新計時
-                _cache.SetString("test", userGuid, options);
+            options.SetSlidingExpiration(TimeSpan.FromMinutes(1)); //重新讀取後會重新計時
+            _cache.SetString(user.Account, userGuid, options);
 
             //呼叫登入管理員登入
             HttpContext.SignInAsync(
-                //CookieAuthenticationDefaults.AuthenticationScheme,
                 "manager",
                 new ClaimsPrincipal(new ClaimsIdentity(claims, "manager")),
                 new AuthenticationProperties { IsPersistent = false });
 
-            return RedirectToAction("Home");
+
+            return Json(new { success = true, username = user.Name });
         }
 
-        [Authorize(AuthenticationSchemes = "manager")]
+        /// <summary>
+        /// 後台登出
+        /// </summary>
+        /// <returns>重導回首頁</returns>
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync("manager");
+            return View("Index");
+        }
+
         public async Task<IActionResult> Home()
         {
-            //從session 取得 username
-            var userid = 2;
+
+            int userId = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             //回傳菜單列表
-            IEnumerable<MenuModel> menuModels = await _manager.GetMenu(userid);
+            IEnumerable<MenuModel> menuModels = await _manager.GetMenu(userId);
 
             #region 測試資料
             //List<MenuModel> menuModels = new List<MenuModel>()
@@ -198,7 +223,7 @@ namespace ShopStore.Controllers
         /// <summary>
         /// Manager 新增商品
         /// </summary>
-        /// <returns></returns>
+        /// <returns></returns>        
         public IActionResult AddNewProducts()
         {
             try
@@ -306,8 +331,6 @@ namespace ShopStore.Controllers
             string filePath = Path.Combine(uploadFolder, id + ".txt");
             using StreamWriter file = new StreamWriter(filePath, false);
             file.Write(contentText);
-
-            //return true;
         }
 
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿using DAL.Models;
 using DAL.Models.Manager;
 using DAL.Models.Manager.ViewModels;
+using DAL.Models.Manager.ViewModels.User;
 using Dapper;
 using NLog;
 using ShopStore.Models.Interface;
@@ -227,6 +228,26 @@ namespace ShopStore.Models.Service
                 return false;
             }
         }
+
+        /// <summary>
+        /// 取得使用者ById
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public UserManageViewModels GetUser(UserLoginViewModel userLogin)
+        {
+            try
+            {                
+                using var conn = _connection;
+                return (UserManageViewModels)conn.QueryFirstOrDefault<UserManageViewModels>(@"pro_shopStore_Manager_User_getUser", new { userLogin.Account, userLogin.Pcode }, commandType: System.Data.CommandType.StoredProcedure);
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "Debug");
+                return null;
+            }            
+        }
+
 
         /// <summary>
         /// 取得後台使用者

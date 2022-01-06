@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -12,6 +12,11 @@ using ShopStore.Common;
 using ShopStore.Common.Filters;
 using System.Data.SqlClient;
 using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using Microsoft.AspNetCore.Identity.UI;
+using DAL.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace ShopStore
 {
@@ -28,7 +33,8 @@ namespace ShopStore
         {
             double LoginExpireMinute = this.Configuration.GetValue<double>("LoginExpireMinute");
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            services
+                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(option =>
                 {
                     option.LoginPath = new PathString("/Member/Login");
@@ -61,8 +67,37 @@ namespace ShopStore
             services.AddScoped<ActionFilter>();
             services.AddScoped<AuthorizationFilter>();
 
-            //加解密儲存空間
+            //後台新增產品產生MD5碼呼叫 DataProtection API，需要加上這段加解密儲存空間，否則部屬IIS會報錯
             services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(@"D:\DataProtection\"));
+            //services.AddIdentity<IdentityUser, IdentityRole>();
+
+
+
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("RequireAdministratorRole",
+            //         policy => policy.RequireRole("Administrator"));
+            //});
+
+            //services.AddScoped<ShopUserRole>();
+            //services.AddScoped<IdentityRole>();
+
+
+            //services.AddDefaultIdentity<ShopUserRole>(options =>
+            //{
+            //    options.Password.RequiredLength = 4;             //密碼長度
+            //    options.Password.RequireLowercase = false;       //包含小寫英文
+            //    options.Password.RequireUppercase = false;       //包含大寫英文
+            //    options.Password.RequireNonAlphanumeric = false; //包含符號
+            //    options.Password.RequireDigit = false;           //包含數字
+            //})
+            //        .AddRoles<IdentityRole>(); //角色
+
+
+            //新增角色服務
+            //services.AddIdentityCore<IdentityUser>()
+            //    .AddRoles<IdentityRole>();
+
 
             //驗證
             //services.AddTransient<SysUserDal>();
@@ -70,15 +105,13 @@ namespace ShopStore
             //services.AddTransient<IUserStore<SysUser>, CustomUserStore>();
             //services.AddTransient<IRoleStore<SysUserRole>, CustomRoleStore>();
 
-
-
             services.AddSession(option =>
             {
                 //設定逾期時間
                 //option.IdleTimeout = TimeSpan.FromMinutes(30);
             });
 
-            //全域驗證
+            //加入自訂的授權過濾器
             services.AddMvc(option =>
             {
                 //option.Filters.Add(new AuthorizeFilter());
@@ -86,6 +119,22 @@ namespace ShopStore
                 option.Filters.Add<ActionFilter>();
                 option.Filters.Add<AuthorizationFilter>();
             });
+
+            services.AddResponseCompression(option =>
+            {
+                //同時啟用 Gzip 及 Brotil壓縮
+                option.Providers.Add<BrotliCompressionProvider>();
+                option.Providers.Add<GzipCompressionProvider>();
+                option.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "image/svg+xml" });
+            });
+
+            services.Configure<BrotliCompressionProviderOptions>(option =>
+            {
+                //自定義壓縮級別
+                option.Level = (CompressionLevel)5;
+            });
+
+            services.AddMemoryCache();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -99,7 +148,21 @@ namespace ShopStore
                 app.UseExceptionHandler("/Home/Error");
             }
 
+
             app.UseStaticFiles();
+
+
+            //加入快取設定
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    OnPrepareResponse = ctx =>
+            //    {
+            //        ctx.Context.Response.Headers[HeaderNames.CacheControl] = "public, max-age=86400";
+            //    }            
+            //});
+
+
+
             //app.UseStaticFiles(new StaticFileOptions 
             //{ 
             //    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Scripts")),
@@ -110,8 +173,17 @@ namespace ShopStore
                 FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "node_modules")),
                 RequestPath = new PathString("/vendor")
             });
+
+
+            //啟用壓縮回應
+            app.UseResponseCompression();
+
             app.UseAuthentication();
+
+
+
             app.UseRouting();
+
             app.UseSession();
 
             app.UseAuthorization();
@@ -120,7 +192,9 @@ namespace ShopStore
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}")
+                //啟用全域驗證
+                .RequireAuthorization();
             });
         }
     }

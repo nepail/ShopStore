@@ -12,6 +12,7 @@ using System;
 using NLog;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace ShopStore.Controllers
 {
@@ -22,6 +23,7 @@ namespace ShopStore.Controllers
         private readonly IDistributedCache _cache;
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private readonly IHttpContextAccessor _httpContextAccessor;
+        //private readonly UserManager<>
 
         public MemberController(IMembers members, IDistributedCache cache, IHttpContextAccessor httpContextAccessor)
         {
@@ -184,8 +186,11 @@ namespace ShopStore.Controllers
                 new Claim("Account", member.f_account),
                 new Claim(ClaimTypes.Name, member.f_nickname), //暱稱                
                 new Claim(ClaimTypes.NameIdentifier, member.f_id), //userId                
-                new Claim(ClaimTypes.Role, member.f_groupid),
+                //new Claim(ClaimTypes.Role, member.f_groupid),
+                new Claim(ClaimTypes.Role, "Normal"),
             };
+
+            
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 

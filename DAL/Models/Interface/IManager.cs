@@ -1,6 +1,7 @@
 ﻿using DAL.Models;
 using DAL.Models.Manager;
 using DAL.Models.Manager.ViewModels;
+using DAL.Models.Manager.ViewModels.User;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -63,6 +64,13 @@ namespace ShopStore.Models.Interface
         /// <param name="model"></param>
         /// <returns></returns>
         public bool AddUser(UserManageModel model);
+
+        /// <summary>
+        /// 取得使用者ById
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public UserManageViewModels GetUser(UserLoginViewModel userLogin);
 
         /// <summary>
         /// 取得所有後台使用者

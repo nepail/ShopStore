@@ -1,24 +1,10 @@
-﻿// setTimeout(() => { window.location.reload(); }, 8000);
-
-let sidebar = document.querySelector(".sidebar");
+﻿let sidebar = document.querySelector(".sidebar");
 let sidebarBtn = document.querySelector(".sidebar-button");
 
 sidebarBtn.onclick = () => {
     sidebar.classList.toggle("active");
     $('.sub-menu').css('display', 'none');
 }
-
-// let fn = {
-//     addMenu: function(obj) {
-//         obj.preventDefault
-//         console.log('測試')
-//             //menuid
-//             //levelid
-//             //controller
-//         console.log($(obj).parent().parent().attr('parent-id'))
-//     }
-// }
-
 
 
 $(document).ready(function() {
@@ -32,9 +18,41 @@ $(document).ready(function() {
     $('.sidebar>.nav-links>li>.sub-menu>li>a').click(function(event) {
         event.preventDefault();
         // console.log($(this).attr('data-controller'))
-        if ($(this).attr('data-controller') != '') {
-            $('#app').load($(this).attr('data-controller'))
+
+        if ($(this).attr('data-controller').includes('Logout')) {
+            window.location.href = '/Manager';
         }
+
+        if ($(this).attr('data-controller') != '') {
+
+            $.ajax({
+                url: $(this).attr('data-controller'),
+                success: res => {
+                    if (res.includes('後台管理系統')) {                        
+                        window.location.href = '/Manager';
+                    }
+                    $('#app').html(res)
+                },
+                error: res => {
+                    window.location.href = '/Manager';
+                }
+            })
+
+
+            //$('#app').load($(this).attr('data-controller'), function (responseTxt, statusTxt, xhr) {
+
+            //    console.log({ responseTxt })
+            //    console.log({ statusTxt })
+            //    console.log({ xhr })
+
+            //    if (responseTxt.includes('後台管理系統')) {
+            //        alert('閒置過久，您已被登出')
+            //        window.location.href = '/Manager';
+            //    }
+            //})
+        }
+
+        //加入逾時重定向處理
 
 
         // if ($(this).attr('data-controller').indexOf('Member') > 0) {
