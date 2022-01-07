@@ -19,5 +19,12 @@ namespace ShopStore.Models.Interface
         /// <param name="f_pcode"></param>
         /// <returns></returns>
         public UserProfileViewModel GetMemberProfile(int memberId);
+        /// <summary>
+        /// 重置會員密碼
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="mail"></param>
+        /// <returns></returns>
+        public bool ResetMemberPcode(string code, string mail);
     }
 }

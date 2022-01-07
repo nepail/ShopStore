@@ -4,11 +4,13 @@
     var name = Context.Request.Path;
 }
 
+<link rel="stylesheet" href="~/css/Frontend/Member/Login.css" />
+
 <div class="col-md-10 mx-auto py-4">
     @{
         if (!User.Identity.IsAuthenticated)
         {
-            <div>
+            <div id="memberLogin">
                 <div>
                     <h4>登入</h4>
                     <hr />
@@ -32,8 +34,10 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+
+                        <div class="btnMemberLogin">
                             <input id="btnLogin" class="btn btn-lg btn-primary" type="submit" value="登入" onclick="" />
+                            <a id="forgetPcode" href="#">忘記密碼?</a>
                         </div>
                     </form>
                 </div>
@@ -47,13 +51,8 @@
 
 </div>
 
-@section scripts{
-<script type="text/javascript">
-    $('label[required]').before('<span style="color:red">* </span>');
 
-    $('#btnLogin').click(function(){
-        console.log(this)
-        localStorage.setItem('user', $('#inputAccount').val())
-    })
-</script>
+
+@section scripts{
+    <script type="text/javascript" src="~/js/Frontend/Member/Login.js"></script>
 }

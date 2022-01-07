@@ -190,7 +190,7 @@ namespace ShopStore.Controllers
                 new Claim(ClaimTypes.Role, "Normal"),
             };
 
-            
+
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -240,6 +240,65 @@ namespace ShopStore.Controllers
             await HttpContext.SignOutAsync();
 
             return RedirectToAction("Index", "Home");
+        }
+
+        /// <summary>
+        /// 忘記密碼
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> ForgetPcode(string mail)
+        {
+            //確認email
+            if (await _members.VerifyEmailAsync(mail))
+            {
+                string code = MailHelper.SendResetPcode("", mail);
+
+                //將認證碼寫入Redis
+                var options = new DistributedCacheEntryOptions();
+                options.SetAbsoluteExpiration(TimeSpan.FromMinutes(1)); //時間到即消失                                                                        
+                _cache.SetString(mail, code, options);
+
+                //送出信件
+                return Json(new { success = true });
+            }
+            else
+            {
+                return Json(new { success = false, msg = "查無此信箱" });
+            }
+        }
+
+        /// <summary>
+        /// 驗證重置認證碼
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="mail"></param>
+        /// <returns></returns>
+        public IActionResult CheckCode(string code, string mail)
+        {
+            if (_cache.GetString(mail) != null)
+            {
+                if (_cache.GetString(mail) == code)
+                {
+                    return Json(new { success = true });
+                }
+                else
+                {
+                    return Json(new { success = false, msg = "認證碼錯誤" });
+                }
+            }
+
+            return Json(new { success = false, msg = "認證碼失效" });
+        }
+
+        /// <summary>
+        /// 重置密碼
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="mail"></param>
+        /// <returns></returns>
+        public IActionResult ResetPcode(string code, string mail)
+        {
+            return _members.ResetMemberPcode(code, mail) == true ? Json(new { success = true }) : Json(new { success = false });
         }
 
         #endregion

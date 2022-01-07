@@ -134,5 +134,25 @@ namespace ShopStore.Models.Service
             }
             return true;
         }
+
+        /// <summary>
+        /// 重置會員密碼
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="mail"></param>
+        /// <returns></returns>
+        public bool ResetMemberPcode(string code, string mail)
+        {
+            try
+            {
+                using var conn = _connection;                
+                return conn.Execute(@"pro_shopStore_ResetMemberPcode", new { code, mail }, commandType: System.Data.CommandType.StoredProcedure) > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.Debug(ex, "Debug");
+                return false;
+            }            
+        }
     }
 }

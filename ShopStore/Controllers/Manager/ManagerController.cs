@@ -3,13 +3,10 @@ using DAL.Models.Manager;
 using DAL.Models.Manager.ViewModels;
 using DAL.Models.Manager.ViewModels.User;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Caching.Distributed;
 using NLog;
@@ -416,9 +413,6 @@ namespace ShopStore.Controllers
         [HttpGet]
         public IActionResult GetUserPermissionsByID(int userId)
         {
-            //測試
-            var a = HttpContext.Session;
-
             try
             {
                 var groupList = _manager.GetUserPermissionsByID(userId);
