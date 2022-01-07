@@ -87,7 +87,7 @@ namespace ShopStore.Controllers
             string userGuid = Guid.NewGuid().ToString();
             Response.Cookies.Append(user.Account, userGuid);
             var options = new DistributedCacheEntryOptions();
-            options.SetSlidingExpiration(TimeSpan.FromMinutes(1)); //重新讀取後會重新計時
+            options.SetSlidingExpiration(TimeSpan.FromMinutes(5)); //重新讀取後會重新計時
             _cache.SetString(user.Account, userGuid, options);
 
             //呼叫登入管理員登入

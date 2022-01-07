@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+/*
+    
+ */
+
+using Microsoft.AspNetCore.Mvc;
 using NLog;
 using ShopStore.Common;
 using ShopStore.Models;

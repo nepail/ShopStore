@@ -26,11 +26,13 @@ var User = {
                         MainProperties.User.group = res.group;
                         User.UC.SetUserList();                                    
                     } else {
+                        console.log(res)
                         swal('載入失敗', '資料庫出現錯誤', 'error');
                     }
                 },
                 error: (res) => {
                     swal('載入失敗', '網路出現錯誤', 'error');
+                    
                 }
             })
         },
@@ -64,17 +66,31 @@ var User = {
             $.ajax({
                 url: '/Manager/GetUserPermissionsByID?userId=' + userid,
                 type: 'get',
-                success: (res) => {
-                    if (res.success) {
-
-                        User.UC.SetUserPermissions(res.groupList)
-                    } else {
-                        swal('載入失敗', '資料庫出現錯誤', 'error');
+                statusCode: {
+                    200(res) {
+                        if (res.success) {
+                            User.UC.SetUserPermissions(res.groupList);
+                        }
+                    },
+                    401 (){
+                        alert('閒置太久未動作，您已被登出');
+                        window.location.href = '/Manager';
                     }
                 },
-                error: (res) => {
-                    swal('載入失敗', '網路出現錯誤', 'error');
-                }
+                //success: (res) => {
+                //    if (res.success) {
+                //        User.UC.SetUserPermissions(res.groupList)
+                //    } else {
+                //        console.log(res)
+                //        swal('載入失敗', '資料庫出現錯誤', 'error');
+                //    }
+                //},
+                //error: (res) => {
+                //    if (res.status == 401) {
+                //        window.location.href = '/Manager';
+                //    };
+                //    swal('載入失敗', '網路出現錯誤', 'error');
+                //}
             })
         },
 
@@ -89,6 +105,7 @@ var User = {
                         User.UC.ResetForm();
                         User.DATA.GetUsers();
                     } else {
+                        console.log(res)
                         swal('新增失敗', '資料庫出現錯誤', 'error');
                     }
                 },

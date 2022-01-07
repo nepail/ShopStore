@@ -21,7 +21,7 @@ namespace ShopStore
                     .UseIISIntegration() //Out-Proccess
                     //.UseIIS() In-Proccess
                     .UseStartup<Startup>();
-                    
+                    //.UseUrls("http://192.168.6.4:5051");
                 });
     }
 }
