@@ -1,4 +1,17 @@
-﻿using DAL.Models;
+﻿#region 功能與歷史修改描述
+
+/*
+    描述:後台網頁資料庫處理
+    建立日期:2021-12-03
+
+    描述:程式碼風格調整
+    修改日期:2022-01-07
+
+ */
+
+#endregion
+
+using DAL.Models;
 using DAL.Models.Manager;
 using DAL.Models.Manager.ViewModels;
 using DAL.Models.Manager.ViewModels.User;
@@ -10,7 +23,6 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Transactions;
 using static DAL.Models.Manager.OrderStatusModel;
 using static DAL.Models.Manager.PermissionDataModel;
 
@@ -18,12 +30,12 @@ namespace ShopStore.Models.Service
 {
     public class ManagerSVE : IManager
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly SqlConnection _connection;
+        private static readonly Logger LOGGER = LogManager.GetCurrentClassLogger();
+        private readonly SqlConnection CONNECTION;
 
         public ManagerSVE(SqlConnection connection)
         {
-            _connection = connection;
+            CONNECTION = connection;
         }
 
         /// <summary>
@@ -35,8 +47,8 @@ namespace ShopStore.Models.Service
         {
             try
             {
-                using var conn = _connection;
-                SqlMapper.GridReader result = await conn.QueryMultipleAsync(@"pro_shopStore_getMenu", new { userid = userid }, commandType: System.Data.CommandType.StoredProcedure);
+                using var conn = CONNECTION;
+                SqlMapper.GridReader result = await conn.QueryMultipleAsync("pro_shopStore_getMenu", new { userid = userid }, commandType: System.Data.CommandType.StoredProcedure);
                 List<MenuModel> menuModels = result.Read<MenuModel>().ToList();
                 List<MenuSubModel> menuSubModels = result.Read<MenuSubModel>().ToList();
                 List<MenuModel> menu = (from a in menuModels
@@ -56,7 +68,7 @@ namespace ShopStore.Models.Service
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                LOGGER.Error(ex);
                 return null;
             }
         }
@@ -70,13 +82,13 @@ namespace ShopStore.Models.Service
         {
             try
             {
-                using var conn = _connection;
+                using var conn = CONNECTION;
                 var result = conn.Execute("pro_shopStore_Manager_addMenu", menuModel, commandType: System.Data.CommandType.StoredProcedure);
                 return true;
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");
+                LOGGER.Debug(ex, "Debug");
                 return false;
             }
         }
@@ -89,10 +101,9 @@ namespace ShopStore.Models.Service
         /// <returns></returns>
         public async Task<bool> AddSubMenu(MenuViewModel model)
         {
-            //using TransactionScope scope = new TransactionScope();
             try
             {
-                using var conn = _connection;
+                using var conn = CONNECTION;
                 if (model.MainMenuItems != null && model.MainMenuItems.Count > 0)
                 {
                     var result = await conn.ExecuteAsync("pro_shopStore_Manager_addMainMenu", model.MainMenuItems, commandType: System.Data.CommandType.StoredProcedure);
@@ -111,10 +122,10 @@ namespace ShopStore.Models.Service
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");
+                LOGGER.Debug(ex, "Debug");
                 return false;
             }
-            //scope.Complete();
+
             return true;
         }
 
@@ -126,9 +137,8 @@ namespace ShopStore.Models.Service
         {
             try
             {
-                using var conn = _connection;
-                string sqlStr = @"pro_shopStore_Manager_getOrderList";
-
+                using var conn = CONNECTION;
+                string sqlStr = "pro_shopStore_Manager_getOrderList";
                 var result = conn.Query(sqlStr);
                 List<OrderManageViewModel> model = (List<OrderManageViewModel>)conn.Query<OrderManageViewModel>(sqlStr);
 
@@ -136,7 +146,7 @@ namespace ShopStore.Models.Service
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");
+                LOGGER.Debug(ex, "Debug");
                 return null;
             }
         }
@@ -149,20 +159,20 @@ namespace ShopStore.Models.Service
         {
             try
             {
-                using var conn = _connection;                
+                using var conn = CONNECTION;
                 var result = conn.QueryMultiple("pro_shopStore_Manager_Order_getStatus", commandType: System.Data.CommandType.StoredProcedure);
 
-                OrderStatusModel model = new OrderStatusModel() 
-                { 
-                    cartgoState = result.Read<StatusProp>().ToDictionary(x => x.Code, x => x),
-                    sipState = result.Read<StatusProp>().ToDictionary(x => x.Code, x => x)
-                 };
+                OrderStatusModel model = new OrderStatusModel()
+                {
+                    CartgoState = result.Read<StatusProp>().ToDictionary(x => x.Code, x => x),
+                    SipState = result.Read<StatusProp>().ToDictionary(x => x.Code, x => x)
+                };
 
                 return model;
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "GetOrderStatus");
+                LOGGER.Debug(ex, "GetOrderStatus");
                 return null;
             }
         }
@@ -176,14 +186,13 @@ namespace ShopStore.Models.Service
         {
             try
             {
-                using var conn = _connection;
-                string sqlStr = @"pro_shopStore_Manager_removeOrderList";
-                bool result = conn.Query<bool>(sqlStr, new { f_id = ordernum }, commandType: System.Data.CommandType.StoredProcedure).FirstOrDefault();
+                using var conn = CONNECTION;
+                bool result = conn.Query<bool>("pro_shopStore_Manager_removeOrderList", new { f_id = ordernum }, commandType: System.Data.CommandType.StoredProcedure).FirstOrDefault();
                 return true;
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");
+                LOGGER.Debug(ex, "Debug");
                 return false;
             }
         }
@@ -197,17 +206,14 @@ namespace ShopStore.Models.Service
         {
             try
             {
-                using var conn = _connection;
-                string sqlStr = @"pro_shopStore_Manager_UpdateOrder";
-                var result = conn.Execute(sqlStr, orders, commandType: System.Data.CommandType.StoredProcedure);
+                using var conn = CONNECTION;
+                return conn.Execute("pro_shopStore_Manager_UpdateOrder", orders, commandType: System.Data.CommandType.StoredProcedure) > 0;
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");
+                LOGGER.Debug(ex, "Debug");
                 return false;
             }
-
-            return true;
         }
 
         /// <summary>
@@ -219,12 +225,12 @@ namespace ShopStore.Models.Service
         {
             try
             {
-                using var conn = _connection;
+                using var conn = CONNECTION;
                 return conn.Execute(@"pro_shopStore_Manager_AddUser", model, commandType: System.Data.CommandType.StoredProcedure) == 1;
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");
+                LOGGER.Debug(ex, "Debug");
                 return false;
             }
         }
@@ -237,15 +243,15 @@ namespace ShopStore.Models.Service
         public UserManageViewModels GetUser(UserLoginViewModel userLogin)
         {
             try
-            {                
-                using var conn = _connection;
-                return (UserManageViewModels)conn.QueryFirstOrDefault<UserManageViewModels>(@"pro_shopStore_Manager_User_getUser", new { userLogin.Account, userLogin.Pcode }, commandType: System.Data.CommandType.StoredProcedure);
+            {
+                using var conn = CONNECTION;
+                return (UserManageViewModels)conn.QueryFirstOrDefault<UserManageViewModels>("pro_shopStore_Manager_User_getUser", new { userLogin.Account, userLogin.Pcode }, commandType: System.Data.CommandType.StoredProcedure);
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");
+                LOGGER.Debug(ex, "Debug");
                 return null;
-            }            
+            }
         }
 
 
@@ -257,16 +263,10 @@ namespace ShopStore.Models.Service
         {
             try
             {
-                using var conn = _connection;
-                //List<UserManageViewModel> result = new List<UserManageViewModel>();
-                //result = (List<UserManageViewModel>)conn.Query<UserManageViewModel>(@"pro_shopStore_Manager_getUsers", commandType: System.Data.CommandType.StoredProcedure);
+                using var conn = CONNECTION;
+                var result = conn.QueryMultiple("pro_shopStore_Manager_getUsers", commandType: System.Data.CommandType.StoredProcedure);
 
-                var result = conn.QueryMultiple(@"pro_shopStore_Manager_getUsers", commandType: System.Data.CommandType.StoredProcedure);
-
-                //這段要修改
                 List<UserManageViewModel> userManageViewModels = result.Read<UserManageViewModel>().ToList();
-                //List<UserPermission> permissionList = result.Read<UserPermission>().ToList();
-
                 List<UserManageViewModels> model = userManageViewModels.Select(x => new UserManageViewModels
                 {
                     ID = x.ID,
@@ -276,14 +276,13 @@ namespace ShopStore.Models.Service
                     GroupName = x.GroupName,
                     CreateTime = x.f_createTime.ToString("yyyy/MM/dd HH:mm:ss"),
                     UpdateTime = x.f_updateTime.ToString("yyyy/MM/dd HH:mm:ss"),
-                    //UserPermissions = permissionList.Where(s => s.f_groupId == x.GroupId).ToList()
                 }).ToList();
 
                 return model;
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");
+                LOGGER.Debug(ex, "Debug");
                 return null;
             }
         }
@@ -297,7 +296,7 @@ namespace ShopStore.Models.Service
         {
             try
             {
-                using var conn = _connection;
+                using var conn = CONNECTION;
                 var userPermission = conn.Query<UserPermission, UserPermissionDetail, UserPermission>
                     ("pro_shopStore_Manager_getUsersPermissions",
                     (o, c) =>
@@ -311,7 +310,7 @@ namespace ShopStore.Models.Service
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");
+                LOGGER.Debug(ex, "Debug");
                 return null;
             }
         }
@@ -325,8 +324,6 @@ namespace ShopStore.Models.Service
         {
             try
             {
-                var updateTime = DateTime.Now;
-
                 List<PermissionModel> permissionModels = permissionData.PermissionDetails.Select(x => new PermissionModel
                 {
                     f_userId = permissionData.UserId,
@@ -351,15 +348,12 @@ namespace ShopStore.Models.Service
                     });
                 }
 
-
-                using var conn = _connection;
-                var result = conn.Execute("pro_shopStore_Manager_UserPermissionsUpdate", permissionModels, commandType: System.Data.CommandType.StoredProcedure);
-
-                return result > 0;
+                using var conn = CONNECTION;
+                return conn.Execute("pro_shopStore_Manager_UserPermissionsUpdate", permissionModels, commandType: System.Data.CommandType.StoredProcedure) > 0;                
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");
+                LOGGER.Debug(ex, "Debug");
                 return false;
             }
         }
@@ -372,14 +366,14 @@ namespace ShopStore.Models.Service
         {
             try
             {
-                using var conn = _connection;
+                using var conn = CONNECTION;
                 return conn.Execute("pro_shopStore_Manager_UserRemove",
                                     new { userId },
                                     commandType: System.Data.CommandType.StoredProcedure) == 1;
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "RemoveUserByID");
+                LOGGER.Debug(ex, "RemoveUserByID");
                 return false;
             }
         }
@@ -392,13 +386,13 @@ namespace ShopStore.Models.Service
         {
             try
             {
-                using var conn = _connection;
+                using var conn = CONNECTION;
                 return (List<MemberManagerViewModel>)conn.Query<MemberManagerViewModel>("pro_shopStore_Manager_Member_GetList",
                                     commandType: System.Data.CommandType.StoredProcedure);
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "GetMemberList");
+                LOGGER.Debug(ex, "GetMemberList");
                 return null;
             }
         }
@@ -412,14 +406,14 @@ namespace ShopStore.Models.Service
         {
             try
             {
-                using var conn = _connection;
+                using var conn = CONNECTION;
                 return conn.Execute("pro_shopStore_Manager_Member_SuspendByID",
                     new { memberId, isSuspend },
                     commandType: System.Data.CommandType.StoredProcedure) == 1;
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, $"SuspendByID={memberId}");
+                LOGGER.Debug(ex, $"SuspendByID={memberId}");
                 return false;
             }
         }
@@ -433,14 +427,14 @@ namespace ShopStore.Models.Service
         {
             try
             {
-                using var conn = _connection;
+                using var conn = CONNECTION;
                 return conn.Execute("pro_shopStore_Manager_Member_UpdateByID",
                     memberManageModel.MemberModel,
                     commandType: System.Data.CommandType.StoredProcedure) > 0;
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, $"SuspendByID={memberManageModel}");
+                LOGGER.Debug(ex, $"SuspendByID={memberManageModel}");
                 return false;
             }
         }

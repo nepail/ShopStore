@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace ShopStore.Models
+﻿namespace ShopStore.Models
 {
     /// <summary>
     /// 類別 ViewModel

@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ShopStore.ViewModels
 {
@@ -81,22 +78,6 @@ namespace ShopStore.ViewModels
         /// </summary>
         [Display(Name = "通訊地址", Prompt = "ex: 台中市西屯區市政路400號"), Required(ErrorMessage = "請輸入通訊地址")]
         public string f_address { get; set; }
-
-        //public string f_level
-        //{
-        //    get
-        //    {
-        //        return _f_level ?? "0";
-        //    }
-        //    set
-        //    {
-        //        _f_level = value switch
-        //        {
-        //            "1" => "admin",
-        //            _ => "basic"
-        //        };
-        //    }
-        //}
 
         public string f_groupid
         {

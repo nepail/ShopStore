@@ -1,11 +1,12 @@
 ﻿using ShopStore.ViewModels;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static ShopStore.ViewModels.ProductsViewModel;
 
 namespace ShopStore.Models.Interface
 {
+    /// <summary>
+    /// 產品 Interface
+    /// </summary>
     public interface IProducts
     {
         /// <summary>
@@ -26,19 +27,6 @@ namespace ShopStore.Models.Interface
         /// <param name="request"></param>
         /// <returns></returns>
         public bool AddProducts(ProductsViewModel request);
-
-        /// <summary>
-        /// 確認是否有此產品
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public bool Any(string id);
-
-        ///// <summary>
-        ///// 取得商品明細
-        ///// </summary>
-        ///// <returns></returns>
-        //Task<ProductDetailViewModel> GetProductDetailByIdAsync(string id);
 
         /// <summary>
         /// 更新商品

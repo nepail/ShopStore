@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace ShopStore.Models
+﻿namespace ShopStore.Models
 {
     public class ProductDetailModel
     {
@@ -12,6 +7,9 @@ namespace ShopStore.Models
         /// </summary>
         public string f_id { get; set; }
 
+        /// <summary>
+        /// 產品ID
+        /// </summary>
         public string f_pId { get; set; }
 
         /// <summary>

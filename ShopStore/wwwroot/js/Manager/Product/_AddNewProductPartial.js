@@ -29,8 +29,6 @@ ClassicEditor.create(document.querySelector('#editor'))
         console.error(error);
     });
 
-
-
 $('form').submit(function (e) {
     //阻止元素默認發生的行為
     e.preventDefault();    
@@ -44,7 +42,7 @@ $('form').submit(function (e) {
 
     console.log(JSON.stringify(Object.fromEntries(form)));
 
-
+    console.log('addneproducts error?')
     $.ajax({
         async: false,
         type: $('form').attr('method'),

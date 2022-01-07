@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace ShopStore.ViewModels
+﻿namespace ShopStore.ViewModels
 {
     /// <summary>
     /// 購物車 ViewModel
     /// </summary>
     public class CartViewModel
     {
-        public int Id { get; set; }
-        //public int OrderId { get; set; }
+        public int Id { get; set; }        
         public int IsOpen { get; set; }
         public int ProductId { get; set; }  //商品ID
         public int Amount { get; set; }     //數量

@@ -1,11 +1,23 @@
-﻿using Dapper;
+﻿#region 功能與歷史修改描述
+
+/*
+    描述:產品資料庫
+    建立日期:2021-11-24
+
+    描述:程式碼風格調整
+    修改日期:2022-01-07
+
+ */
+
+#endregion
+
+using Dapper;
 using NLog;
 using ShopStore.Models.Interface;
 using ShopStore.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.IO;
 using System.Threading.Tasks;
 using static ShopStore.ViewModels.ProductsViewModel;
 
@@ -13,11 +25,11 @@ namespace ShopStore.Models.Service
 {
     public class ProductsSVE : IProducts
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly SqlConnection _connection;
+        private static readonly Logger LOGGER = LogManager.GetCurrentClassLogger();
+        private readonly SqlConnection CONNECTION;
         public ProductsSVE(SqlConnection connection)
         {
-            _connection = connection;
+            CONNECTION = connection;
         }
 
         /// <summary>
@@ -28,51 +40,16 @@ namespace ShopStore.Models.Service
         {
             try
             {
-                using var conn = _connection;
-                var result = await conn.QueryAsync<ProductsViewModel>(@"pro_shopStore_getProducts", new {f_isopen = isopen}, commandType: System.Data.CommandType.StoredProcedure);
+                using var conn = CONNECTION;
+                var result = await conn.QueryAsync<ProductsViewModel>("pro_shopStore_getProducts", new { f_isopen = isopen }, commandType: System.Data.CommandType.StoredProcedure);
                 return result;
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");
+                LOGGER.Debug(ex, "Debug");
                 throw ex;
             }
         }
-
-        ///// <summary>
-        ///// 取得商品明細
-        ///// </summary>
-        ///// <returns></returns>
-        //public async Task<ProductDetailViewModel> GetProductDetailByIdAsync(string id)
-        //{
-        //    try
-        //    {
-        //        using var conn = _connection;
-        //        var Model = await conn.QuerySingleAsync<ProductDetailModel>(@"pro_shopStore_getProductByID",
-        //                                                                  new { ID = new DbString { Value = id, Length = 36, IsAnsi = true, IsFixedLength = true } },
-        //                                                                  commandType: System.Data.CommandType.StoredProcedure);
-
-
-        //        ProductDetailViewModel result = new ProductDetailViewModel()
-        //        {
-        //            Id = Model.f_id,
-        //            PId = Model.f_pId,
-        //            Name = Model.f_name,
-        //            Content = Model.f_content,
-        //            Type = Model.f_categoryId.ToString(),
-        //            Price = Model.f_price,
-        //            ImgPath = Model.f_picName
-        //        };
-
-        //        return result;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        logger.Debug(ex, "Debug");
-        //    }
-
-        //    return null;
-        //}
 
         /// <summary>
         /// 取得類別列表
@@ -82,11 +59,7 @@ namespace ShopStore.Models.Service
         {
             try
             {
-                using var conn = _connection;
-                //var result = conn.Query<CategoriesViewModel>(@"SELECT 
-                //                                                 [f_id]
-                //                                                ,[f_code]
-                //                                                ,[f_name] FROM t_categories WITH(NOLOCK)");
+                using var conn = CONNECTION;
                 var result = conn.Query<CategoriesViewModel>(@"SELECT 
                                                                  [f_id]                                                                
                                                                 ,[f_name] FROM t_categories WITH(NOLOCK)");
@@ -94,8 +67,8 @@ namespace ShopStore.Models.Service
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");
-                throw ex;
+                LOGGER.Debug(ex, "Debug");
+                return null;
             }
         }
 
@@ -105,51 +78,33 @@ namespace ShopStore.Models.Service
         /// <param name="request"></param>
         /// <returns></returns>
         public bool AddProducts(ProductsViewModel model)
-        {
-            //using TransactionScope scope = new TransactionScope();
+        {            
             try
             {
-                using var conn = _connection;
+                using var conn = CONNECTION;
                 ProductDetailsModel productsModel = new ProductDetailsModel
                 {
-                    //f_id = Guid.NewGuid().ToString(),
-                    //f_pId = Guid.NewGuid().ToString(),
                     f_pId = model.f_pId,
                     f_name = model.f_name,
-                    f_price = model.f_price,
-                    //f_picName = model.f_picName,
+                    f_price = model.f_price,                    
                     f_description = model.f_description,
                     f_categoryId = model.f_categoryId,
                     f_stock = model.f_stock,
-                    f_isDel = model.f_isdel,
-                    f_isOpen = model.f_isopen,                    
+                    f_isDel = model.f_isDel,
+                    f_isOpen = model.f_isOpen,
                     f_updateTime = DateTime.Now,
                     f_createTime = DateTime.Now
                 };
 
-                var result = conn.Execute("pro_shopStore_addProduct", productsModel, commandType: System.Data.CommandType.StoredProcedure);
+                return conn.Execute("pro_shopStore_addProduct", productsModel, commandType: System.Data.CommandType.StoredProcedure) > 0;
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");
+                LOGGER.Debug(ex, "Debug");
                 return false;
-            }
-            //scope.Complete();
-            return true;
+            }                        
         }
 
-
-
-        /// <summary>
-        /// 確認是否有此產品
-        /// </summary>
-        /// <returns></returns>
-        public bool Any(string id)
-        {
-            using var conn = _connection;
-            Guid guid = Guid.Parse(id);
-            return conn.ExecuteScalar<bool>("select count(1) from t_products where f_id=@f_id", new { f_id = guid });
-        }
 
         /// <summary>
         /// 更新商品
@@ -162,31 +117,23 @@ namespace ShopStore.Models.Service
             {
                 f_pId = model.f_pId,
                 f_name = model.f_name,
-                f_price = model.f_price,
-                //f_picName = model.f_picName,
+                f_price = model.f_price,                
                 f_description = model.f_description,
                 f_categoryId = model.f_categoryId,
                 f_stock = model.f_stock,
-                f_isdel = model.f_isdel,
-                f_isopen = model.f_isopen,
-                f_updatetime = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")
-                //f_content = model.f_content,                
+                f_isDel = model.f_isDel,
+                f_isOpen = model.f_isOpen,
+                f_updateTime = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")                
             };
 
             try
             {
-                using var conn = _connection;
-
-                var result = await conn.ExecuteAsync(
-                    @"pro_shopStore_updateProduct",
-                    productModel,
-                    commandType: System.Data.CommandType.StoredProcedure);
-
-                return true;                               
+                using var conn = CONNECTION;
+                return await conn.ExecuteAsync("pro_shopStore_updateProduct", productModel, commandType: System.Data.CommandType.StoredProcedure) > 0;                
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");
+                LOGGER.Debug(ex, "Debug");
                 return false;
             }
         }

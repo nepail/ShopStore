@@ -33,20 +33,6 @@ fn = {
     },
 
     SetProductTable: function () {
-        //$.each(productData, (i, v) => {
-        //    var openStr = ''
-        //    v.f_isopen == 1 ? openStr = '開放中' : openStr = '不開放'
-
-        //    $('tbody').append(
-        //        `<tr id="pd_${v.f_id}" data-id="${v.f_pId}" onclick="fn.ShowProduct('${v.f_pId}')">
-        //        <td>${v.f_name}</td>
-        //        <td>${v.f_price}</td>
-        //        <td>${v.categoryName}</td>
-        //        <td>${v.f_stock}</td>
-        //        <td>${openStr}</td>
-        //        <td>${v.createTime}</td>
-        //     </tr>`)
-        //})
         
         var pdContent = '';
 

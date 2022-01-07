@@ -10,6 +10,9 @@ using static DAL.Models.Manager.PermissionDataModel;
 
 namespace ShopStore.Models.Interface
 {
+    /// <summary>
+    /// 後台 Interface
+    /// </summary>
     public interface IManager
     {
         /// <summary>

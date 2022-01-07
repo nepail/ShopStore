@@ -1,11 +1,11 @@
 ﻿using ShopStore.ViewModels;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ShopStore.Models.Interface
 {
+    /// <summary>
+    /// 訂單 Interface
+    /// </summary>
     public interface IOrders
     {
         /// <summary>

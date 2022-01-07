@@ -14,9 +14,6 @@ using System.Data.SqlClient;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using Microsoft.AspNetCore.Identity.UI;
-using DAL.Identity.Data;
-using Microsoft.AspNetCore.Identity;
 
 namespace ShopStore
 {
@@ -32,6 +29,7 @@ namespace ShopStore
         public void ConfigureServices(IServiceCollection services)
         {
             double LoginExpireMinute = this.Configuration.GetValue<double>("LoginExpireMinute");
+            string connectionString = Configuration["SqlConStr"];
 
             services
                 .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -53,13 +51,12 @@ namespace ShopStore
             });
 
             services.AddControllersWithViews();
+
             services.AddTransient<Models.Interface.IProducts, Models.Service.ProductsSVE>();
             services.AddTransient<Models.Interface.IMembers, Models.Service.MembersSVE>();
             services.AddTransient<Models.Interface.ICart, Models.Service.CartSVE>();
             services.AddTransient<Models.Interface.IOrders, Models.Service.OrderSVE>();
             services.AddTransient<Models.Interface.IManager, Models.Service.ManagerSVE>();
-
-            string connectionString = Configuration["SqlConStr"];
             services.AddTransient(e => new SqlConnection(connectionString));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -68,20 +65,13 @@ namespace ShopStore
             services.AddScoped<AuthorizationFilter>();
 
             //後台新增產品產生MD5碼呼叫 DataProtection API，需要加上這段加解密儲存空間，否則部屬IIS會報錯
-            services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(@"D:\DataProtection\"));
-            //services.AddIdentity<IdentityUser, IdentityRole>();
-
-
+            services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(@"D:\DataProtection\"));            
 
             //services.AddAuthorization(options =>
             //{
             //    options.AddPolicy("RequireAdministratorRole",
             //         policy => policy.RequireRole("Administrator"));
             //});
-
-            //services.AddScoped<ShopUserRole>();
-            //services.AddScoped<IdentityRole>();
-
 
             //services.AddDefaultIdentity<ShopUserRole>(options =>
             //{
@@ -90,20 +80,7 @@ namespace ShopStore
             //    options.Password.RequireUppercase = false;       //包含大寫英文
             //    options.Password.RequireNonAlphanumeric = false; //包含符號
             //    options.Password.RequireDigit = false;           //包含數字
-            //})
-            //        .AddRoles<IdentityRole>(); //角色
-
-
-            //新增角色服務
-            //services.AddIdentityCore<IdentityUser>()
-            //    .AddRoles<IdentityRole>();
-
-
-            //驗證
-            //services.AddTransient<SysUserDal>();
-            //services.AddIdentity<SysUser, SysUserRole>().AddDefaultTokenProviders();
-            //services.AddTransient<IUserStore<SysUser>, CustomUserStore>();
-            //services.AddTransient<IRoleStore<SysUserRole>, CustomRoleStore>();
+            //})            
 
             services.AddSession(option =>
             {
@@ -114,8 +91,6 @@ namespace ShopStore
             //加入自訂的授權過濾器
             services.AddMvc(option =>
             {
-                //option.Filters.Add(new AuthorizeFilter());
-                //option.Filters.Add(new ActionFilter());
                 option.Filters.Add<ActionFilter>();
                 option.Filters.Add<AuthorizationFilter>();
             });
@@ -148,9 +123,7 @@ namespace ShopStore
                 app.UseExceptionHandler("/Home/Error");
             }
 
-
             app.UseStaticFiles();
-
 
             //加入快取設定
             //app.UseStaticFiles(new StaticFileOptions
@@ -161,13 +134,6 @@ namespace ShopStore
             //    }            
             //});
 
-
-
-            //app.UseStaticFiles(new StaticFileOptions 
-            //{ 
-            //    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Scripts")),
-            //    RequestPath = new PathString("/scripts")
-            //});
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "node_modules")),
@@ -179,8 +145,6 @@ namespace ShopStore
             app.UseResponseCompression();
 
             app.UseAuthentication();
-
-
 
             app.UseRouting();
 

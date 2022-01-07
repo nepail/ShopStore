@@ -174,46 +174,7 @@ namespace ShopStore.Controllers
             #endregion
 
             return View(menuModels);
-        }
-
-        [HttpGet("[action]")]
-        public IActionResult SampleData()
-        {
-            #region Index的測試資料
-            var result = new List<PersonModel>();
-            result.Add(new PersonModel
-            {
-                Age = 28,
-                FirstName = "Tim",
-                LastName = "Tsai"
-            });
-            result.Add(new PersonModel
-            {
-                Age = 21,
-                FirstName = "Larsen",
-                LastName = "Shaw"
-            });
-            result.Add(new PersonModel
-            {
-                Age = 89,
-                FirstName = "Geneva",
-                LastName = "Wilson"
-            });
-            result.Add(new PersonModel
-            {
-                Age = 28,
-                FirstName = "Jami",
-                LastName = "Carney"
-            });
-            #endregion
-            return Ok(result);
-        }
-
-        [HttpPost("[action]")]
-        public IActionResult PersonData([FromBody] PersonDataModel data)
-        {
-            return Ok();
-        }
+        }        
 
         #region 產品管理
 

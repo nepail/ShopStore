@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DAL.ViewModels
+﻿namespace DAL.ViewModels
 {
     public class UserProfileViewModel
     {

@@ -1,9 +1,21 @@
-﻿using ShopStore.ViewModels;
+﻿#region 功能與歷史修改描述
+
+/*
+    描述:前台訂單資料庫
+    建立日期:2021-11-24
+
+    描述:程式碼風格調整
+    修改日期:2022-01-07
+
+ */
+
+#endregion
+
+using ShopStore.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Threading.Tasks;
 using Dapper;
 using ShopStore.Models.Interface;
 using System.Transactions;
@@ -13,11 +25,11 @@ namespace ShopStore.Models.Service
 {
     public class OrderSVE : IOrders
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        readonly private SqlConnection _connection;
+        private static readonly Logger LOGGER = LogManager.GetCurrentClassLogger();
+        readonly private SqlConnection CONNECTION;
         public OrderSVE(SqlConnection connection)
         {
-            _connection = connection;
+            CONNECTION = connection;
         }
 
         /// <summary>
@@ -27,7 +39,7 @@ namespace ShopStore.Models.Service
         /// <returns></returns>
         public List<OrderViewModel> GetOrderList(string memberid)
         {
-            using var conn = _connection;
+            using var conn = CONNECTION;
             string strSql = @"select * from t_orders where f_memberid = @f_memberid
 
                               select c.f_Id, c.f_orderId, c.f_productid, c.f_amount, p.f_name, p.f_price from t_orders o with (NOLOCK)
@@ -44,28 +56,6 @@ namespace ShopStore.Models.Service
             List<OrderItem> orderdetail = result.Read<OrderItem>().ToList();
             List<OrderStatus> orderStatuses = result.Read<OrderStatus>().ToList();
             List<OrderShipping> orderShippings = result.Read<OrderShipping>().ToList();
-
-            //List<OrderViewModel> orderViewModels = (from a in orderModels
-            //                                        select new OrderViewModel
-            //                                        {
-            //                                            Num = a.f_id,
-            //                                            Date = a.f_orderTime.ToString(),
-            //                                            Status = orderStatuses.Where(x => x.f_id == a.f_status).SingleOrDefault().f_name,
-            //                                            StatusBadge = orderStatuses.Where(x => x.f_id == a.f_status).SingleOrDefault().f_badge,
-            //                                            ShippingMethod = orderShippings.Where(x => x.f_id == a.f_shippingMethod).SingleOrDefault().f_name,
-            //                                            ShippingBadge = orderShippings.Where(x => x.f_id == a.f_shippingMethod).SingleOrDefault().f_badge,
-            //                                            TotalAmountOfMoney = a.f_total,
-            //                                            TotalAmountOfProducts = orderdetail.Where(b => b.f_orderId == a.f_id).Sum(x => x.f_amount),
-            //                                            ListOfItem = orderdetail.Where(b => b.f_orderId == a.f_id).Select(x => new ItemDetail
-            //                                            {
-            //                                                Id = x.f_productid,
-            //                                                Name = x.f_name,
-            //                                                Amount = x.f_amount,
-            //                                                Price = x.f_price,
-            //                                                AmountOfMoney = orderdetail.First(a => a.f_productid == x.f_productid).f_price * x.f_amount
-            //                                            }).ToList()
-            //                                        }).ToList();
-
             List<OrderViewModel> orderViewModels = (orderModels.Select(a => new OrderViewModel
             {
                 Num = a.f_id,
@@ -101,14 +91,10 @@ namespace ShopStore.Models.Service
         public bool DelOrder(string ordernum)
         {
             using TransactionScope scope = new TransactionScope();
-            using var conn = _connection;
+            using var conn = CONNECTION;
+
             try
             {
-                //string strSql = @"update t_orders set f_isdel = 1 where f_id = @f_id";
-                //conn.Execute(strSql, new { f_id = ordernum });
-
-                //string strSql2 = @"update t_orderDetails set f_isdel = 1 where f_orderId = @f_orderId";
-                //conn.Execute(strSql2, new { f_orderId = ordernum });
 
                 string strSql =
                     @"update t_orders set f_status = 5, f_isdel = 1 where f_id = @f_id
@@ -117,9 +103,10 @@ namespace ShopStore.Models.Service
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");
+                LOGGER.Debug(ex, "Debug");
                 return false;
             }
+            
             scope.Complete();
             return true;
         }

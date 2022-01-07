@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace DAL.Models.Manager
 {
@@ -9,13 +7,11 @@ namespace DAL.Models.Manager
 
         public OrderStatusModel()
         {
-            cartgoState = new Dictionary<string, StatusProp>();
-            sipState = new Dictionary<string, StatusProp>();
+            CartgoState = new Dictionary<string, StatusProp>();
+            SipState = new Dictionary<string, StatusProp>();
         }
-        public Dictionary<string, StatusProp> cartgoState { get; set; }
-        public Dictionary<string, StatusProp> sipState { get; set; }
-
-
+        public Dictionary<string, StatusProp> CartgoState { get; set; }
+        public Dictionary<string, StatusProp> SipState { get; set; }
 
         public class StatusProp
         {

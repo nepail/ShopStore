@@ -2,10 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
-
 
 namespace ShopStore.ViewModels
 {
@@ -77,27 +74,26 @@ namespace ShopStore.ViewModels
         /// 是否刪除
         /// </summary>
         [Display(Name = "是否刪除")]
-        public int f_isdel { get; set; }
+        public int f_isDel { get; set; }
 
         /// <summary>
         /// 是否開放
         /// </summary>
         [Display(Name = "是否開放"), Required(ErrorMessage = "請選擇是否開放")]
-        public int f_isopen { get; set; }
+        public int f_isOpen { get; set; }
 
         /// <summary>
         /// 圖片實體
-        /// </summary>
-        //[Display(Name = "圖片"), Required(ErrorMessage = "請上傳圖片")]
+        /// </summary>        
         [Display(Name = "圖片")]
         public IFormFile ProductPic { get; set; }
 
-        public DateTime f_createtime { get; set; }
+        public DateTime f_createTime { get; set; }
 
         public string CreateTime {
             get
             {
-                return f_createtime.ToString("yyyy/MM/dd HH:mm:ss");
+                return f_createTime.ToString("yyyy/MM/dd HH:mm:ss");
             }
             set
             {
@@ -114,15 +110,13 @@ namespace ShopStore.ViewModels
         {
             public string f_pId { get; set; }
             public string f_name { get; set; }
-            public int f_price { get; set; }
-            //public string f_picName { get; set; }
+            public int f_price { get; set; }            
             public string f_description { get; set; }
             public int f_categoryId { get; set; }
             public int f_stock { get; set; }
-            public int f_isdel { get; set; }
-            public int f_isopen { get; set; }
-            //public string f_content { get; set; }
-            public string f_updatetime { get; set; } = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");                        
+            public int f_isDel { get; set; }
+            public int f_isOpen { get; set; }            
+            public string f_updateTime { get; set; } = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");                        
         }
     }
 }

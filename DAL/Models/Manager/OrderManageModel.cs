@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DAL.Models.Manager
+﻿namespace DAL.Models.Manager
 {
     public class OrderManageModel
     {

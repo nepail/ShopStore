@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ShopStore.Models
 {
@@ -27,8 +25,7 @@ namespace ShopStore.Models
     }
 
     public class OrderItem
-    {
-        //public string f_id { get; set; }
+    {        
         public string f_orderId { get; set; }
         public string f_productid { get; set; }
         public int f_amount { get; set; }

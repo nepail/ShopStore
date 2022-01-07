@@ -119,8 +119,7 @@ namespace ShopStore.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost]        
         public async Task<IActionResult> CreateNewProduct(ProductsViewModel request)
         {
             try
