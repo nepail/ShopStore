@@ -54,8 +54,9 @@
 
 .box-content .box-section {
     height: 100%;
-    width: 30%;
+    width: 40%;
     padding: 10px;
+    font-size: large;
 }
 
     .box-content .box-section p {

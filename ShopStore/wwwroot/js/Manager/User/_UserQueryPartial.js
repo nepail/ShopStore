@@ -50,6 +50,7 @@ var User = {
                             group: res.item
                         }
                         localStorage.setItem('UserGroup', JSON.stringify(userGroup))
+                        User.UC.SetUserGroupSelect();
                     } else {
                         //從localstroage取出
                         
