@@ -28,7 +28,7 @@ fn = {
         $('#itemImg').attr('src', '/images/' + p.f_picName)
         $('#itemDescription').val(p.f_description)
 
-        p.f_isopen == 1 ? $('input#click').prop('checked', true) : $('input#click').prop('checked', false)
+        p.f_isOpen == 1 ? $('input#click').prop('checked', true) : $('input#click').prop('checked', false)
         pdEditor.setData(p.f_content)
     },
 
@@ -39,7 +39,7 @@ fn = {
         for (var i = 0, pdLength = productData.length; i < pdLength; i++) {
             var v = productData[i];
             var openStr = ''
-            v.f_isopen == 1 ? openStr = '開放中' : openStr = '不開放'
+            v.f_isOpen == 1 ? openStr = '開放中' : openStr = '不開放'
             pdContent +=
                 `<tr id="pd_${v.f_id}" data-id="${v.f_pId}" onclick="fn.ShowProduct('${v.f_pId}')">
                     <td>${v.f_name}</td>
