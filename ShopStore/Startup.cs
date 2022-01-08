@@ -95,6 +95,7 @@ namespace ShopStore
                 option.Filters.Add<AuthorizationFilter>();
             });
 
+            //啟用壓縮回應
             services.AddResponseCompression(option =>
             {
                 //同時啟用 Gzip 及 Brotil壓縮
@@ -134,11 +135,11 @@ namespace ShopStore
             //    }            
             //});
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "node_modules")),
-                RequestPath = new PathString("/vendor")
-            });
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "node_modules")),
+            //    RequestPath = new PathString("/vendor")
+            //});
 
 
             //啟用壓縮回應
