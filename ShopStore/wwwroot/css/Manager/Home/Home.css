@@ -55,6 +55,7 @@ ul {
     align-items: center;
     text-align: center;
     justify-content: center;
+    cursor: pointer;
 }
 
 .sidebar .logo-details .logo_name {

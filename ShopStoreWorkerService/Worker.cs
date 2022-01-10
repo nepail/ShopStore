@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace ShopStoreWorkerService
 {
-
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
@@ -25,8 +24,8 @@ namespace ShopStoreWorkerService
                 AppContext.BaseDirectory!,
                 "cpu.log");
 
-            //connection = new HubConnectionBuilder().WithUrl(@"http://localhost:6372/chatHub").Build();
-            connection = new HubConnectionBuilder().WithUrl(@"http://192.168.6.4:8083/chatHub").Build();
+            connection = new HubConnectionBuilder().WithUrl(@"http://localhost:6372/chatHub").Build();
+            //connection = new HubConnectionBuilder().WithUrl(@"http://192.168.6.4:8083/chatHub").Build();
         }
 
         void Log(string message)
