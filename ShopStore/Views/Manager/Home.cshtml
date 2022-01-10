@@ -39,7 +39,7 @@
 
         <ul class="nav-links">
 
-            @foreach(var a in Model)
+            @foreach (var a in Model)
             {
                 <li>
                     <div class="icon-link">
@@ -50,14 +50,15 @@
                         </a>
                     </div>
                     <ul class="sub-menu" parent-id="@a.f_id">
-                        @foreach(var b in a.MenuSubModels)
+                        @foreach (var b in a.MenuSubModels)
                         {
-                            @if(b.f_isopen == 1){
+                            @if (b.f_isopen == 1)
+                            {
                                 <li><a href="#" data-controller="@b.f_controller">@b.f_name</a></li>
-                            }                            
+                            }
                         }
                     </ul>
-                </li>                
+                </li>
             }
         </ul>
     </div>
@@ -71,36 +72,65 @@
         </nav>
 
         <div id="app">
-@*            <template>
+            @*            <template>
                 <div>
-                    <b-table striped hover :items="items"></b-table>
+                <b-table striped hover :items="items"></b-table>
                 </div>
-            </template>
+                </template>
 
-            <template>
+                <template>
                 <div>
-                    <b-form v-on:submit="onSubmit" v-on:reset="onReset" v-if="show">
-                        <b-form-group id="input-group-1" label="Email address:" label-for="input-1"
-                            description="We'll never share your email with anyone else.">
-                            <b-form-input id="input-1" v-model="form.email" type="email" required
-                                placeholder="Enter email">
+                <b-form v-on:submit="onSubmit" v-on:reset="onReset" v-if="show">
+                <b-form-group id="input-group-1" label="Email address:" label-for="input-1"
+                description="We'll never share your email with anyone else.">
+                <b-form-input id="input-1" v-model="form.email" type="email" required
+                placeholder="Enter email">
 
-                            </b-form-input>
-                        </b-form-group>
+                </b-form-input>
+                </b-form-group>
 
-                        <b-form-group id="input-group-2" label="Your Name:" label-for="input-2">
-                            <b-form-input id="input-2" v-model="form.name" required placeholder="Enter name">
+                <b-form-group id="input-group-2" label="Your Name:" label-for="input-2">
+                <b-form-input id="input-2" v-model="form.name" required placeholder="Enter name">
 
-                            </b-form-input>
-                        </b-form-group>
-                        <b-button type="submit" variant="primary">Submit</b-button>
-                        <b-button type="reset" variant="danger">Reset</b-button>
-                    </b-form>
-                    <b-card class="mt-3" header="Form Data Result">
-                        <pre class="m-0">{{ form }}</pre>
-                    </b-card>
+                </b-form-input>
+                </b-form-group>
+                <b-button type="submit" variant="primary">Submit</b-button>
+                <b-button type="reset" variant="danger">Reset</b-button>
+                </b-form>
+                <b-card class="mt-3" header="Form Data Result">
+                <pre class="m-0">{{ form }}</pre>
+                </b-card>
                 </div>
-            </template>*@
+                </template>*@
+
+@*            <div class="container">
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-2">User</div>
+                    <div class="col-4"><input type="text" id="userInput" /></div>
+                </div>
+                <div class="row">
+                    <div class="col-2">Message</div>
+                    <div class="col-4"><input type="text" id="messageInput" /></div>
+                </div>
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-6">
+                        <input type="button" id="sendButton" value="Send Message" />
+                    </div>
+                </div>
+            </div>*@
+            <div class="row">
+                <div class="col-12">
+                    <hr />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <ul id="messagesList"></ul>
+                </div>
+            </div>
+
         </div>
     </section>
 </body>
@@ -109,3 +139,5 @@
 
 <script src="~/js/Manager/Home/Home.js" type="text/javascript"></script>
 <script src="~/js/Manager/Shared/_MainProperties.js" type="text/javascript"></script>
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/Manager/Home/chat.js"></script>

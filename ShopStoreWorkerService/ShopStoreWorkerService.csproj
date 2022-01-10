@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>dotnet-ShopStoreWorkerService-962D3FE2-F7C6-4681-8E67-0449988603B4</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="3.1.22" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.21" />
+  </ItemGroup>
+</Project>

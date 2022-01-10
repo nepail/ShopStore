@@ -68,7 +68,6 @@ namespace ShopStore.Controllers
             return View();
         }
 
-
         /// <summary>
         /// 後台登入
         /// </summary>
@@ -93,7 +92,6 @@ namespace ShopStore.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user.ID.ToString()), //userId                
                 new Claim(ClaimTypes.Role, user.GroupId.ToString()),
             };
-
 
             //防止重複登入
             string userGuid = Guid.NewGuid().ToString();

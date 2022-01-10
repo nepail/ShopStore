@@ -21,6 +21,11 @@
     {
       "library": "bootstrap-vue@2.21.2",
       "destination": "wwwroot/Script/bootstrap-vue/"
+    },
+    {
+      "provider": "unpkg",
+      "library": "@microsoft/signalr@latest",
+      "destination": "wwwroot/lib/microsoft/signalr/"
     }
   ]
 }

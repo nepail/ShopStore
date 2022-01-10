@@ -14,6 +14,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using ShopStore.Hubs;
 
 namespace ShopStore
 {
@@ -111,6 +112,8 @@ namespace ShopStore
             });
 
             services.AddMemoryCache();
+
+            services.AddSignalR();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -160,6 +163,8 @@ namespace ShopStore
                     pattern: "{controller=Home}/{action=Index}/{id?}")
                 //†¢ÓÃÈ«Óòòž×C
                 .RequireAuthorization();
+
+                endpoints.MapHub<ChatHub>("/chatHub");
             });
         }
     }
