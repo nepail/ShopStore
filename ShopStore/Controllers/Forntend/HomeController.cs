@@ -1,23 +1,34 @@
-﻿using DAL.ViewModels;
+﻿#region 功能與歷史修改描述
+
+/*
+    描述:首頁、註冊、願望清單
+    建立日期:2021-11-29
+
+    描述:程式碼風格調整&移除未使用功能
+    修改日期:2022-01-10
+
+ */
+
+#endregion
+
+using DAL.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ShopStore.Models;
 using ShopStore.Models.Interface;
-using System.Diagnostics;
 using System.Security.Claims;
 
 namespace ShopStore.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly IMembers _members;
+        private readonly ILogger<HomeController> LOGGER;
+        private readonly IMembers MEMBERS;
 
         public HomeController(ILogger<HomeController> logger, IMembers members)
         {
-            _logger = logger;
-            _members = members;
+            LOGGER = logger;
+            MEMBERS = members;
         }
 
         [AllowAnonymous]
@@ -37,26 +48,19 @@ namespace ShopStore.Controllers
             return View("/Views/Frontend/Home/Error.cshtml");
         }
 
+        /// <summary>
+        /// 會員中心
+        /// </summary>
+        /// <returns></returns>        
         [Authorize(Roles = "Normal")]
         public IActionResult UserProfile()
-        {
-            //UserProfileViewModel userProfileViewModel = new UserProfileViewModel()
-            //{
-            //    NickName = "菜頭",
-            //    GroupName = "LV 1",
-            //    Cash = 100,
-            //    RealName = "dfff",
-            //    Email = "SSSSSS@gmail.com",
-            //    Address = "台中市"
-            //};
-            
+        {            
             var userId = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            UserProfileViewModel userProfileViewModel = _members.GetMemberProfile(userId);
+            UserProfileViewModel userProfileViewModel = MEMBERS.GetMemberProfile(userId);
 
             return View("/Views/Frontend/Home/UserProfile.cshtml", userProfileViewModel);
         }
-
 
         /// <summary>
         /// 授權拒絕
@@ -68,12 +72,16 @@ namespace ShopStore.Controllers
             return View("/Views/Frontend/Home/AccessDenied.cshtml");
         }
 
-        [AllowAnonymous]
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+        // [AllowAnonymous]
+        // public IActionResult Privacy()
+        // {
+        //     return View();
+        // }
 
+        /// <summary>
+        /// 願望清單
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         public IActionResult WishList()
         {

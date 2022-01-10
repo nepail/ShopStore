@@ -1,4 +1,17 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿#region 功能與歷史修改描述
+
+/*
+    描述:產品管理
+    建立日期:2021-11-29
+
+    描述:程式碼風格調整
+    修改日期:2022-01-10
+
+ */
+
+#endregion
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,7 +24,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using ShopStore.Models;
@@ -20,16 +32,20 @@ namespace ShopStore.Controllers
 {
     public class ProductsController : Controller
     {
-        private readonly IProducts _products;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly IProducts PRODUCTS;
+        private readonly IWebHostEnvironment WEBHOSTENVIRONMENT;
+        private static Logger LOGGER = LogManager.GetCurrentClassLogger();
 
         public ProductsController(IProducts products, IWebHostEnvironment webHostEnvironment)
         {
-            _products = products;
-            _webHostEnvironment = webHostEnvironment;
+            PRODUCTS = products;
+            WEBHOSTENVIRONMENT = webHostEnvironment;
         }
 
+        /// <summary>
+        /// 訂單管理頁面
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         public IActionResult Index()
         {
@@ -43,19 +59,19 @@ namespace ShopStore.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ProductList(int type)
         {
-            var isopen = 1;
-            return View("/Views/Frontend/Products/ProductList.cshtml", await _products.GetProductsAsync(isopen));
+            var isOpen = 1;
+            return View("/Views/Frontend/Products/ProductList.cshtml", await PRODUCTS.GetProductsAsync(isOpen));
         }
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<object> ProductLists(string md5string)
+        public async Task<object> ProductLists(string md5String)
         {
-            var isopen = 0;
+            var isOpen = 0;
 
             try
             {
-                IEnumerable<ProductsViewModel> result = await _products.GetProductsAsync(isopen);
+                IEnumerable<ProductsViewModel> result = await PRODUCTS.GetProductsAsync(isOpen);
 
                 foreach(var a in result)
                 {
@@ -66,7 +82,7 @@ namespace ShopStore.Controllers
                 string resultJson = JsonConvert.SerializeObject(result);
                 string resiltJsonMd5 = Md5(resultJson);
 
-                if (resiltJsonMd5.Equals(md5string))
+                if (resiltJsonMd5.Equals(md5String))
                 {
                     //md5相同 無須更新
                     return (new { success = false });
@@ -88,7 +104,7 @@ namespace ShopStore.Controllers
         [Authorize(Roles = "admin")]
         public IActionResult AddNewProduct()
         {
-            List<CategoriesViewModel> productList = _products.GetCatgoryId().ToList();
+            List<CategoriesViewModel> productList = PRODUCTS.GetCatgoryId().ToList();
             ProductsViewModel productsViewModels = new ProductsViewModel();
             productsViewModels.SelectListItems.AddRange(from a in productList
                                                         select new SelectListItem
@@ -103,7 +119,7 @@ namespace ShopStore.Controllers
         //[Authorize(Roles = "admin")]
         public IActionResult AddNewProducts()
         {
-            List<CategoriesViewModel> productList = _products.GetCatgoryId().ToList();
+            List<CategoriesViewModel> productList = PRODUCTS.GetCatgoryId().ToList();
             ProductsViewModel productsViewModels = new ProductsViewModel();
             productsViewModels.SelectListItems.AddRange(from a in productList
                                                         select new SelectListItem
@@ -129,7 +145,7 @@ namespace ShopStore.Controllers
                     request.f_pId = Guid.NewGuid().ToString();
                     request.f_picName = await UploadedFile(request);
                     request.f_content = request.f_picName;
-                    if (!_products.AddProducts(request))
+                    if (!PRODUCTS.AddProducts(request))
                     {
                         return Json(new { success = false, message = "新增商品錯誤" });
                     }
@@ -138,7 +154,7 @@ namespace ShopStore.Controllers
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");
+                LOGGER.Debug(ex, "Debug");
             }
             return Json(new { success = false, message = "新增商品失敗" });
         }
@@ -156,7 +172,7 @@ namespace ShopStore.Controllers
             {
                 if (model.ProductPic != null)
                 {
-                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                    string uploadsFolder = Path.Combine(WEBHOSTENVIRONMENT.WebRootPath, "images");
                     //uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ProductPic.FileName;
                     //uniqueFileName = Guid.NewGuid().ToString();
                     uniqueFileName = model.f_pId.ToString();
@@ -170,7 +186,7 @@ namespace ShopStore.Controllers
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "UploadFile Error");
+                LOGGER.Debug(ex, "UploadFile Error");
                 return "";
             }
         }
@@ -182,7 +198,7 @@ namespace ShopStore.Controllers
         /// <param name="uniqueFileName"></param>
         private void WriteProductContent(string contentText, string uniqueFileName)
         {
-            string uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, "content");
+            string uploadFolder = Path.Combine(WEBHOSTENVIRONMENT.WebRootPath, "content");
             string filePath = Path.Combine(uploadFolder, uniqueFileName + ".txt");
             using StreamWriter file = new StreamWriter(filePath, false);
             file.Write(contentText);
@@ -195,7 +211,7 @@ namespace ShopStore.Controllers
         /// <returns></returns>
         private string ReadProductContent(string id)
         {
-            string filePath = @$"{Path.Combine(_webHostEnvironment.WebRootPath, "content\\")}{id}.txt";
+            string filePath = @$"{Path.Combine(WEBHOSTENVIRONMENT.WebRootPath, "content\\")}{id}.txt";
             string contentTxt = null;
 
             using StreamReader reader = new StreamReader(filePath);
@@ -209,23 +225,23 @@ namespace ShopStore.Controllers
 
 
 
-        [HttpGet]        
-        public IActionResult GetProductDetailById(string id)
-        {
-            try
-            {
-                //var result = await _products.GetProductDetailByIdAsync(id);
+        // [HttpGet]        
+        // public IActionResult GetProductDetailById(string id)
+        // {
+        //     try
+        //     {
+        //         //var result = await _products.GetProductDetailByIdAsync(id);
 
-                ViewBag.Id = id;
-                return PartialView("_ProductPartial");
-            }
-            catch (Exception ex)
-            {
-                logger.Debug(ex, "GetProductDetailById Error");
-            }
+        //         ViewBag.Id = id;
+        //         return PartialView("_ProductPartial");
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         LOGGER.Debug(ex, "GetProductDetailById Error");
+        //     }
 
-            return NotFound();
-        }
+        //     return NotFound();
+        // }
 
         private static string Md5(string s)
         {

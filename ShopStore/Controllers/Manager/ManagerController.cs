@@ -1,4 +1,17 @@
-﻿using DAL.Models;
+﻿#region 功能與歷史修改描述
+
+/*
+    描述:後台相關功能
+    建立日期:2021-12-03
+
+    描述:程式碼風格調整
+    修改日期:2022-01-10
+
+ */
+
+#endregion
+
+using DAL.Models;
 using DAL.Models.Manager;
 using DAL.Models.Manager.ViewModels;
 using DAL.Models.Manager.ViewModels.User;
@@ -26,23 +39,23 @@ namespace ShopStore.Controllers
     [Authorize(AuthenticationSchemes = "manager")]
     public class ManagerController : Controller
     {
-        private readonly IProducts _products;
-        private readonly IManager _manager;
-        private readonly IDistributedCache _cache;
-        private readonly IWebHostEnvironment _webHostEnvironment;        
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly IProducts PRODUCTS;
+        private readonly IManager MANAGER;
+        private readonly IDistributedCache REDIS;
+        private readonly IWebHostEnvironment WEBHOSTENVIRONMENT;        
+        private static readonly Logger LOGGER = LogManager.GetCurrentClassLogger();
         public ManagerController
         (
             IProducts products,
             IManager manager,
             IWebHostEnvironment webHostEnvironment,
-            IDistributedCache cache
+            IDistributedCache redis
         )
         {
-            _products = products;
-            _manager = manager;
-            _webHostEnvironment = webHostEnvironment;
-            _cache = cache;            
+            PRODUCTS = products;
+            MANAGER = manager;
+            WEBHOSTENVIRONMENT = webHostEnvironment;
+            REDIS = redis;            
         }
 
         /// <summary>
@@ -66,13 +79,12 @@ namespace ShopStore.Controllers
         public IActionResult Login(UserLoginViewModel userLogin)
         {
 
-            UserManageViewModels user = _manager.GetUser(userLogin);
+            UserManageViewModels user = MANAGER.GetUser(userLogin);
 
             if (user == null)
             {
                 return Json(new { success = false });
             }
-
 
             var claims = new List<Claim>
             {
@@ -88,7 +100,7 @@ namespace ShopStore.Controllers
             Response.Cookies.Append(user.Account, userGuid);
             var options = new DistributedCacheEntryOptions();
             options.SetSlidingExpiration(TimeSpan.FromMinutes(5)); //重新讀取後會重新計時
-            _cache.SetString(user.Account, userGuid, options);
+            REDIS.SetString(user.Account, userGuid, options);
 
             //呼叫登入管理員登入
             HttpContext.SignInAsync(
@@ -116,63 +128,7 @@ namespace ShopStore.Controllers
             int userId = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             //回傳菜單列表
-            IEnumerable<MenuModel> menuModels = await _manager.GetMenu(userId);
-
-            #region 測試資料
-            //List<MenuModel> menuModels = new List<MenuModel>()
-            //{
-            //    new MenuModel()
-            //    {
-            //        f_id = 1,
-            //        f_name = "產品管理",
-            //        f_icon = "bx-basket",
-            //        MenuSubModels = new List<MenuSubModel>()
-            //        {
-            //            new MenuSubModel(){f_id = 1,f_menuid = 1,f_name="新增產品"},
-            //            new MenuSubModel(){f_id = 2,f_menuid = 1,f_name="庫存管理"},
-            //            new MenuSubModel(){f_id = 3,f_menuid = 1,f_name="測試管理"},
-            //            new MenuSubModel(){f_id = 4,f_menuid = 1,f_name="你好哈囉"},
-            //        },
-            //        f_isdel = 0
-            //    },
-            //    new MenuModel()
-            //    {
-            //        f_id = 2,
-            //        f_name = "帳號管理",
-            //        f_icon = "bx-male",
-            //        MenuSubModels=new List<MenuSubModel>()
-            //        {
-            //            new MenuSubModel(){f_id = 1,f_menuid = 2,f_name="帳號管理"},
-            //            new MenuSubModel(){f_id = 2,f_menuid = 2,f_name="會員查詢"},
-            //            new MenuSubModel(){f_id = 3,f_menuid = 2,f_name="等級設定"}
-            //        },
-            //        f_isdel = 0
-            //    },
-            //    new MenuModel()
-            //    {
-            //        f_id = 3,
-            //        f_name = "訂單管理",
-            //        f_icon = "bx-windows",
-            //        MenuSubModels = new List<MenuSubModel>()
-            //        {
-            //            new MenuSubModel(){f_id = 1,f_menuid = 3, f_name="訂單管理"},
-            //            new MenuSubModel(){f_id = 1,f_menuid = 3, f_name="訂單設定"}
-            //        }
-            //    },
-            //    new MenuModel()
-            //    {
-            //        f_id = 4,
-            //        f_name = "設定",
-            //        f_icon = "bx-cog",
-            //        MenuSubModels = new List<MenuSubModel>()
-            //        {
-            //            new MenuSubModel(){f_id = 1,f_menuid = 4, f_name="菜單管理"},
-            //            new MenuSubModel(){f_id = 1,f_menuid = 4, f_name="設定"}
-            //        }
-            //    },
-            //};
-            #endregion
-
+            IEnumerable<MenuModel> menuModels = await MANAGER.GetMenu(userId);           
             return View(menuModels);
         }        
 
@@ -186,7 +142,7 @@ namespace ShopStore.Controllers
         {
             try
             {
-                var productList = _products.GetCatgoryId().ToList();
+                var productList = PRODUCTS.GetCatgoryId().ToList();
                 ProductsViewModel productsViewModels = new ProductsViewModel();
                 productsViewModels.SelectListItems.AddRange(from a in productList
                                                             select new SelectListItem
@@ -198,7 +154,7 @@ namespace ShopStore.Controllers
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");
+                LOGGER.Debug(ex, "Debug");
             }
             return BadRequest();
         }
@@ -234,7 +190,7 @@ namespace ShopStore.Controllers
                         EditProductContent(model.f_content, model.f_pId);
                     }
 
-                    bool result = await _products.EditProductById(model);
+                    bool result = await PRODUCTS.EditProductById(model);
 
                     if (result)
                     {
@@ -250,7 +206,7 @@ namespace ShopStore.Controllers
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");
+                LOGGER.Debug(ex, "Debug");
                 return Json(new { success = false, message = "server error" });
             }
         }
@@ -266,7 +222,7 @@ namespace ShopStore.Controllers
             {
                 if (file != null)
                 {
-                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                    string uploadsFolder = Path.Combine(WEBHOSTENVIRONMENT.WebRootPath, "images");
                     string filePath = Path.Combine(uploadsFolder, id + ".jpg");
                     await using var fileStream = new FileStream(filePath, FileMode.Create);
                     file.CopyTo(fileStream);
@@ -274,7 +230,7 @@ namespace ShopStore.Controllers
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "UploadFile Error");
+                LOGGER.Debug(ex, "UploadFile Error");
             }
         }
 
@@ -285,7 +241,7 @@ namespace ShopStore.Controllers
         /// <returns></returns>
         private void EditProductContent(string contentText, string id)
         {
-            string uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, "content");
+            string uploadFolder = Path.Combine(WEBHOSTENVIRONMENT.WebRootPath, "content");
             string filePath = Path.Combine(uploadFolder, id + ".txt");
             using StreamWriter file = new StreamWriter(filePath, false);
             file.Write(contentText);
@@ -298,7 +254,7 @@ namespace ShopStore.Controllers
         [HttpGet]
         public IActionResult GetCategoryList()
         {
-            List<CategoriesViewModel> productList = _products.GetCatgoryId().ToList();
+            List<CategoriesViewModel> productList = PRODUCTS.GetCatgoryId().ToList();
             ProductsViewModel productsViewModels = new ProductsViewModel();
             productsViewModels.SelectListItems.AddRange(from a in productList
                                                         select new SelectListItem
@@ -328,7 +284,7 @@ namespace ShopStore.Controllers
         [HttpPost]
         public IActionResult AddUser(UserManageModel postData)
         {
-            bool result = _manager.AddUser(postData);
+            bool result = MANAGER.AddUser(postData);
             return Json(new { success = result });
         }
 
@@ -339,7 +295,7 @@ namespace ShopStore.Controllers
         [HttpGet]
         public IActionResult GetUsers()
         {
-            List<UserManageViewModels> userManageViewModel = _manager.GetUsers();
+            List<UserManageViewModels> userManageViewModel = MANAGER.GetUsers();
             return Json(new { success = true, item = userManageViewModel });
         }
 
@@ -376,12 +332,12 @@ namespace ShopStore.Controllers
         {
             try
             {
-                var groupList = _manager.GetUserPermissionsByID(userId);
+                var groupList = MANAGER.GetUserPermissionsByID(userId);
                 return Json(new { success = true, groupList });
             }
             catch (Exception ex)
             {
-                logger.Debug(ex);
+                LOGGER.Debug(ex);
                 return Json(new { success = false });
             }
         }
@@ -396,12 +352,12 @@ namespace ShopStore.Controllers
         {
             try
             {
-                _manager.UpdatePermissionsByID(permissionData);
+                MANAGER.UpdatePermissionsByID(permissionData);
                 return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                logger.Debug(ex);
+                LOGGER.Debug(ex);
                 return Json(new { success = false });
             }
         }
@@ -416,12 +372,12 @@ namespace ShopStore.Controllers
         {
             try
             {
-                _manager.RemoveUserByID(userId);
+                MANAGER.RemoveUserByID(userId);
                 return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                logger.Debug(ex);
+                LOGGER.Debug(ex);
                 return Json(new { success = false });
             }
         }
@@ -444,7 +400,7 @@ namespace ShopStore.Controllers
 
         public async Task<IActionResult> Menu()
         {
-            IEnumerable<MenuModel> model = await _manager.GetMenu(2);
+            IEnumerable<MenuModel> model = await MANAGER.GetMenu(2);
             return PartialView("PartialView/Menu/_MenuPartial", model);
         }
 
@@ -467,12 +423,12 @@ namespace ShopStore.Controllers
         {
             try
             {
-                var item = _manager.GetOrderList();
+                var item = MANAGER.GetOrderList();
                 return Json(new { success = true, result = item });
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "GetOrderList");
+                LOGGER.Debug(ex, "GetOrderList");
                 return Json(new { success = false });
             }
         }
@@ -487,12 +443,12 @@ namespace ShopStore.Controllers
         {
             try
             {
-                bool result = _manager.RemoveOrder(id);
+                bool result = MANAGER.RemoveOrder(id);
                 return Json(new { success = result });
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "RemoveOrder");
+                LOGGER.Debug(ex, "RemoveOrder");
                 return Json(new { success = false });
             }
         }
@@ -506,12 +462,12 @@ namespace ShopStore.Controllers
         {
             try
             {
-                _manager.UpdateOrder(orders);
+                MANAGER.UpdateOrder(orders);
                 return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "UpdateOrder");
+                LOGGER.Debug(ex, "UpdateOrder");
                 return Json(new { success = false });
             }
         }
@@ -523,7 +479,7 @@ namespace ShopStore.Controllers
         [HttpGet]
         public IActionResult GetOrderStatus()
         {
-            OrderStatusModel result = _manager.GetOrderStatus();
+            OrderStatusModel result = MANAGER.GetOrderStatus();
             return Json(new { success = true, result });
         }
 
@@ -546,7 +502,7 @@ namespace ShopStore.Controllers
         [HttpGet]
         public IActionResult GetMemberList()
         {
-            var result = _manager.GetMemberList();
+            var result = MANAGER.GetMemberList();
             return result != null ? Json(new { success = true, result }) : Json(new { success = false });
         }
 
@@ -560,7 +516,7 @@ namespace ShopStore.Controllers
         public IActionResult UpdateMember(MemberManageModel data)
         {
 
-            return _manager.UpdateByMemberId(data) ? Json(new { Success = true }) : Json(new { Success = false });
+            return MANAGER.UpdateByMemberId(data) ? Json(new { Success = true }) : Json(new { Success = false });
         }
 
         /// <summary>
@@ -569,7 +525,7 @@ namespace ShopStore.Controllers
         /// <param name="memberId"></param>
         /// <returns></returns>
         [HttpPut]
-        public IActionResult SuspendByMemberId(int memberId, int isSuspend) => _manager.SuspendByMemberId(memberId, isSuspend) ? Json(new { Success = true }) : Json(new { Success = false });
+        public IActionResult SuspendByMemberId(int memberId, int isSuspend) => MANAGER.SuspendByMemberId(memberId, isSuspend) ? Json(new { Success = true }) : Json(new { Success = false });
 
         #endregion
     }

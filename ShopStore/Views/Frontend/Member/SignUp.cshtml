@@ -17,8 +17,7 @@
                         <div class="progress" id="progress"></div>
                         <div class="circle active">1</div>
                         <div class="circle">2</div>
-                        <div class="circle">3</div>
-                        @*<div class="circle">4</div>*@
+                        <div class="circle">3</div>                        
                     </div>
                 </div>
             </div>
@@ -44,15 +43,15 @@
                         </div>
                     </div>
 
-                    @*<div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label asp-for="ConfirmPassword" class="control-label" required></label>
-                    <input asp-for="ConfirmPassword" class="form-control"/>
-                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                </div>
-            </div>
-        </div>*@
+                    <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="ConfirmPassword" class="control-label" required></label>
+                                <input asp-for="ConfirmPassword" class="form-control"/>
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="row">
                         <div class="col-md-6">
@@ -107,8 +106,7 @@
                     <div class="form-group">
                         <input class="btn btn-lg btn-primary" type="submit" value="註冊" style="display: none" />
                     </div>
-                </form>
-                @*<div id="send_mail" style="position:absolute; display: flex; top:150px; width:400px; right:0px; margin-right:-500px;">*@
+                </form>                
                 <div id="send_mail">
                     <div class="text-center mt-5">
                         <img src="~/img/send_mail.png" />

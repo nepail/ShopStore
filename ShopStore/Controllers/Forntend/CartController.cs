@@ -1,7 +1,16 @@
 ﻿
+#region 功能與歷史修改描述
+
 /*
-    
+    描述:購物車控制器
+    建立日期:2021-11-29
+
+    描述:程式碼風格調整
+    修改日期:2022-01-10
+
  */
+
+#endregion
 
 using Microsoft.AspNetCore.Mvc;
 using NLog;
@@ -18,12 +27,12 @@ namespace ShopStore.Controllers
 {
     public class CartController : Controller
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly ICart _cart;
+        private readonly static Logger LOGGER = LogManager.GetCurrentClassLogger();
+        private readonly ICart CART;
 
         public CartController(ICart cart)
         {
-            _cart = cart;
+            CART = cart;
         }
 
         public IActionResult Index()
@@ -36,7 +45,7 @@ namespace ShopStore.Controllers
             if (CartItems != null)
             {
                 //檢查商品
-                CartItems = _cart.CheckCartItem(CartItems);
+                CartItems = CART.CheckCartItem(CartItems);
                 ViewBag.Total = CartItems.Sum(m => m.SubTotal);
             }
             else
@@ -78,7 +87,7 @@ namespace ShopStore.Controllers
         {
             if (id != null)
             {
-                ProductsViewModel cartItem = _cart.Single(id);
+                ProductsViewModel cartItem = CART.Single(id);
 
                 //取得商品資料
                 CartItem item = new CartItem
@@ -121,7 +130,7 @@ namespace ShopStore.Controllers
 
             if (idList != null)
             {
-                List<ProductsViewModel> cartItems = _cart.QueryMutiple(idList);
+                List<ProductsViewModel> cartItems = CART.QueryMutiple(idList);
 
                 List<CartItem> cartItemsOfList = (from a in cartItems
                                                   select new CartItem
@@ -214,7 +223,7 @@ namespace ShopStore.Controllers
 
             try
             {
-                var result = _cart.InsertOrderItem(orderModel);
+                var result = CART.InsertOrderItem(orderModel);
 
                 if (result <= 0) return Json(new { success = false, message = "訂單建立失敗" });
 
@@ -222,7 +231,7 @@ namespace ShopStore.Controllers
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");
+                LOGGER.Debug(ex, "Debug");
                 return Json(new { success = false, message = "訂單新增失敗" });
             }
         }

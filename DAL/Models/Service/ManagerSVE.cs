@@ -32,7 +32,6 @@ namespace ShopStore.Models.Service
     {
         private static readonly Logger LOGGER = LogManager.GetCurrentClassLogger();
         private readonly SqlConnection CONNECTION;
-
         public ManagerSVE(SqlConnection connection)
         {
             CONNECTION = connection;
@@ -41,14 +40,14 @@ namespace ShopStore.Models.Service
         /// <summary>
         /// 取得菜單
         /// </summary>
-        /// <param name="userid"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<MenuModel>> GetMenu(int userid)
+        public async Task<IEnumerable<MenuModel>> GetMenu(int userId)
         {
             try
             {
                 using var conn = CONNECTION;
-                SqlMapper.GridReader result = await conn.QueryMultipleAsync("pro_shopStore_getMenu", new { userid = userid }, commandType: System.Data.CommandType.StoredProcedure);
+                SqlMapper.GridReader result = await conn.QueryMultipleAsync("pro_shopStore_getMenu", new { userid = userId }, commandType: System.Data.CommandType.StoredProcedure);
                 List<MenuModel> menuModels = result.Read<MenuModel>().ToList();
                 List<MenuSubModel> menuSubModels = result.Read<MenuSubModel>().ToList();
                 List<MenuModel> menu = (from a in menuModels

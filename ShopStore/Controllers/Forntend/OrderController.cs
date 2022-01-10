@@ -1,27 +1,34 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿#region 功能與歷史修改描述
+
+/*
+    描述:訂單管理
+    建立日期:2021-11-29
+
+    描述:程式碼風格調整
+    修改日期:2022-01-10
+
+ */
+
+#endregion
+
 using Microsoft.AspNetCore.Mvc;
 using NLog;
-using ShopStore.Models;
 using ShopStore.Models.Interface;
 using ShopStore.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace ShopStore.Controllers
-{    
+{
     public class OrderController : Controller
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly IOrders _orders;
-
+        private static Logger LOGGER = LogManager.GetCurrentClassLogger();
+        private readonly IOrders ORDERS;
 
         public OrderController(IOrders orders)
         {
-            _orders = orders;
+            ORDERS = orders;
         }
 
         /// <summary>
@@ -37,12 +44,12 @@ namespace ShopStore.Controllers
             {
                 var user = User.Identity.Name;                
                 userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                model = _orders.GetOrderList(userId);
+                model = ORDERS.GetOrderList(userId);
                 return View("/Views/Frontend/Order/Index.cshtml", model);
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                LOGGER.Error(ex);
                 return RedirectToAction("/Home/Error");
             }
         }
@@ -57,11 +64,11 @@ namespace ShopStore.Controllers
 
             try
             {
-                _orders.DelOrder(ordernum);
+                ORDERS.DelOrder(ordernum);
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, "Debug");
+                LOGGER.Debug(ex, "Debug");
             }
 
             return Json(new { success = true, message = "successfull" });

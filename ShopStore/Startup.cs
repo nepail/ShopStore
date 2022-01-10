@@ -64,7 +64,7 @@ namespace ShopStore
             services.AddScoped<ActionFilter>();
             services.AddScoped<AuthorizationFilter>();
 
-            //後台新增產品產生MD5碼呼叫 DataProtection API，需要加上這段加解密儲存空間，否則部屬IIS會報錯
+            //後台新增產品產生MD5碼呼叫 DataProtection API，需要加上這段加解密儲存空間，否則IIS會報錯
             services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(@"D:\DataProtection\"));            
 
             //services.AddAuthorization(options =>
@@ -135,11 +135,11 @@ namespace ShopStore
             //    }            
             //});
 
-            //app.UseStaticFiles(new StaticFileOptions
-            //{
-            //    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "node_modules")),
-            //    RequestPath = new PathString("/vendor")
-            //});
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "node_modules")),
+                RequestPath = new PathString("/vendor")
+            });
 
 
             //啟用壓縮回應

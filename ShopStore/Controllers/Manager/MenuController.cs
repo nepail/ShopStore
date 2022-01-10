@@ -1,19 +1,33 @@
-﻿using DAL.Models;
+﻿#region 功能與歷史修改描述
+
+/*
+    描述:後台MENU
+    建立日期:2021-12-03
+
+    描述:程式碼風格調整
+    修改日期:2022-01-10
+
+ */
+
+#endregion
+
+using DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 using ShopStore.Models.Interface;
-using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Threading.Tasks;
+using NLog;
 
 namespace ShopStore.Controllers.Manager
 {
     public class MenuController : Controller
     {
-        private readonly IManager _manager;
+        private readonly IManager MANAGER;
+        private readonly static Logger LOGGER = LogManager.GetCurrentClassLogger();
+        
         public MenuController(IManager manager)
         {
-            _manager = manager;
+            MANAGER = manager;
         }
 
         /// <summary>
@@ -26,8 +40,7 @@ namespace ShopStore.Controllers.Manager
         {
             //根據 user 的權限取得對應的菜單
             userid = 2;
-            var result = _manager.GetMenu(userid);
-
+            var result = MANAGER.GetMenu(userid);
 
             return Json(new { success = true, result = result });
         }
@@ -44,12 +57,12 @@ namespace ShopStore.Controllers.Manager
             {
                 if(model != null)
                 {
-                    var result = await _manager.AddSubMenu(model);
+                    var result = await MANAGER.AddSubMenu(model);
                 }
             }
             catch (Exception e)
             {
-
+                LOGGER.Debug(e, "AddSubMenu Error");
             }
 
             return Json(new { success = true, message = "執行成功" });
@@ -64,9 +77,9 @@ namespace ShopStore.Controllers.Manager
         [HttpPost]
         public IActionResult AddMenu(MenuModel menuModel)
         {
-            var result = _manager.AddMenu(menuModel);
+            var result = MANAGER.AddMenu(menuModel);
 
-            return Json(new { success = true, message = "111" });
+            return Json(new { success = true, message = "success" });
         }
     }
 }

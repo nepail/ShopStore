@@ -46,10 +46,10 @@ namespace ShopStore.ViewModels
         [DataType(DataType.Password)]
         public string f_pcode { get; set; }
 
-        //[Display(Name = "確認會員密碼："), Required(ErrorMessage = "請您再次輸入密碼！")]                
-        //[Compare("f_pwd", ErrorMessage = "兩次輸入的密碼必須相同")]
-        //[DataType(DataType.Password)]
-        //public string ConfirmPassword { get; set; }
+        [Display(Name = "確認會員密碼："), Required(ErrorMessage = "請您再次輸入密碼！")]                
+        [Compare("f_pcode", ErrorMessage = "兩次輸入的密碼必須相同")]
+        [DataType(DataType.Password)]
+        public string ConfirmPassword { get; set; }
 
         /// <summary>
         /// 電話

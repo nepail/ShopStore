@@ -1,4 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿#region 功能與歷史修改描述
+
+/*
+    描述:前台會員相關
+    建立日期:2021-11-29
+
+    描述:程式碼風格調整
+    修改日期:2022-01-10
+
+ */
+
+#endregion
+
+using Microsoft.AspNetCore.Mvc;
 using ShopStore.Models.Interface;
 using ShopStore.ViewModels;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -12,24 +25,22 @@ using System;
 using NLog;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 
 namespace ShopStore.Controllers
 {
     [AllowAnonymous]
     public class MemberController : Controller
     {
-        private readonly IMembers _members;
-        private readonly IDistributedCache _cache;
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        //private readonly UserManager<>
+        private readonly IMembers MEMBERS;
+        private readonly IDistributedCache REDIS;
+        private static Logger LOGGER = LogManager.GetCurrentClassLogger();
+        private readonly IHttpContextAccessor HTTPCONTEXTACCESSOR;        
 
-        public MemberController(IMembers members, IDistributedCache cache, IHttpContextAccessor httpContextAccessor)
+        public MemberController(IMembers members, IDistributedCache redis, IHttpContextAccessor httpContextAccessor)
         {
-            _members = members;
-            _cache = cache;
-            _httpContextAccessor = httpContextAccessor;
+            MEMBERS = members;
+            REDIS = redis;
+            HTTPCONTEXTACCESSOR = httpContextAccessor;
         }
 
 
@@ -42,18 +53,19 @@ namespace ShopStore.Controllers
         public IActionResult SignUp()
         {
             //test 測試資料
-            MemberViewModel memberviewmodel = new MemberViewModel()
-            {
-                f_name = "admin",
-                f_nickname = "菜頭",
-                f_phone = "0908609268",
-                f_mail = "linjim1101@gmail.com",
-                f_account = "admin01",
-                f_pcode = "admin01",
-                f_address = "台中市西屯區市政路388號",
-            };
+            // MemberViewModel memberviewmodel = new MemberViewModel()
+            // {
+            //     f_name = "admin",
+            //     f_nickname = "菜頭",
+            //     f_phone = "0908609268",
+            //     f_mail = "linjim1101@gmail.com",
+            //     f_account = "admin01",
+            //     f_pcode = "admin01",
+            //     f_address = "台中市西屯區市政路388號",
+            // };
 
-            return View("/Views/Frontend/Member/SignUp.cshtml", memberviewmodel);
+            // return View("/Views/Frontend/Member/SignUp.cshtml", memberviewmodel);
+            return View("/Views/Frontend/Member/SignUp.cshtml");
         }
 
         /// <summary>
@@ -65,7 +77,7 @@ namespace ShopStore.Controllers
         private bool SendEmail(string memberName, string mailAddress)
         {
             //在Redis確認是否有重複的memberName
-            if (_cache.GetString(memberName) == null)
+            if (REDIS.GetString(memberName) == null)
             {
                 //寄認證信
                 string verifyCode = MailHelper.SendMail(memberName, mailAddress);
@@ -73,7 +85,7 @@ namespace ShopStore.Controllers
                 var options = new DistributedCacheEntryOptions();
                 options.SetAbsoluteExpiration(TimeSpan.FromMinutes(5)); //時間到即消失
                 //options.SetSlidingExpiration(TimeSpan.FromMinutes(5)); //重新讀取後會重新計時
-                _cache.SetString(memberName, verifyCode, options);
+                REDIS.SetString(memberName, verifyCode, options);
 
                 return true;
             }
@@ -90,17 +102,18 @@ namespace ShopStore.Controllers
         [HttpPost]
         public IActionResult CheckEmailCode(string code, MemberViewModel model)
         {
-            string tempCode = _cache.GetString(model.f_name);
+            string tempCode = REDIS.GetString(model.f_name);
 
             if (code == tempCode)
             {
                 try
                 {
-                    if (_members.AddNewMember(model))
+                    if (MEMBERS.AddNewMember(model))
                         return Json(new { success = true, message = "認證成功" });
                 }
                 catch (Exception ex)
                 {
+                    LOGGER.Debug(ex, $"CheckEmailCode Error");
                     return Json(new { success = false, message = "系統錯誤" });
                 }
             }
@@ -142,7 +155,7 @@ namespace ShopStore.Controllers
             }
             catch (Exception ex)
             {
-                logger.Debug(ex, $"{model.f_name} AddNewMember Error");
+                LOGGER.Debug(ex, $"{model.f_name} AddNewMember Error");
                 return Json(new { success = false, message = $"註冊失敗，信件系統發生錯誤：{ex.ToString()}" });
             }
 
@@ -171,9 +184,9 @@ namespace ShopStore.Controllers
         /// <param name="returnUrl"></param>
         /// <returns></returns>        
         [HttpPost]
-        public async Task<IActionResult> Login(string account, string pcode, string returnUrl)
+        public async Task<IActionResult> Login(string account, string pwd, string returnUrl)
         {
-            MemberViewModel member = _members.FindUser(account, pcode);
+            MemberViewModel member = MEMBERS.FindUser(account, pwd);
 
             if (member == null)
             {
@@ -214,7 +227,7 @@ namespace ShopStore.Controllers
             //設定Redis
             var options = new DistributedCacheEntryOptions();
             options.SetSlidingExpiration(TimeSpan.FromMinutes(30)); //重新讀取後會重新計時
-            _cache.SetString(account, userGuid, options);
+            REDIS.SetString(account, userGuid, options);
 
             //Session 自動保存到Redis
             //HttpContext.Session.SetString("UserId", "Tester");
@@ -249,14 +262,14 @@ namespace ShopStore.Controllers
         public async Task<IActionResult> ForgetPcode(string mail)
         {
             //確認email
-            if (await _members.VerifyEmailAsync(mail))
+            if (await MEMBERS.VerifyEmailAsync(mail))
             {
                 string code = MailHelper.SendResetPcode("", mail);
 
                 //將認證碼寫入Redis
                 var options = new DistributedCacheEntryOptions();
                 options.SetAbsoluteExpiration(TimeSpan.FromMinutes(1)); //時間到即消失                                                                        
-                _cache.SetString(mail, code, options);
+                REDIS.SetString(mail, code, options);
 
                 //送出信件
                 return Json(new { success = true });
@@ -275,9 +288,9 @@ namespace ShopStore.Controllers
         /// <returns></returns>
         public IActionResult CheckCode(string code, string mail)
         {
-            if (_cache.GetString(mail) != null)
+            if (REDIS.GetString(mail) != null)
             {
-                if (_cache.GetString(mail) == code)
+                if (REDIS.GetString(mail) == code)
                 {
                     return Json(new { success = true });
                 }
@@ -298,7 +311,7 @@ namespace ShopStore.Controllers
         /// <returns></returns>
         public IActionResult ResetPcode(string code, string mail)
         {
-            return _members.ResetMemberPcode(code, mail) == true ? Json(new { success = true }) : Json(new { success = false });
+            return MEMBERS.ResetMemberPcode(code, mail) == true ? Json(new { success = true }) : Json(new { success = false });
         }
 
         #endregion
