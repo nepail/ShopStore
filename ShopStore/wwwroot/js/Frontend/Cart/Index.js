@@ -1,20 +1,49 @@
-﻿var products = JSON.parse(localStorage["item"])
+﻿$(document).ready(function () {
+    Cart.InitPage();
+});
 
 
-window.onload = function () {
-    total();
-    $(".txtSubTotal").bind('DOMNodeInserted', function (e) {
-        total();
-    })
-};
+var products = JSON.parse(localStorage.getItem('item'));
 
-function total() {
-    let total = 0;
-    $(".txtSubTotal").each(function () {
-        total += parseInt($(this).text())
-        $("#cartTotal").text(total);
-    });
+//window.onload = function () {
+//    total();
+//    $(".txtSubTotal").bind('DOMNodeInserted', function (e) {
+//        total();
+//    })
+//};
+
+
+var Cart = {
+    InitPage() {
+        this.UC.Total();
+        $('.txtSubTotal').bind('DOMNodeInserted', function (e) {
+            Cart.UC.Total();
+        });
+    },
+
+    DATA: {
+
+    },
+
+    UC: {
+        Total() {
+            var total = 0;
+            $('.txtSubTotal').each(function () {
+                total += parseInt($(this).text());
+                $('#cartTotal').text(total);
+            });
+        }
+    }
+
 }
+
+//function total() {
+//    let total = 0;
+//    $(".txtSubTotal").each(function () {
+//        total += parseInt($(this).text())
+//        $("#cartTotal").text(total);
+//    });
+//}
 
 function add(item) {
     console.log(item)

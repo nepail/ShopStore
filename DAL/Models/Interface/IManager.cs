@@ -1,6 +1,7 @@
 ﻿using DAL.Models;
 using DAL.Models.Manager;
 using DAL.Models.Manager.ViewModels;
+using DAL.Models.Manager.ViewModels.Product;
 using DAL.Models.Manager.ViewModels.User;
 using System;
 using System.Collections.Generic;
@@ -120,5 +121,11 @@ namespace ShopStore.Models.Interface
         /// <param name="memberManageModel"></param>
         /// <returns></returns>
         public bool UpdateByMemberId(MemberManageModel memberManageModel);
+
+        /// <summary>
+        /// 庫存量檢查
+        /// </summary>
+        /// <returns>回傳庫存量低的產品</returns>
+        public Dictionary<int, InventoryViewModel> InventoryCheck();
     }
 }

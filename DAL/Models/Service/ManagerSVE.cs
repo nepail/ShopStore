@@ -7,6 +7,9 @@
     描述:程式碼風格調整
     修改日期:2022-01-07
 
+    描述:新增庫存量檢查
+    修改日期:2022-01-11
+
  */
 
 #endregion
@@ -14,6 +17,7 @@
 using DAL.Models;
 using DAL.Models.Manager;
 using DAL.Models.Manager.ViewModels;
+using DAL.Models.Manager.ViewModels.Product;
 using DAL.Models.Manager.ViewModels.User;
 using Dapper;
 using NLog;
@@ -437,5 +441,30 @@ namespace ShopStore.Models.Service
                 return false;
             }
         }
+
+        /// <summary>
+        /// 庫存量檢查
+        /// </summary>
+        /// <returns>回傳庫存量低的產品</returns>
+        public Dictionary<int, InventoryViewModel> InventoryCheck()
+        {
+            try
+            {
+                using var conn = CONNECTION;
+                var result = conn.QueryMultiple("pro_shopStore_Manager_InventoryCheck",
+                    commandType: System.Data.CommandType.StoredProcedure);
+
+                return result.Read<InventoryViewModel>().ToDictionary(x => x.Id, x => x);
+
+
+                //return (Dictionary<string, InventoryViewModel>)result.Cast<IDictionary<string, object>>().Select(it => it.ToDictionary(it => it.Key, it => it.Value));
+            }
+            catch (Exception ex)
+            {
+                LOGGER.Debug(ex, $"InventoryCheck Error");
+                return null;
+            }
+        }
+        
     }
 }

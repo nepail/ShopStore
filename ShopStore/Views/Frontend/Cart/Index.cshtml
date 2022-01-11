@@ -38,15 +38,17 @@
                                     <a><del>@item.Product.f_name</del></a><br>
                                     <b style="color: red">商品已暫時下架</b>
                                 </td>
-                                <td align="center" class="align-middle">NT$ 
+                                <td align="center" class="align-middle">
+                                    NT$
                                     <span class="txtUniPrice"><del>@item.Product.f_price</del></span>
                                 </td>
                                 <td align="center" class="align-middle" style="width: 250px;">
-                                    <input style="width:30px; display:inline" type="button" class="btn btn-outline-primary" value="-" onclick="minus('#item_@item.Product.f_id')" disabled/>
-                                    <input style="width:50px; display:inline; color:black;" type="text" class="btn btn-outline-primary" onchange="inputRecalculate(this.value, '#item_@item.Product.f_id')" value="@item.Amount" disabled/>
-                                    <input style="width:30px; display:inline" type="button" class="btn btn-outline-primary" value="+" onclick="add('#item_@item.Product.f_id')" disabled/>
+                                    <input style="width:30px; display:inline" type="button" class="btn btn-outline-primary" value="-" onclick="minus('#item_@item.Product.f_id')" disabled />
+                                    <input style="width:50px; display:inline; color:black;" type="text" class="btn btn-outline-primary" onchange="inputRecalculate(this.value, '#item_@item.Product.f_id')" value="@item.Amount" disabled />
+                                    <input style="width:30px; display:inline" type="button" class="btn btn-outline-primary" value="+" onclick="add('#item_@item.Product.f_id')" disabled />
                                 </td>
-                                <td align="center" class="align-middle">NT$ 
+                                <td align="center" class="align-middle">
+                                    NT$
                                     <span class="txtSubTotal" onchange="subTotalRecalculate()">@item.SubTotal</span>
                                 </td>
                                 <td align="center" class="align-middle">
@@ -68,17 +70,17 @@
                                 </td>
                                 <td align="center" class="align-middle">NT$ <span class="txtSubTotal" onchange="subTotalRecalculate()">@item.SubTotal</span></td>
                                 <td align="center" class="align-middle"><input class="btn btn-outline-danger" data-id="@item.Product.f_id" type="button" value="刪除" onclick="btnDelItem(this)" /></td>
-                            </tr>                            
+                            </tr>
                         }
                     }
                     <tr id="trTotal">
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td align="right">                            
+                        <td align="right">
                             <span style="display: block;"><u>總計</u></span>
                         </td>
-                        <td align="center">                            
+                        <td align="center">
                             NT$ <span id="cartTotal"></span>
                         </td>
                         <td>
@@ -91,7 +93,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td align="center">                            
+                        <td align="center">
                         </td>
                     </tr>
                 }
@@ -115,5 +117,7 @@
     </div>
 }
 
+@section scripts{
+    <script type="text/javascript" src="~/js/Frontend/Cart/Index.js"></script>
+}
 
-<script type="text/javascript" src="~/js/Frontend/Cart/Index.js"></script>

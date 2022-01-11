@@ -225,23 +225,23 @@ namespace ShopStore.Controllers
 
 
 
-        // [HttpGet]        
-        // public IActionResult GetProductDetailById(string id)
-        // {
-        //     try
-        //     {
-        //         //var result = await _products.GetProductDetailByIdAsync(id);
+        [HttpGet]
+        public IActionResult GetProductDetailById(string id)
+        {
+            try
+            {
+                //var result = await _products.GetProductDetailByIdAsync(id);
 
-        //         ViewBag.Id = id;
-        //         return PartialView("_ProductPartial");
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         LOGGER.Debug(ex, "GetProductDetailById Error");
-        //     }
+                ViewBag.Id = id;
+                return PartialView("_ProductPartial");
+            }
+            catch (Exception ex)
+            {
+                LOGGER.Debug(ex, "GetProductDetailById Error");
+            }
 
-        //     return NotFound();
-        // }
+            return NotFound();
+        }
 
         private static string Md5(string s)
         {
