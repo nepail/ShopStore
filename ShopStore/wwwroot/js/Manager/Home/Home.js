@@ -132,12 +132,12 @@ var Home = {
                 console.log('連線已中斷');
             });
 
-            connection.stop().then(function () {
-                console.log('連線停止');
-            }).catch(function (err) {
-                console.error('連線停止時發生錯誤');
-                console.error(err.toString());
-            })
+            //connection.stop().then(function () {
+            //    console.log('連線停止');
+            //}).catch(function (err) {
+            //    console.error('連線停止時發生錯誤');
+            //    console.error(err.toString());
+            //})
         }
     }
 }
