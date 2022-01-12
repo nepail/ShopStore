@@ -113,7 +113,8 @@ namespace ShopStore
 
             services.AddMemoryCache();
 
-            services.AddSignalR();
+            //SignalR ÓA‘OÈ_Ü¢JsonProtocol
+            services.AddSignalR().AddJsonProtocol();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

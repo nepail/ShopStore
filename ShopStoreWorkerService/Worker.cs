@@ -22,6 +22,7 @@ namespace ShopStoreWorkerService
         private StreamWriter cpuLogger = null!;
         private readonly HubConnection connection;        
         private readonly string StrConn = "Data Source=localhost;Initial Catalog=ShoppingDB;User ID=shopstoreadmin;Password=pk!shopstoreadmin;Integrated Security=false;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private readonly int CheckTime;
 
         public Worker
         (
@@ -32,7 +33,8 @@ namespace ShopStoreWorkerService
             _logger = logger;
             logPath = Path.Combine(config.GetValue<string>("LogPath") ?? AppContext.BaseDirectory!, "cpu.log");
             connection = new HubConnectionBuilder().WithUrl(@"http://localhost:6372/chatHub").Build();
-            //connection = new HubConnectionBuilder().WithUrl(@"http://192.168.6.4:8083/chatHub").Build();            
+            //connection = new HubConnectionBuilder().WithUrl(@"http://192.168.6.4:8083/chatHub").Build();
+            CheckTime = config.GetValue<int>("CheckTime");
         }
 
         // 服務啟動時
@@ -79,7 +81,6 @@ namespace ShopStoreWorkerService
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);                
                 await Task.Delay(1000, stoppingToken);
 
-
                 // 使用 ThreadPool 執行，避免讀取 CPU 百分比的耗用時間干擾 Task.Delay 間隔
                 // https://docs.microsoft.com/en-us/dotnet/standard/threading/cancellation-in-managed-threads
                 // 這裡用舊式 ThreadPool 寫法，亦可用 Task 取代 
@@ -93,28 +94,18 @@ namespace ShopStoreWorkerService
                             if (!stoppingToken.IsCancellationRequested)
                             {
 
-                                var cpuValue = GetCpuLoad();
-
-                                Log($"CPU: {cpuValue}%");
-                                _logger.LogInformation($"Logging CPU load");
-                                _logger.LogInformation($"CPU: {cpuValue}%");                                
-                                connection.InvokeAsync("SendMessage", "CPU:", cpuValue.ToString());
-                                
-                                //Dictionary<int, InventoryViewModel> item = MANAGER.InventoryCheck();
-
-                                //if(item != null)
-                                //{
-                                //    _logger.LogInformation(item.ToString());
-                                //    connection.InvokeAsync("SendMessage", "test: ", item);
-                                //}
+                                //var cpuValue = GetCpuLoad();
+                                //Log($"CPU: {cpuValue}%");
+                                //_logger.LogInformation($"Logging CPU load");
+                                //_logger.LogInformation($"CPU: {cpuValue}%");                                
 
                                 using var conn = new SqlConnection(StrConn);
                                 var result = conn.QueryMultiple("pro_shopStore_Manager_InventoryCheck",
                                 commandType: System.Data.CommandType.StoredProcedure);
 
-                                var item = result.Read<InventoryViewModel>().ToDictionary(x => x.Id, x => x);
+                                var item = result.Read<InventoryViewModel>().ToDictionary(x => x.Stock, x => x);
                                 var logg = JsonConvert.SerializeObject(item);
-                                _logger.LogInformation(logg);
+                                //_logger.LogInformation(logg);
                                 connection.InvokeAsync("SendMessage", "test:", logg);
                             }
                         }
@@ -124,7 +115,7 @@ namespace ShopStoreWorkerService
                             throw;
                         }
                     }, stoppingToken);
-                await Task.Delay(5000, stoppingToken);
+                await Task.Delay(CheckTime, stoppingToken);
             }
         }
 
