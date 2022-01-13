@@ -19,6 +19,7 @@ var Index = {
 
                     if (res.success) {
                         //swal(`${res.username}，歡迎回來`, '', 'success');
+                        localStorage.setItem('user', res.username);
                         swal({
                             title: `${res.username}，歡迎回來`,
                             text: '',

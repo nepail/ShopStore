@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="~/vendor/bootstrap-vue/dist/bootstrap-vue.min.css" />
 
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
     <link rel="stylesheet" href="~/css/Manager/Home/Home.css" />
 
     <link href="~/lib/bootstrap-sweetalert/sweetalert.css" rel="stylesheet" />
@@ -72,70 +73,171 @@
         </nav>
 
         <div id="app">
-            @*            <template>
-                <div>
-                <b-table striped hover :items="items"></b-table>
-                </div>
-                </template>
-
-                <template>
-                <div>
-                <b-form v-on:submit="onSubmit" v-on:reset="onReset" v-if="show">
-                <b-form-group id="input-group-1" label="Email address:" label-for="input-1"
-                description="We'll never share your email with anyone else.">
-                <b-form-input id="input-1" v-model="form.email" type="email" required
-                placeholder="Enter email">
-
-                </b-form-input>
-                </b-form-group>
-
-                <b-form-group id="input-group-2" label="Your Name:" label-for="input-2">
-                <b-form-input id="input-2" v-model="form.name" required placeholder="Enter name">
-
-                </b-form-input>
-                </b-form-group>
-                <b-button type="submit" variant="primary">Submit</b-button>
-                <b-button type="reset" variant="danger">Reset</b-button>
-                </b-form>
-                <b-card class="mt-3" header="Form Data Result">
-                <pre class="m-0">{{ form }}</pre>
-                </b-card>
-                </div>
-                </template>*@
-
-            @*            <div class="container">
-                <div class="row">&nbsp;</div>
-                <div class="row">
-                <div class="col-2">User</div>
-                <div class="col-4"><input type="text" id="userInput" /></div>
-                </div>
-                <div class="row">
-                <div class="col-2">Message</div>
-                <div class="col-4"><input type="text" id="messageInput" /></div>
-                </div>
-                <div class="row">&nbsp;</div>
-                <div class="row">
-                <div class="col-6">
-                <input type="button" id="sendButton" value="Send Message" />
-                </div>
-                </div>
-                </div>*@
-
             <div id="Home-container" class="Home-container">
-
-                <div class="loading">
+                <div id="loading-section" class="loading">
                     @*<span>資料讀取中...請稍後</span>*@
                     <span class="loading__anim"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="chatbox">
+        <div id="chatbox-support" class="chatbox__support">
+
+            <div class="chat-container">
+                <div class="chat-room">
+                    <div class="wrapper">
+
+
+
+                        <section id="main-chat" class="users">
+                            <header>
+                                <div class="content">
+                                    <!-- <img src="#" alt=""> -->
+                                    <div class="user-img">
+                                        <span>C</span>
+                                    </div>
+                                    <div class="details">
+                                        <span id="chat-username"></span>
+                                        <p>上線中</p>
+                                    </div>
+                                </div>
+                                <!-- <a href="#" class="logout">Logout</a> -->
+                            </header>
+                            <div class="search">
+                                <span class="text">Select an user to start chat</span>
+                                <input type="text" placeholder="Enter name to search...">
+                                <button><i class="fas fa-search"></i></button>
+                            </div>
+                            <div id="users-list" class="users-list">
+@*                                <a href="#" data-id="1">
+                                    <div class="content">
+                                        <div class="user-img">
+                                            <span>A</span>
+                                        </div>
+                                        <div class="details">
+                                            <span>Coding Nepal</span>
+                                            <p>This is test message</p>
+                                        </div>
+                                    </div>
+                                    <div class="status-dot"><i class="fas fa-circle"></i></div>
+                                </a>*@
+                                
+                            </div>
+                        </section>
+
+
+                        <section id="sub-chat" class="chat-area">
+                            <header>
+                                <a href="#" class="bacl-icon">
+                                    <i id="prevToChatList" class="fas fa-arrow-left"></i>
+                                </a>
+                                <div class="user-img">
+                                    <span>C</span>
+                                </div>
+                                <div class="details">
+                                    <span>Codin Nepal</span>
+                                    <p>Active now</p>
+                                </div>
+                            </header>
+                            <div id="chat-box" class="chat-box">
+                                <div class="chat outgoing">
+                                    <div class="details">
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                                <div class="chat incoming">
+                                    <div class="user-img">
+                                        <span>A</span>
+                                    </div>
+                                    <div class="details">
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                                <div class="chat outgoing">
+                                    <div class="details">
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                                <div class="chat incoming">
+                                    <div class="user-img"></div>
+                                    <div class="details">
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                                <div class="chat outgoing">
+                                    <div class="details">
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                                <div class="chat incoming">
+                                    <div class="user-img"></div>
+                                    <div class="details">
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                                <div class="chat outgoing">
+                                    <div class="details">
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                                <div class="chat incoming">
+                                    <div class="user-img"></div>
+                                    <div class="details">
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                                <div class="chat incoming">
+                                    <div class="user-img"></div>
+                                    <div class="details">
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                                <div class="chat incoming">
+                                    <div class="user-img"></div>
+                                    <div class="details">
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                                <div class="chat incoming">
+                                    <div class="user-img"></div>
+                                    <div class="details">
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <form action="#" class="typing-area">
+                                <input type="text" placeholder="Type a message here...">
+                                <button id="btnSendToChat"><i class="fab fa-telegram-plane"></i></button>
+                            </form>
+                        </section>
+
+
+                    </div>
                 </div>
 
             </div>
 
+
         </div>
-    </section>
+        <div class="chatbox__button">
+            <button>
+                <img src="~/img/svg/chatbox-icon.svg" />
+            </button>
+        </div>
+    </div>
+
+
 </body>
 
 </html>
 
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
-<script src="~/js/Manager/Home/Home.js" type="text/javascript" asp-append-version="true"></script>
 <script src="~/js/Manager/Shared/_MainProperties.js" type="text/javascript" asp-append-version="true"></script>
+<script src="~/js/Manager/Home/Home.js" type="text/javascript" asp-append-version="true"></script>
+
+@section scripts{
+
+
+}

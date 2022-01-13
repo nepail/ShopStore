@@ -209,7 +209,7 @@
 .rowckbox i{
     right: 110px;
     position: absolute;
-    z-index: 1;
+    /*z-index: 1;*/
 }
 
 /*.b{

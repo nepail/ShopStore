@@ -23,6 +23,7 @@ namespace ShopStoreWorkerService
         private readonly HubConnection connection;        
         private readonly string StrConn = "Data Source=localhost;Initial Catalog=ShoppingDB;User ID=shopstoreadmin;Password=pk!shopstoreadmin;Integrated Security=false;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         private readonly int CheckTime;
+        private readonly string DomainUrl;
 
         public Worker
         (
@@ -32,9 +33,11 @@ namespace ShopStoreWorkerService
         {
             _logger = logger;
             logPath = Path.Combine(config.GetValue<string>("LogPath") ?? AppContext.BaseDirectory!, "cpu.log");
-            connection = new HubConnectionBuilder().WithUrl(@"http://localhost:6372/chatHub").Build();
+            //connection = new HubConnectionBuilder().WithUrl(@"http://localhost:6372/chatHub").Build();
             //connection = new HubConnectionBuilder().WithUrl(@"http://192.168.6.4:8083/chatHub").Build();
+            connection = new HubConnectionBuilder().WithUrl(config.GetValue<string>("DomainUrl")).Build();
             CheckTime = config.GetValue<int>("CheckTime");
+            //DomainUrl = config.GetValue<string>("DomainUrl");
         }
 
         // ·þ„Õ†¢„Ó•r

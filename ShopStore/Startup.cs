@@ -15,6 +15,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using ShopStore.Hubs;
+using ShopStore.Hubs.Models.Services;
 
 namespace ShopStore
 {
@@ -61,6 +62,7 @@ namespace ShopStore
             services.AddTransient(e => new SqlConnection(connectionString));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<ConUserService>();
 
             services.AddScoped<ActionFilter>();
             services.AddScoped<AuthorizationFilter>();
