@@ -174,6 +174,9 @@ var Home = {
 
     CONNECTION: {
         Init() {
+
+            
+
             connection.start().then(function () {
                 console.log('--- connection start ---');
             }).catch(function (err) {
@@ -238,8 +241,8 @@ var Home = {
 
             //接收User回傳的訊息
             connection.on('ReceivePrivateFromUser', function (userId, msg) {
-                console.log(msg);
-
+                //console.log(msg);
+                console.log({ userId })
                 if (!$('#chatbox-support').hasClass('chatbox--active')) {
                     //視窗關閉狀態
                     $('#chatbox-support').addClass('chatbox--active');
@@ -249,8 +252,15 @@ var Home = {
                 else
                 {
                     //視窗開啟狀態
+                    
+                    var $userTarget = $('#users-list>a').filter(function () {
+                        return $(this).data('id') == userId
+                    });
 
-
+                    //console.log({userId})
+                    //console.log({ $userTarget });
+                    //console.log($userTarget.find('.user-incoming-msg').text(msg));
+                    $userTarget.find('.user-incoming-msg').text(msg);
                 }
 
 
@@ -284,14 +294,14 @@ var Home = {
 
                 for (var i = 0, len = ConList.length; i < len; i++) {
                     userListHtml +=
-                        `      <a href="#" data-id="${ConList[i].userName}" onclick="Home.UC.SetChatRoom.SwitchChat('${ConList[i].connectionID}')">
+                        `      <a href="#" data-id="${ConList[i].connectionID}" onclick="Home.UC.SetChatRoom.SwitchChat('${ConList[i].connectionID}')">
                                     <div class="content">
                                         <div class="user-img">
                                             <span>${ConList[i].userName[0]}</span>
                                         </div>
                                         <div class="details">
                                             <span>${ConList[i].userName}</span>
-                                            <p>This is test message</p>
+                                            <p class="user-incoming-msg"></p>
                                         </div>
                                     </div>
                                     <div class="status-dot"><i class="fas fa-circle"></i></div>
