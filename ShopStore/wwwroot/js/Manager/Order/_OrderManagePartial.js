@@ -176,7 +176,7 @@ var Order = {
      * @param {Number} orderid 
      * @returns 狀態的的 CSS Style
      */
-    GetStatus: function(statusCode, type, ordernum, orderid) {
+    GetStatus: function(statusCode, type, ordernum, orderid, orderUser) {
 
         if (postData[ordernum] == undefined) {
             postData[ordernum] = {
@@ -190,6 +190,8 @@ var Order = {
 
             postData[ordernum].f_id = orderid;
             postData[ordernum].f_status = parseInt(statusCode.slice(-1));
+            
+            Home.CONNECTION.AlertFrontedUser(orderUser, `訂單狀態已變更為${statusCode}`)
 
             return MainProperties.Order.OrderStatus.cartgoState[statusCode].style;
         }
@@ -198,6 +200,8 @@ var Order = {
 
             postData[ordernum].f_id = orderid;
             postData[ordernum].f_ShippingMethod = parseInt(statusCode.slice(-1));
+
+            Home.CONNECTION.AlertFrontedUser(orderUser, `配送狀態已變更為${statusCode}`)
 
             return MainProperties.Order.OrderStatus.sipState[statusCode].style;
         }
@@ -289,12 +293,13 @@ $.fn.styleddropdown = function() {
             //var type = $(this).attr('data-type').slice(-1);            
             var type = $(this).attr('data-type');
             var menuType = $(this).parent().attr('menu-type');
-            var orderid = obj.find('.field').parent().parent().siblings().eq(1).find('span').text();
+            var orderid = obj.find('.field').parent().parent().siblings().eq(1).find('span').text();            
+            var orderUser = obj.find('.field').parent().parent().siblings().eq(3).find('span').text();            
             var ordernum = obj.find('.field').parent().parent().siblings().eq(1).find('span').attr('ordernum');
             var targetClass = obj.find('.field').attr('class').split(' ')[2];
             obj.find('.field')
                 .text($(this).html())
-                .toggleClass(`${targetClass} ${Order.GetStatus(type, menuType, ordernum, orderid)}`);            
+                .toggleClass(`${targetClass} ${Order.GetStatus(type, menuType, ordernum, orderid, orderUser)}`);            
 
             obj.find('.list').fadeOut(400);
         });

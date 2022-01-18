@@ -6,6 +6,7 @@ namespace ShopStore.Hubs.Models
     {
         public string ConnectionID { get; set; }
         public string UserName { get; set; }
+        public string UserAccount { get; set; }
         public DateTime OnlineTime { get; set; }
     }
 }

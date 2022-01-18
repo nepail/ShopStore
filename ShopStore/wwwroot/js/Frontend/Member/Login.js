@@ -40,9 +40,9 @@ var ResetPcode = {
 
             $('label[required]').before('<span style="color:red">* </span>');
 
-            $('#btnLogin').click(function () {
-                console.log(this);
+            $('#btnLogin').click(function () {                
                 localStorage.setItem('user', $('#inputAccount').val());
+                //建立長連接                
             });
 
             $('#forgetPcode').click(function () {

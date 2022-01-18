@@ -168,6 +168,7 @@ namespace ShopStore
                 .RequireAuthorization();
 
                 endpoints.MapHub<ChatHub>("/chatHub");
+                endpoints.MapHub<ServerHub>("/ServerHub");
             });
         }
     }

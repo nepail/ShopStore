@@ -1,10 +1,13 @@
 ﻿$(document).ready(function () {
     Home.InitPage();
-    
+
+    $(window).on("beforeunload", function () {        
+        Home.CONNECTION.RemoveGroup();
+    })
 })
 
-var connection = new signalR.HubConnectionBuilder().withUrl('/chatHub').build();;
-
+var connection = new signalR.HubConnectionBuilder().withUrl('/chatHub').build();
+var serverHub = new signalR.HubConnectionBuilder().withUrl('/ServerHub').build();
 
 const chatButton = $('.chatbox__button');
 const chatContent = $('.chatbox__support');
@@ -15,18 +18,17 @@ const icons = {
 
 const chatbox = new InteractiveChatbox(chatButton, chatContent, icons);
 chatbox.display();
-//chatbox.toggleIcon(false, chatButton);
-
-//$('#chatbox').css('top', $(document).scrollTop()+20)
-/*$("#chatbox").animate({ scrollTop: $('#chatbox').prop("scrollHeight") }, 1000);*/
-
 
 var Home = {
 
     InitPage() {
         Home.UC.SetBtn.Sidebar();
+
         Home.UC.SetChatRoom.SetBtnUserListClick();
         Home.CONNECTION.Init();
+
+        //聊天室初始化
+        Home.UC.ChatRoom.Init();
     },
 
     DATA: {
@@ -41,6 +43,7 @@ var Home = {
     },
 
     UC: {
+        //按鈕繫結事件
         SetBtn: {
             Sidebar() {
                 $('.sidebar-button').click(function () {
@@ -77,8 +80,8 @@ var Home = {
                     }
                 });
 
-                $('#btnHome').click(function () {
-                    //window.location.href = '/Manager/Home';
+                //首頁按鈕
+                $('#btnHome').click(function () {                    
                     $('#app').html(`
                         <div id="Home-container" class="Home-container">
                             <div id="loading-section" class="loading">                                
@@ -89,26 +92,67 @@ var Home = {
             },
         },
 
+
+        ChatRoom: {
+            
+            //聊天室初始化
+            Init() {                                
+                this.UC.SetName();
+                this.UC.SetBtn.UserListClick();
+            },
+
+            UC: {
+                //設定名字
+                SetName() {
+                    var userName = localStorage.getItem('user');
+
+                    $('#chat-box-user-name').text(userName);
+                    $('#chat-box-user-firstName').text(userName[0])
+                    $('#chat-username').text(userName);
+                },
+
+                //綁定按鈕事件
+                SetBtn: {
+                    UserListClick(ConList) {                        
+                        if (ConList == undefined) return;
+
+                        var userName = localStorage.getItem('user');
+
+                        //在列表移除使用者自己
+                        var index = ConList.findIndex(x => x.userName == userName);
+                        ConList.splice(index, 1);
+
+                        var userListHtml = '';
+
+                        for (var i = 0, len = ConList.length; i < len; i++) {
+                            userListHtml +=
+                                `      <a href="#" data-name="${ConList[i].userName}" onclick="Home.UC.SetChatRoom.SwitchChat('${ConList[i].userName}')">
+                                    <div class="content">
+                                        <div class="user-img">
+                                            <span>${ConList[i].userName[0]}</span>
+                                        </div>
+                                        <div class="details">
+                                            <span>${ConList[i].userName}</span>
+                                            <p class="user-incoming-msg"></p>
+                                        </div>
+                                    </div>
+                                    <div class="status-dot"><i class="fas fa-circle"></i></div>
+                                </a>`
+                        }
+
+                        $('#users-list').html(userListHtml);
+                    }
+                }
+            }
+        },
+
         SetChatRoom: {
+            //點選使用者列表進行傳訊
             SetBtnUserListClick() {
 
-                //$(document).on('click', '.users-list>a, #prevToChatList', function (e) {
-                //    e.preventDefault();
-                //    console.log(this)
-                //    console.log($(this))
-                //    //$('.wrapper').html(`
-                //    //      `)
-                //    $('#main-chat').toggle();
-                //    $('#sub-chat').toggle();
-
-                //    var $div = $('.chat-box');
-                //    $div.scrollTop($div[0].scrollHeight);
-                //});
-
+                //回到上一頁
                 $('#prevToChatList').click(function (e) {
-                    e.preventDefault();
-                    //console.log(this);
-                    //console.log($(this));
+                    e.preventDefault();                    
 
                     $('#main-chat').toggle();
                     $('#sub-chat').toggle();
@@ -117,18 +161,8 @@ var Home = {
                     $div.scrollTop($div[0].scrollHeight);
                 });
 
-                //$(document).on('click', '#users-list>a', function (e) {
-                //    e.preventDefault();
-                //    console.log(this);
-                //    console.log($(this));
 
-                //    $('#main-chat').toggle();
-                //    $('#sub-chat').toggle();
-
-                //    var $div = $('#chat-box');
-                //    $div.scrollTop($div[0].scrollHeight);
-                //})
-
+                //傳送訊息
                 $('#btnSendToChat').click(function (e) {
                     e.preventDefault();
                     var $chatBox = $('#chat-box');
@@ -148,35 +182,36 @@ var Home = {
 
                     $chatBox.animate({ scrollTop: $chatBox.prop("scrollHeight") }, 500);
                     $btnSend.siblings('input').focus();
-
-                    Home.CONNECTION.SendMsg($(this).attr('data-id'), textContent);
+                                        
+                    //'data-name' => groupName
+                    Home.CONNECTION.SendGroupMsg($(this).attr('data-name'), textContent);
                 })
             },
 
             //點擊user進入對話框
-            SwitchChat(Id) {
+            SwitchChat(userName) {
                 //e.preventDefault();
                 //console.log(this);
                 //console.log($(this));
-
                 //console.log(Id)
-
                 //console.log($('#main-chat'))
+
                 $('#main-chat').toggle();
                 $('#sub-chat').toggle();
-                $('#btnSendToChat').attr('data-id', Id);
+                //$('#btnSendToChat').attr('data-name', userName);
 
                 var $div = $('#chat-box');
                 $div.scrollTop($div[0].scrollHeight);
+
+                var thisUser = localStorage.getItem('user');
+                
+                Home.CONNECTION.CreateGroup(thisUser, userName);
             }
         }
     },
 
     CONNECTION: {
-        Init() {
-
-            
-
+        Init() {           
             connection.start().then(function () {
                 console.log('--- connection start ---');
             }).catch(function (err) {
@@ -185,13 +220,19 @@ var Home = {
                 return console.error(err.toString());
             });
 
+            serverHub.start().then(function () {
+                console.log('--- Server Connection Start ---');
+            }).catch(function (err) {
+                connsole.error('伺服器連線失敗')
+            })
+
             //test
             connection.on('ReceiveMessageFromUser', function (user, message) {
                 console.log(user + message);                
             })
 
             //庫存量警告
-            connection.on('ReceiveMessage', function (user, message) {
+            serverHub.on('ReceiveMessage', function (user, message) {
 
                 if ($('#Home-container').length > 0) {
                     var item = JSON.parse(message);
@@ -239,35 +280,31 @@ var Home = {
                 }
             });
 
+
+
+
             //接收User回傳的訊息
-            connection.on('ReceivePrivateFromUser', function (userId, msg) {
-                //console.log(msg);
-                console.log({ userId })
+            connection.on('ReceivePrivateFromUser', function (userNameFrom, userName, msg) {
+
                 if (!$('#chatbox-support').hasClass('chatbox--active')) {
                     //視窗關閉狀態
                     $('#chatbox-support').addClass('chatbox--active');
                     $('#main-chat').toggle();
                     $('#sub-chat').toggle();
+                    $userTarget.find('.user-incoming-msg').text(msg);
                 }
                 else
                 {
-                    //視窗開啟狀態
-                    
+                    //視窗開啟狀態                    
                     var $userTarget = $('#users-list>a').filter(function () {
-                        return $(this).data('id') == userId
-                    });
+                        return $(this).data('name') == userNameFrom
+                    });                    
 
-                    //console.log({userId})
-                    //console.log({ $userTarget });
-                    //console.log($userTarget.find('.user-incoming-msg').text(msg));
                     $userTarget.find('.user-incoming-msg').text(msg);
                 }
-
-
                 
-                $('#btnSendToChat').attr('data-id', userId);
-
-                //$('#sub-chat').show();
+                $('#btnSendToChat').attr('data-name', userName);
+                
                 $('#chat-box').append(`
                                 <div class="chat incoming">
                                     <div class="user-img"></div>
@@ -280,38 +317,14 @@ var Home = {
                 $div.scrollTop($div[0].scrollHeight);
             })
 
+            //接收伺服器回傳的在線列表
+            connection.on('GetConList', function (ConList) {                
+                console.table(ConList);
 
-            connection.on('GetConList', function (ConList) {
-
-                console.table(ConList)
-                var userName = localStorage.getItem('user');
-                $('#chat-username').text(userName);
-
-                var index = ConList.findIndex(x => x.userName == userName);              
-                ConList.splice(index, 1);
-
-                var userListHtml = '';
-
-                for (var i = 0, len = ConList.length; i < len; i++) {
-                    userListHtml +=
-                        `      <a href="#" data-id="${ConList[i].connectionID}" onclick="Home.UC.SetChatRoom.SwitchChat('${ConList[i].connectionID}')">
-                                    <div class="content">
-                                        <div class="user-img">
-                                            <span>${ConList[i].userName[0]}</span>
-                                        </div>
-                                        <div class="details">
-                                            <span>${ConList[i].userName}</span>
-                                            <p class="user-incoming-msg"></p>
-                                        </div>
-                                    </div>
-                                    <div class="status-dot"><i class="fas fa-circle"></i></div>
-                                </a>`
+                if (ConList != undefined) {
+                    Home.UC.ChatRoom.UC.SetBtn.UserListClick(ConList);
                 }
-
-                $('#users-list').html(userListHtml);
             })
-
-
 
             connection.onclose(function (e) {
                 console.log('連線已中斷');
@@ -323,14 +336,91 @@ var Home = {
             //    console.error('連線停止時發生錯誤');
             //    console.error(err.toString());
             //})
+
+            //3. 接受群組回傳訊息
+            connection.on('GetGroupMsg', function (groupName, userName, msg) {
+                console.log({ msg })
+
+                $('#btnSendToChat').attr('data-name', groupName);
+                localStorage.setItem('connectedGroup', groupName);
+
+                if (!$('#chatbox-support').hasClass('chatbox--active')) {
+                    //視窗關閉狀態
+                    $('#chatbox-support').addClass('chatbox--active');
+                    $('#main-chat').toggle();
+                    $('#sub-chat').toggle();
+
+                    $('#chat-box').append(`
+                                <div class="chat incoming">
+                                    <div class="user-img"></div>
+                                    <div class="details">
+                                        <p>${msg}</p>
+                                    </div>
+                                </div>`)
+
+                    var $div = $('#chat-box');
+                    $div.scrollTop($div[0].scrollHeight);
+
+                    $userTarget.find('.user-incoming-msg').text(msg);
+                }
+                else {
+                    //視窗開啟狀態
+
+                    var $userTarget = $('#users-list>a').filter(function () {
+                        return $(this).data('name') == userName
+                    });                    
+                    
+                    $userTarget.find('.user-incoming-msg').text(msg);
+                }
+                
+                $('#chat-box').append(`
+                                <div class="chat incoming">
+                                    <div class="user-img"></div>
+                                    <div class="details">
+                                        <p>${msg}</p>
+                                    </div>
+                                </div>`)
+
+                var $div = $('#chat-box');
+                $div.scrollTop($div[0].scrollHeight);
+            })
         },
 
-        SendMsg(userId, msg) {
+        //1. 發起對話建立群組
+        CreateGroup(userNameFrom, userNameTo) {
+            connection.invoke('CreateGroup', userNameFrom, userNameTo).catch(() => {
+                console.error('建立對話時出現失敗')
+            }).then((res) => {
+                console.log({ res });
+                //local端 設定GroupName
+                localStorage.setItem('connectedGroup', res);                
+            })            
+        },
 
-            if (msg == '') return;
+        //2. 傳送對話至群組
+        SendGroupMsg(groupName, msg) {
+            //取得已建立的群組名稱
+            //groupName = localStorage.getItem('connectedGroup');
+            userName = localStorage.getItem('user');
+            console.log({ groupName });
+            if (groupName == undefined) groupName = localStorage.getItem('connectedGroup');
 
-            connection.invoke('SendPrivateMessage', userId, msg).catch(function (err) {
-                console.error('send msg error');
+            connection.invoke('SendToGroup',groupName, userName, msg).catch(() => {
+                //群組對話失敗，連線消失?
+                console.error('SendToGroup 1')
+            })
+        },
+
+        RemoveGroup() {
+            connection.invoke('RemoveGroup', localStorage.getItem('connectedGroup')).catch(() => {
+                console.error('刪除群組時發生失敗')
+            })
+        },
+
+        //通知前台用戶訂單狀態變更
+        AlertFrontedUser(user, msg) {
+            serverHub.invoke('SendMessageToFrontedUser', user, msg).catch(() => {
+                console.error('通知變更時發生錯誤')
             })
         }
     }

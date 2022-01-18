@@ -35,7 +35,13 @@ namespace ShopStoreWorkerService
             logPath = Path.Combine(config.GetValue<string>("LogPath") ?? AppContext.BaseDirectory!, "cpu.log");
             //connection = new HubConnectionBuilder().WithUrl(@"http://localhost:6372/chatHub").Build();
             //connection = new HubConnectionBuilder().WithUrl(@"http://192.168.6.4:8083/chatHub").Build();
-            connection = new HubConnectionBuilder().WithUrl(config.GetValue<string>("DomainUrl")).Build();
+            connection = new HubConnectionBuilder().WithUrl(config.GetValue<string>("DomainUrl"), options =>
+            {
+                //options.Cookies.Add(new System.Net.Cookie("manager", "123"));            
+
+
+            }).Build();
+            
             CheckTime = config.GetValue<int>("CheckTime");
             //DomainUrl = config.GetValue<string>("DomainUrl");
         }
@@ -43,6 +49,10 @@ namespace ShopStoreWorkerService
         // ·þ„Õ†¢„Ó•r
         public override async Task StartAsync(CancellationToken stoppingToken)
         {
+
+            
+            
+            
             cpuLogger = new StreamWriter(logPath, true);            
             await connection.StartAsync();
             _logger.LogInformation("connection successful");

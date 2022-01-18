@@ -18,6 +18,12 @@ var Wish = {
     //取願望清單
     SetWishList: function () {
 
+        if (localStorage.getItem(user) === null) {
+            Wish.ShowEmptyMsg();
+            return;
+        }
+
+
         wishList = JSON.parse(localStorage[user]);
         Wish.CheckWishList();
 

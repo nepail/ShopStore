@@ -5,9 +5,13 @@ namespace ShopStore.Hubs.Models.Services
     public class ConUserService
     {
         public List<ConUserModel> LIST;
+        public Dictionary<string, GroupUser> connectedGroup;
+
+
         public ConUserService()
         {
             LIST = new List<ConUserModel>();
+            connectedGroup = new Dictionary<string, GroupUser>();
         }
 
         public List<ConUserModel> AddList(ConUserModel user)
@@ -21,6 +25,22 @@ namespace ShopStore.Hubs.Models.Services
             var index = LIST.FindIndex(x => x.ConnectionID == connectionId);
             LIST.RemoveAt(index);
             return LIST;
+        }
+
+        public class GroupUser
+        {
+            public GroupUser()
+            {
+                Group = new List<ConnUser>();
+            }
+
+            public List<ConnUser> Group { get; set; }
+
+            public class ConnUser
+            {
+                public string RoomID { get; set; }
+
+            }
         }
     }
 }

@@ -172,9 +172,7 @@ namespace ShopStore.Controllers
             {
                 if (model.ProductPic != null)
                 {
-                    string uploadsFolder = Path.Combine(WEBHOSTENVIRONMENT.WebRootPath, "images");
-                    //uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ProductPic.FileName;
-                    //uniqueFileName = Guid.NewGuid().ToString();
+                    string uploadsFolder = Path.Combine(WEBHOSTENVIRONMENT.WebRootPath, "images");                    
                     uniqueFileName = model.f_pId.ToString();
                     WriteProductContent(model.ContentText, uniqueFileName);
 
