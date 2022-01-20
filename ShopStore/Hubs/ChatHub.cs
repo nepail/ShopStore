@@ -1,17 +1,4 @@
-﻿#region 功能與歷史修改描述
-
-/*
-    描述:後台聊天室
-    建立日期:2022-01-18
-
-    描述:程式碼風格調整
-    修改日期:2022-01-20
-
- */
-
-#endregion
-
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using ShopStore.Hubs.Models;
 using ShopStore.Hubs.Models.Services;
@@ -33,7 +20,8 @@ namespace ShopStore.Hubs
         
         public ChatHub(ConUserService conUserService)
         {
-            CONUSERLIST = conUserService;            
+            CONUSERLIST = conUserService;
+            //connectedGroup = new Dictionary<string, GroupUser>();
         }
 
         /// <summary>
@@ -41,6 +29,12 @@ namespace ShopStore.Hubs
         /// </summary>
         private async void AddConUserList(ClaimsIdentity User)
         {
+            //var ClientName = Context.User.FindFirstValue(ClaimTypes.Name) ?? String.Empty;
+
+            //從現存的線上列表尋找已連線的使用者
+            //var user = CONUSERLIST.LIST.FindIndex(x => x.UserName == ClientName);
+            //var userName = User.Name;
+
             var user = CONUSERLIST.LIST.FindIndex(x => x.UserName == User.Name);
 
             if (user <= 0)
@@ -52,7 +46,8 @@ namespace ShopStore.Hubs
                     ConnectionID = ClientID,
                     OnlineTime = DateTime.Now
                 };
-                
+
+                //這段邏輯有點問題，待查
                 await Groups.AddToGroupAsync(ClientID, "ConList");
                 //向線上廣播更新後的在線的列表
 
@@ -79,14 +74,16 @@ namespace ShopStore.Hubs
                     {
                         await Groups.AddToGroupAsync(ClientID, a.RoomID);
                     }
-                }                
+                }
+                //await Groups.AddToGroupAsync(ClientID, )
+
             }
             //將新建的 User 加入單一使用者群組
             await Groups.AddToGroupAsync(ClientID, User.Name);
         }
 
         /// <summary>
-        /// 第一次連線
+        /// SingalR 交握完成後進入第一次連線
         /// </summary>
         /// <returns></returns>        
         public async override Task OnConnectedAsync()
@@ -108,7 +105,8 @@ namespace ShopStore.Hubs
         /// <returns></returns>
         public async override Task OnDisconnectedAsync(Exception except)
         {
-            await base.OnDisconnectedAsync(except);            
+            await base.OnDisconnectedAsync(except);
+            //await SendMessageToUser($"{ClientName} 已經斷線 ID:", ClientID);
             CONUSERLIST.RemoveList(Context.ConnectionId);
             //從線上列表移除斷線的USER & 廣播新的在線列表
             await Clients.Group("ConList").SendAsync("GetConList", CONUSERLIST.RemoveList(Context.ConnectionId));
@@ -123,9 +121,13 @@ namespace ShopStore.Hubs
         /// <returns></returns>
         public async Task SendPrivateMessage(string userNameFrom, string userNameTo, string message)
         {
+            //await Clients.User(userId).SendAsync("ReceivePrivateFromUser", message);
+            //await Clients.Client(userId).SendAsync("ReceivePrivateFromUser", ClientID, message);
             //將要對話的對象加入Group
-            var connId = CONUSERLIST.LIST.Find(x => x.UserName == userNameTo).ConnectionID;            
-            await Groups.AddToGroupAsync(connId, userNameFrom);            
+            var connId = CONUSERLIST.LIST.Find(x => x.UserName == userNameTo).ConnectionID;
+            //var connId2 = CONUSERLIST.LIST.Find(x => x.UserName == userNameFrom).ConnectionID;
+            await Groups.AddToGroupAsync(connId, userNameFrom);
+            //await Groups.AddToGroupAsync(connId2, userNameTo);
             await Clients.Group(userNameTo).SendAsync("ReceivePrivateFromUser", userNameFrom, userNameTo, message);
         }
 
@@ -156,13 +158,36 @@ namespace ShopStore.Hubs
         }        
 
         /// <summary>
+        /// 移除群組
+        /// </summary>
+        /// <param name="groupName"></param>
+        /// <returns></returns>
+        public string RemoveGroup(string groupName)
+        {
+            //CONUSERLIST.connectedGroup.Select(o => o.Value.Group.FirstOrDefault().RoomID == groupName);
+            //CONUSERLIST.connectedGroup.Remove(x => x.RoomID == groupName);
+
+            //var target = CONUSERLIST.connectedGroup.FirstOrDefault(x => x.Value.Group.FirstOrDefault().RoomID == groupName);
+            //if (target.Key != null)
+            //{
+            //    CONUSERLIST.connectedGroup.Remove(target.Key);
+
+            //}
+
+            //await Groups.RemoveFromGroupAsync()
+
+            return "1";
+        }
+
+        /// <summary>
         /// 發送群組對話
         /// </summary>
         /// <param name="groupName"></param>
         /// <param name="msg"></param>
         /// <returns></returns>
         public async Task SendToGroup(string groupName, string userName, string msg)
-        {            
+        {
+            //await Clients.Groups(groupName).SendAsync("GetGroupMsg",userName, msg);
             await Clients.OthersInGroup(groupName).SendAsync("GetGroupMsg", groupName, userName, msg);
         }
 
@@ -171,19 +196,14 @@ namespace ShopStore.Hubs
         /// </summary>
         /// <param name="user"></param>
         /// <param name="message"></param>
-        /// <returns></returns>        
+        /// <returns></returns>
+        //[Authorize]       
         [AllowAnonymous]
         public async Task SendMessage(string user, string message)
         {
             await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
 
-        /// <summary>
-        /// 測試用 傳送訊息給使用者
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="message"></param>
-        /// <returns></returns>
         public async Task SendMessageToUser(string user, string message)
         {
             await Clients.All.SendAsync("ReceiveMessageFromUser", user, message);

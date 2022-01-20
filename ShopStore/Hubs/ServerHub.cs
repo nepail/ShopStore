@@ -1,16 +1,4 @@
-﻿#region 功能與歷史修改描述
-
-/*
-    描述:前台訊息通知
-    建立日期:2022-01-18
-
-    描述:程式碼風格調整
-    修改日期:2022-01-20
-
- */
-
-#endregion
-
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Distributed;
@@ -24,6 +12,8 @@ using System.Threading.Tasks;
 
 namespace ShopStore.Hubs
 {
+    //[Authorize]
+    //[Authorize(AuthenticationSchemes = "manager, Cookies")]
     public class ServerHub : Hub
     {
         public string ClientID { get { return Context.ConnectionId; } }
@@ -125,7 +115,7 @@ namespace ShopStore.Hubs
         }
 
         /// <summary>
-        /// 讀取文字檔(暫未使用)
+        /// 讀取文字檔
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

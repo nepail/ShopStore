@@ -1,16 +1,3 @@
-#region åŠŸèƒ½èˆ‡æ­·å²ä¿®æ”¹æè¿°
-
-/*
-    æè¿°:Startup é…ç½®
-    å»ºç«‹æ—¥æœŸ:2021-11-17
-
-    æè¿°:ç¨‹å¼ç¢¼é¢¨æ ¼èª¿æ•´
-    ä¿®æ”¹æ—¥æœŸ:2022-01-20
-
- */
-
-#endregion
-
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -62,7 +49,7 @@ namespace ShopStore
             services.AddStackExchangeRedisCache(option =>
             {
                 option.Configuration = Configuration.GetSection("Redis")["ConnectionString"];
-                //option.InstanceName = "MyWebSite_"; //Redis ï¿½ï¿½Ç°ï¿½Yï¿½Ö´ï¿½
+                //option.InstanceName = "MyWebSite_"; //Redis µÄÇ°¾Y×Ö´®
             });
 
             services.AddControllersWithViews();
@@ -80,7 +67,7 @@ namespace ShopStore
             services.AddScoped<ActionFilter>();
             services.AddScoped<AuthorizationFilter>();
 
-            //ï¿½ï¿½Ì¨ï¿½ï¿½ï¿½ï¿½ï¿½aÆ·ï¿½aï¿½ï¿½MD5ï¿½aï¿½ï¿½ï¿½ï¿½ DataProtection APIï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½@ï¿½Î¼Ó½ï¿½ï¿½Üƒï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½tIISï¿½ï¿½ï¿½ï¿½ï¿½e
+            //ááÌ¨ÐÂÔö®aÆ·®aÉúMD5´aºô½Ð DataProtection API£¬ÐèÒª¼ÓÉÏß@¶Î¼Ó½âÃÜƒ¦´æ¿Õég£¬·ñ„tIIS•þˆóåe
             services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(@"D:\DataProtection\"));            
 
             //services.AddAuthorization(options =>
@@ -91,30 +78,30 @@ namespace ShopStore
 
             //services.AddDefaultIdentity<ShopUserRole>(options =>
             //{
-            //    options.Password.RequiredLength = 4;             //ï¿½Ü´aï¿½Lï¿½ï¿½
-            //    options.Password.RequireLowercase = false;       //ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½Ó¢ï¿½ï¿½
-            //    options.Password.RequireUppercase = false;       //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¢ï¿½ï¿½
-            //    options.Password.RequireNonAlphanumeric = false; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì–
-            //    options.Password.RequireDigit = false;           //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            //    options.Password.RequiredLength = 4;             //ÃÜ´aéL¶È
+            //    options.Password.RequireLowercase = false;       //°üº¬Ð¡Œ‘Ó¢ÎÄ
+            //    options.Password.RequireUppercase = false;       //°üº¬´óŒ‘Ó¢ÎÄ
+            //    options.Password.RequireNonAlphanumeric = false; //°üº¬·ûÌ–
+            //    options.Password.RequireDigit = false;           //°üº¬”µ×Ö
             //})            
 
             services.AddSession(option =>
             {
-                //ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½Ú•rï¿½g
+                //ÔO¶¨ÓâÆÚ•rég
                 //option.IdleTimeout = TimeSpan.FromMinutes(30);
             });
 
-            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó†ï¿½ï¿½ï¿½Ú™ï¿½ï¿½^ï¿½Vï¿½ï¿½
+            //¼ÓÈë×ÔÓ†µÄÊÚ™àß^žVÆ÷
             services.AddMvc(option =>
             {
                 option.Filters.Add<ActionFilter>();
                 option.Filters.Add<AuthorizationFilter>();
             });
 
-            //ï¿½ï¿½ï¿½Ã‰ï¿½ï¿½sï¿½Ø‘ï¿½
+            //†¢ÓÃ‰º¿s»Ø‘ª
             services.AddResponseCompression(option =>
             {
-                //Í¬ï¿½rï¿½ï¿½ï¿½ï¿½ Gzip ï¿½ï¿½ Brotilï¿½ï¿½ï¿½s
+                //Í¬•r†¢ÓÃ Gzip ¼° Brotil‰º¿s
                 option.Providers.Add<BrotliCompressionProvider>();
                 option.Providers.Add<GzipCompressionProvider>();
                 option.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "image/svg+xml" });
@@ -122,13 +109,13 @@ namespace ShopStore
 
             services.Configure<BrotliCompressionProviderOptions>(option =>
             {
-                //ï¿½Ô¶ï¿½ï¿½xï¿½ï¿½ï¿½sï¿½ï¿½ï¿½e
+                //×Ô¶¨Áx‰º¿s¼‰„e
                 option.Level = (CompressionLevel)5;
             });
 
             services.AddMemoryCache();
 
-            //SignalR ï¿½Aï¿½Oï¿½_ï¿½ï¿½JsonProtocol
+            //SignalR îAÔOé_†¢JsonProtocol
             services.AddSignalR().AddJsonProtocol();
         }
 
@@ -145,7 +132,7 @@ namespace ShopStore
 
             app.UseStaticFiles();
 
-            //ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½Oï¿½ï¿½
+            //¼ÓÈë¿ìÈ¡ÔO¶¨
             //app.UseStaticFiles(new StaticFileOptions
             //{
             //    OnPrepareResponse = ctx =>
@@ -161,7 +148,7 @@ namespace ShopStore
             });
 
 
-            //ï¿½ï¿½ï¿½Ã‰ï¿½ï¿½sï¿½Ø‘ï¿½
+            //†¢ÓÃ‰º¿s»Ø‘ª
             app.UseResponseCompression();
 
             app.UseAuthentication();
@@ -177,7 +164,7 @@ namespace ShopStore
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}")
-                //ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½C
+                //†¢ÓÃÈ«Óòòž×C
                 .RequireAuthorization();
 
                 endpoints.MapHub<ChatHub>("/chatHub");
