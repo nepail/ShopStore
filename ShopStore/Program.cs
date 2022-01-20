@@ -1,4 +1,15 @@
+#region 功能與歷史修改描述
 
+/*
+    描述:Program 配置
+    建立日期:2021-11-17
+
+    描述:程式碼風格調整
+    修改日期:2022-01-20
+
+ */
+
+#endregion
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
