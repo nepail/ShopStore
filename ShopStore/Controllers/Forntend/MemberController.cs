@@ -7,6 +7,8 @@
     描述:程式碼風格調整
     修改日期:2022-01-10
 
+    描述:新增使用者讀取未讀訊息(CheckUserAlert())
+    修改日期:2022-01-18
  */
 
 #endregion
@@ -25,6 +27,9 @@ using System;
 using NLog;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using System.Linq;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace ShopStore.Controllers
 {
@@ -34,13 +39,15 @@ namespace ShopStore.Controllers
         private readonly IMembers MEMBERS;
         private readonly IDistributedCache REDIS;
         private static Logger LOGGER = LogManager.GetCurrentClassLogger();
-        private readonly IHttpContextAccessor HTTPCONTEXTACCESSOR;        
+        private readonly IHttpContextAccessor HTTPCONTEXTACCESSOR;
+        private readonly IWebHostEnvironment WEBHOSTENVIRONMENT;
 
-        public MemberController(IMembers members, IDistributedCache redis, IHttpContextAccessor httpContextAccessor)
+        public MemberController(IMembers members, IDistributedCache redis, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment webHostEnvironment)
         {
             MEMBERS = members;
             REDIS = redis;
             HTTPCONTEXTACCESSOR = httpContextAccessor;
+            WEBHOSTENVIRONMENT = webHostEnvironment;
         }
 
 
@@ -242,6 +249,63 @@ namespace ShopStore.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+        }
+
+        /// <summary>
+        /// 檢查未讀訊息
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public IActionResult CheckUserAlert()
+        {
+            string userAccount = HttpContext.User.FindFirstValue("Account");
+            string uploadFolder = Path.Combine(WEBHOSTENVIRONMENT.WebRootPath, "userAlert");
+            string filePath = Path.Combine(uploadFolder, userAccount + ".txt");
+            
+
+            if (System.IO.File.Exists(filePath))
+            {
+                List<UserAlert> alertList = new List<UserAlert>();
+
+                using (StreamReader sr = new StreamReader(filePath))
+                {
+                    while (sr.Peek() >= 0)
+                    {
+                        var row = sr.ReadLine().Split(",");
+                        alertList.Add(new UserAlert
+                        {
+                            AlertTime = row[0],
+                            OrderId = row[1],
+                            StateMsg = row[2]
+                        });
+                    }                        
+                }
+
+                System.IO.File.Delete(filePath);
+
+                return Json(new { success = true, item = alertList });
+            }
+            else
+            {
+                return Json(new { success = false });
+            }
+        }
+
+        public class UserAlert
+        {
+            /// <summary>
+            /// 通知時間
+            /// </summary>
+            public string AlertTime { get; set; }
+            /// <summary>
+            /// 訂單編號
+            /// </summary>
+            public string OrderId { get; set; }
+            /// <summary>
+            /// 狀態訊息
+            /// </summary>
+            public string StateMsg{ get; set; }
+
         }
 
         /// <summary>

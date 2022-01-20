@@ -27,19 +27,22 @@ namespace ShopStore.Hubs
         /// <summary>
         /// User 連線時加入到清單內，之後呼叫 Group 方法傳送在線列表
         /// </summary>
-        private async void AddConUserList()
+        private async void AddConUserList(ClaimsIdentity User)
         {
             //var ClientName = Context.User.FindFirstValue(ClaimTypes.Name) ?? String.Empty;
 
             //從現存的線上列表尋找已連線的使用者
-            var user = CONUSERLIST.LIST.FindIndex(x => x.UserName == ClientName);
+            //var user = CONUSERLIST.LIST.FindIndex(x => x.UserName == ClientName);
+            //var userName = User.Name;
+
+            var user = CONUSERLIST.LIST.FindIndex(x => x.UserName == User.Name);
 
             if (user <= 0)
             {
                 //使用者不存在，建立一筆新的
-                var _user = new ConUserModel()
+                ConUserModel _user = new ConUserModel()
                 {
-                    UserName = ClientName,
+                    UserName = User.Name,
                     ConnectionID = ClientID,
                     OnlineTime = DateTime.Now
                 };
@@ -51,9 +54,9 @@ namespace ShopStore.Hubs
                 await Clients.Group("ConList").SendAsync("GetConList", CONUSERLIST.AddList(_user));
 
                 //將重新連線的 User ConnID 加回存在的Group
-                if (CONUSERLIST.connectedGroup.ContainsKey(ClientName))
+                if (CONUSERLIST.connectedGroup.ContainsKey(User.Name))
                 {
-                    foreach (var a in CONUSERLIST.connectedGroup[ClientName].Group)
+                    foreach (var a in CONUSERLIST.connectedGroup[User.Name].Group)
                     {
                         await Groups.AddToGroupAsync(ClientID, a.RoomID);
                     }
@@ -65,9 +68,9 @@ namespace ShopStore.Hubs
                 await Clients.Group("ConList").SendAsync("GetConList", CONUSERLIST.LIST);
 
                 //尋找已連接的Group，將新連線且是重複的 User 加入已存在的 Group
-                if (CONUSERLIST.connectedGroup[ClientName].Group.Count > 0)
+                if (CONUSERLIST.connectedGroup[User.Name].Group.Count > 0)
                 {
-                    foreach (var a in CONUSERLIST.connectedGroup[ClientName].Group)
+                    foreach (var a in CONUSERLIST.connectedGroup[User.Name].Group)
                     {
                         await Groups.AddToGroupAsync(ClientID, a.RoomID);
                     }
@@ -76,7 +79,7 @@ namespace ShopStore.Hubs
 
             }
             //將新建的 User 加入單一使用者群組
-            await Groups.AddToGroupAsync(ClientID, ClientName);
+            await Groups.AddToGroupAsync(ClientID, User.Name);
         }
 
         /// <summary>
@@ -84,9 +87,12 @@ namespace ShopStore.Hubs
         /// </summary>
         /// <returns></returns>        
         public async override Task OnConnectedAsync()
-        {                        
-            //加入連線清單等邏輯
-            AddConUserList();
+        {
+            //將後台用戶加入連線清單
+
+            var target = Context.User.Identities.FirstOrDefault(x => x.AuthenticationType == "manager");
+
+            AddConUserList(target);
 
             //測試用
             await SendMessageToUser($"{ClientName} 已經連線 ID:", ClientID);
@@ -101,7 +107,7 @@ namespace ShopStore.Hubs
         {
             await base.OnDisconnectedAsync(except);
             //await SendMessageToUser($"{ClientName} 已經斷線 ID:", ClientID);
-
+            CONUSERLIST.RemoveList(Context.ConnectionId);
             //從線上列表移除斷線的USER & 廣播新的在線列表
             await Clients.Group("ConList").SendAsync("GetConList", CONUSERLIST.RemoveList(Context.ConnectionId));
         }
@@ -131,21 +137,17 @@ namespace ShopStore.Hubs
         /// <param name="userNameFrom"></param>
         /// <param name="userFromTo"></param>        
         /// <returns></returns>
-        public async Task<string> CreateGroup(string userNameFrom, string userFromTo)
+        public async Task<string> CreateGroup(string userNameFrom, string userFromTo, string groupName)
         {
             //確認發起者是否存在Group
             if (CONUSERLIST.connectedGroup.Any(t => t.Key == userNameFrom))
             {
+                //存在Group,回傳Room ID
                 return CONUSERLIST.connectedGroup[userNameFrom].Group.FirstOrDefault().RoomID;
             }
 
-            string groupName = Guid.NewGuid().ToString();
-
-            var connIda = CONUSERLIST.LIST.Find(x => x.UserName == userNameFrom).ConnectionID;
-            var connIdb = CONUSERLIST.LIST.Find(x => x.UserName == userFromTo).ConnectionID;
-
-            await Groups.AddToGroupAsync(connIda, groupName);
-            await Groups.AddToGroupAsync(connIdb, groupName);
+            await Groups.AddToGroupAsync(userNameFrom, groupName);
+            await Groups.AddToGroupAsync(userFromTo, groupName);
 
             GroupUser connUser = new GroupUser();
             connUser.Group.Add(new GroupUser.ConnUser { RoomID = groupName });
@@ -153,7 +155,7 @@ namespace ShopStore.Hubs
             CONUSERLIST.connectedGroup.Add(userFromTo, connUser);
 
             return groupName;
-        }
+        }        
 
         /// <summary>
         /// 移除群組

@@ -5,7 +5,8 @@
     Order.SetDropDownList();
 })
 
-var postData = []
+var postData = [];
+var postQueue = [];
 
 var Order = {
     /**
@@ -184,14 +185,29 @@ var Order = {
                 f_status: 0,
                 f_ShippingMethod: 0
             }
-        }        
+        }
+
+        //消息佇列
+        if (postQueue[ordernum] == undefined) {
+            postQueue[ordernum] = {
+                orderUser: '',
+                orderId: 0,
+                statMsg: ''
+            }
+        }
+
 
         if (type == 0) {
 
             postData[ordernum].f_id = orderid;
             postData[ordernum].f_status = parseInt(statusCode.slice(-1));
+
+            postQueue[ordernum].orderUser = orderUser;
+            postQueue[ordernum].orderId = orderid;
+            postQueue[ordernum].statMsg = `訂單狀態已變更為${MainProperties.Order.OrderStatus.cartgoState[statusCode].name}`;
+
             
-            Home.CONNECTION.AlertFrontedUser(orderUser, `訂單狀態已變更為${statusCode}`)
+            //Home.CONNECTION.AlertFrontedUser(orderUser, orderid, `訂單狀態已變更為${statusCode}`)
 
             return MainProperties.Order.OrderStatus.cartgoState[statusCode].style;
         }
@@ -201,7 +217,11 @@ var Order = {
             postData[ordernum].f_id = orderid;
             postData[ordernum].f_ShippingMethod = parseInt(statusCode.slice(-1));
 
-            Home.CONNECTION.AlertFrontedUser(orderUser, `配送狀態已變更為${statusCode}`)
+            postQueue[ordernum].orderUser = orderUser;
+            postQueue[ordernum].orderId = orderid;
+            postQueue[ordernum].statMsg = `訂單運送方式已變更為${MainProperties.Order.OrderStatus.sipState[statusCode].name}`;
+
+            //Home.CONNECTION.AlertFrontedUser(orderUser, orderid, `配送狀態已變更為${statusCode}`)
 
             return MainProperties.Order.OrderStatus.sipState[statusCode].style;
         }
@@ -240,10 +260,14 @@ var Order = {
         }
 
         postData = postData.filter(el => el);
+        postQueue = postQueue.filter(el => el);
 
         var data = {
             orders: postData
         }
+
+        console.table(postData);
+        //console.table(postQueue);
 
         $.ajax({
             url: '/Manager/UpdateOrder',
@@ -252,6 +276,15 @@ var Order = {
             success: (res) => {
                 if (res.success) {
                     swal('保存成功', ' ', 'success');
+
+                    console.table(postQueue)
+
+                    for (var i = 0, len = postQueue.length; i < len; i++) {
+                        Home.CONNECTION.AlertFrontedUser(postQueue[i].orderUser, postQueue[i].orderId, postQueue[i].statMsg)
+                    }
+
+                    postData = [];
+                    postQueue = [];
                 }
             },
             error: (res) => {

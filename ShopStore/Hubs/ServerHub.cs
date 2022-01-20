@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace ShopStore.Hubs
 {
     //[Authorize]
-    [Authorize(AuthenticationSchemes = "manager, Cookies")]
+    //[Authorize(AuthenticationSchemes = "manager, Cookies")]
     public class ServerHub : Hub
     {
         public string ClientID { get { return Context.ConnectionId; } }
@@ -39,44 +39,44 @@ namespace ShopStore.Hubs
         {
             if (ClientName != null)
             {
-
-                if (!CONUSERLIST.LIST.Any(x => x.UserName == ClientName))
+                //加入前台User
+                if (!CONUSERLIST.ServerList.Any(x => x.UserName == ClientName))
                 {
-                    //建立新的
-                    var user = new ConUserModel()
-                    {
-                        UserAccount = ClientAccount,
-                        UserName = ClientName,
-                        ConnectionID = ClientID,
-                        OnlineTime = DateTime.Now
-                    };
+                    var target = Context.User.Identities.FirstOrDefault(x => x.AuthenticationType == "Cookies");
 
-                    CONUSERLIST.AddList(user);
+                    if(target != null)
+                    {
+                        var user = new ConUserModel()
+                        {
+                            UserAccount = target.Claims.FirstOrDefault(x => x.Type == "Account").Value,
+                            UserName = target.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value,
+                            ConnectionID = ClientID,
+                            OnlineTime = DateTime.Now
+                        };
+
+                        CONUSERLIST.AddToServerList(user);
+                    }                    
+
                 }
                 else
                 {
                     //更新List裡的ID
-                    CONUSERLIST.LIST.Where(x => x.UserName == ClientName).ToList().ForEach(x => x.ConnectionID = ClientID);
+                    CONUSERLIST.ServerList.Where(x => x.UserName == ClientName).ToList().ForEach(x => x.ConnectionID = ClientID);
                 }
             }
         }
 
         public async override Task OnConnectedAsync()
         {
-            //將前台的User加入到清單中
-            if (Context.User.Identity.AuthenticationType != "manager")
-            {
-                AddConUserList();
-            }
+            //將前台的User加入到清單中            
+            AddConUserList();
         }
 
         public async override Task OnDisconnectedAsync(Exception except)
         {
             //斷線後從List移除
-            CONUSERLIST.RemoveList(Context.ConnectionId);
+            CONUSERLIST.RemoveFromServerList(Context.ConnectionId);
         }
-
-
 
         /// <summary>
         /// 後端向前端通知狀態變更
@@ -84,19 +84,19 @@ namespace ShopStore.Hubs
         /// <param name="user"></param>
         /// <param name="msg"></param>
         /// <returns></returns>
-        public async Task SendMessageToFrontedUser(string userAccount, string msg)
+        public async Task SendMessageToFrontedUser(string userAccount, string orderId, string stateMsg)
         {
-            var target = CONUSERLIST.LIST.FirstOrDefault(x => x.UserAccount == userAccount);
+            var target = CONUSERLIST.ServerList.FirstOrDefault(x => x.UserAccount == userAccount);
             if (target != null)
             {
-                await Clients.Clients(target.ConnectionID).SendAsync("SendMessageToFrontedUser", userAccount, msg);
+                await Clients.Clients(target.ConnectionID).SendAsync("SendMessageToFrontedUser", orderId, stateMsg);
                 return;
             }
 
             //Redis儲存消息，待用戶上線後獲取            
 
             //在本機上暫存用戶通知//todo
-            StoredUserAlert(msg, userAccount);
+            StoredUserAlert(userAccount, orderId, stateMsg);
         }
 
         /// <summary>
@@ -104,14 +104,14 @@ namespace ShopStore.Hubs
         /// </summary>
         /// <param name="contentText"></param>
         /// <param name="userAccount"></param>
-        private void StoredUserAlert(string contentText, string userAccount)
+        private void StoredUserAlert(string userAccount, string orderId, string stateMsg)
         {
             string uploadFolder = Path.Combine(WEBHOSTENVIRONMENT.WebRootPath, "userAlert");
             string filePath = Path.Combine(uploadFolder, userAccount + ".txt");
             string now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
             using StreamWriter sw = File.AppendText(filePath);
-            sw.WriteLine($"{now} : {contentText}");
+            sw.WriteLine($"{now},#{orderId},{stateMsg}");
         }
 
         /// <summary>

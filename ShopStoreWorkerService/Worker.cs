@@ -10,6 +10,7 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -51,7 +52,7 @@ namespace ShopStoreWorkerService
         {
 
             
-            
+            //var con = new CookieContainer()
             
             cpuLogger = new StreamWriter(logPath, true);            
             await connection.StartAsync();

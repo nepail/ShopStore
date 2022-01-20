@@ -124,9 +124,11 @@ var Home = {
 
                         var userListHtml = '';
 
+                        //console.table(ConList);
+
                         for (var i = 0, len = ConList.length; i < len; i++) {
                             userListHtml +=
-                                `      <a href="#" data-name="${ConList[i].userName}" onclick="Home.UC.SetChatRoom.SwitchChat('${ConList[i].userName}')">
+                                `      <a href="#" data-name="${ConList[i].userName}" onclick="Home.UC.SetChatRoom.SwitchChat('${ConList[i].connectionID}')">
                                     <div class="content">
                                         <div class="user-img">
                                             <span>${ConList[i].userName[0]}</span>
@@ -189,23 +191,18 @@ var Home = {
             },
 
             //點擊user進入對話框
-            SwitchChat(userName) {
-                //e.preventDefault();
-                //console.log(this);
-                //console.log($(this));
-                //console.log(Id)
-                //console.log($('#main-chat'))
+            SwitchChat(targetId) {                
 
                 $('#main-chat').toggle();
-                $('#sub-chat').toggle();
-                //$('#btnSendToChat').attr('data-name', userName);
+                $('#sub-chat').toggle();                
 
                 var $div = $('#chat-box');
                 $div.scrollTop($div[0].scrollHeight);
-
-                var thisUser = localStorage.getItem('user');
                 
-                Home.CONNECTION.CreateGroup(thisUser, userName);
+                console.log('我的ID')
+                console.log(connection.connectionId)
+
+                Home.CONNECTION.CreateGroup(connection.connectionId, targetId);
             }
         }
     },
@@ -388,13 +385,22 @@ var Home = {
 
         //1. 發起對話建立群組
         CreateGroup(userNameFrom, userNameTo) {
-            connection.invoke('CreateGroup', userNameFrom, userNameTo).catch(() => {
+
+            groupName = this.uuid4();
+
+            connection.invoke('CreateGroup', userNameFrom, userNameTo, groupName).catch(() => {
                 console.error('建立對話時出現失敗')
             }).then((res) => {
                 console.log({ res });
                 //local端 設定GroupName
                 localStorage.setItem('connectedGroup', res);                
             })            
+        },
+
+        uuid4() {
+            return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+                (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+            );
         },
 
         //2. 傳送對話至群組
@@ -418,8 +424,8 @@ var Home = {
         },
 
         //通知前台用戶訂單狀態變更
-        AlertFrontedUser(user, msg) {
-            serverHub.invoke('SendMessageToFrontedUser', user, msg).catch(() => {
+        AlertFrontedUser(orderUser, orderId, stateMsg) {
+            serverHub.invoke('SendMessageToFrontedUser', orderUser, orderId, stateMsg).catch(() => {
                 console.error('通知變更時發生錯誤')
             })
         }

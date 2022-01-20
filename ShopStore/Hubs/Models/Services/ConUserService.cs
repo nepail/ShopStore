@@ -5,12 +5,14 @@ namespace ShopStore.Hubs.Models.Services
     public class ConUserService
     {
         public List<ConUserModel> LIST;
+        public List<ConUserModel> ServerList;
         public Dictionary<string, GroupUser> connectedGroup;
 
 
         public ConUserService()
         {
             LIST = new List<ConUserModel>();
+            ServerList = new List<ConUserModel>();
             connectedGroup = new Dictionary<string, GroupUser>();
         }
 
@@ -25,6 +27,19 @@ namespace ShopStore.Hubs.Models.Services
             var index = LIST.FindIndex(x => x.ConnectionID == connectionId);
             LIST.RemoveAt(index);
             return LIST;
+        }
+
+        public List<ConUserModel> AddToServerList(ConUserModel user)
+        {
+            ServerList.Add(user);
+            return ServerList;
+        }
+
+        public List<ConUserModel> RemoveFromServerList(string connectionId)
+        {
+            var index = ServerList.FindIndex(x => x.ConnectionID == connectionId);
+            ServerList.RemoveAt(index);
+            return ServerList;
         }
 
         public class GroupUser

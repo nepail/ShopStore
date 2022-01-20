@@ -52,3 +52,19 @@ toastr.options = {
     "showMethod": "fadeIn", // 顯示動畫效果
     "hideMethod": "fadeOut" // 隱藏動畫效果
 }
+
+
+//User 鈴鐺通知
+$('#btnNotify').click(function () {
+    var $notification = $('#notification');
+    var $notifyText = $('.notify-text');
+
+    $('#blip').css('opacity', 0);
+
+    $notification.toggleClass('open');
+    $notifyText.toggleClass('show');   
+})
+
+function ClientAliveCheck() {
+    alert('HI')
+}

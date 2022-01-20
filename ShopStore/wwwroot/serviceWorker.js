@@ -1,7 +1,7 @@
 ﻿importScripts('/lib/microsoft/signalr/dist/browser/signalr.js');
 
 var serverHub;
-
+var messageChannel;
 
 //安裝階段時觸發
 self.addEventListener('install', function (event) {
@@ -21,14 +21,14 @@ self.addEventListener('activate', function (event) {
 //    event.respondWith(fetch(event.request));
 //})
 
+//監聽Main Thread的訊息
 self.addEventListener('message', function (event) {
     var data = event.data;
-    if (data.command == 'oneWayCommunication') {
-        console.log('Message from the Page:', data.message);
-    }
 
     if (data.command == 'CreateServerHub') {
         CreateServerHub(data.url);
+        messageChannel = event.ports;
+
     }
 
     if (data.command == 'StopServerHub') {
@@ -39,37 +39,45 @@ self.addEventListener('message', function (event) {
 //建立長連接
 function CreateServerHub(url) {
 
-    console.log({ url });
-    console.log({ serverHub });
-    
-
     if (serverHub != undefined && serverHub.state == 'Connected') {
         console.log('已建立過連接');
         console.log(serverHub.state);
         return;
     }
-    
-    //serverHub = new signalR.HubConnectionBuilder()
-    //    .withUrl('http://localhost:6372/ServerHub')
-    //    .build();
 
     serverHub = new signalR.HubConnectionBuilder()
         .withUrl(url)
         .build();
 
+    //開啟連接，連接後向Main Thread發送保活命令
     serverHub.start().then(() => {
-        console.log('serverHub Connected');
-    }).catch((res) => {        
+        console.log('[ServiceWork]serverHub 連接成功');                
+
+    }).catch((res) => {
         console.error('serverHub 連接錯誤');
         console.log(res);
     })
 
-    serverHub.on('SendMessageToFrontedUser', function (user, message) {
-        console.log(message)
+    //接聽來自Server端的通知
+    serverHub.on('SendMessageToFrontedUser', function (orderId, stateMsg) {
+        SendMsgToPage(orderId, stateMsg);
     })
-    
+
 }
 
+//SW接收到訊息後，透過 messageChannel 將訊息回傳至Main thread
+function SendMsgToPage(orderId, stateMsg) {
+    messageChannel[0].postMessage(
+        {
+            'type': 'UserAlert',
+            'orderId': orderId,
+            'stateMsg': stateMsg
+        }
+    )
+}
+
+//關閉連接
 function StopServerHub() {
     serverHub.stop();
+    console.log('serverHub 已斷開')
 }
