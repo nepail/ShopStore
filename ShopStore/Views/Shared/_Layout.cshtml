@@ -54,7 +54,8 @@
                             <a class="nav-link text-dark"></a>
                         </li>
 
-                        @{if (!User.Identity.IsAuthenticated)
+                        @{
+                            if (!User.Identity.IsAuthenticated)
                             {
                                 <li class="nav-item" style="float:right">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Member" asp-action="SignUp">註冊</a>
@@ -99,12 +100,12 @@
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>    
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
     <script src="~/lib/slick-carousel/slick.min.js"></script>
     <script src="~/lib/bootstrap-sweetalert/sweetalert.js"></script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/29.2.0/classic/ckeditor.js"></script>    
+    <script src="https://cdn.ckeditor.com/ckeditor5/29.2.0/classic/ckeditor.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
 
@@ -123,12 +124,19 @@
             <script>
                 //呼叫SW建立長連接
                  RemoteServiceWorker(null, 'CreateServerHub');
-                 //檢查User未讀訊息
-                 CheckUserAlert();
-                 
-            </script>       
+                 //檢查User未讀訊息                 
+                 Layout.DATA.CheckUserAlert();
+
+            </script>
+        }
+        else
+        {
+            //用戶登出
+            <script>
+                StopServerHub();
+            </script>
         }
     }
-        @RenderSection("Scripts", required: false)
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

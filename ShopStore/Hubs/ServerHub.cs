@@ -30,10 +30,8 @@ namespace ShopStore.Hubs
         public string ClientName { get { return Context.User.FindFirstValue(ClaimTypes.Name); } }
 
         public string ClientAccount { get { return Context.User.FindFirstValue("Account"); } }
-
-        private string Now { get { return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss fff"); } }
-
-        private ConUserService CONUSERLIST;
+        
+        private readonly ConUserService CONUSERLIST;
 
         private readonly IDistributedCache REDIS;
 

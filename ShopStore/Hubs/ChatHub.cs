@@ -28,8 +28,8 @@ namespace ShopStore.Hubs
     {
         public string ClientID { get { return Context.ConnectionId; } }
         public string ClientName { get { return Context.User.FindFirstValue(ClaimTypes.Name); } }
-        private string Now { get { return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss fff"); } }
-        private ConUserService CONUSERLIST;
+        
+        private readonly ConUserService CONUSERLIST;
 
         public ChatHub(ConUserService conUserService)
         {
@@ -109,7 +109,7 @@ namespace ShopStore.Hubs
         public async override Task OnDisconnectedAsync(Exception except)
         {
             await base.OnDisconnectedAsync(except);
-            CONUSERLIST.RemoveList(Context.ConnectionId);
+            CONUSERLIST.RemoveList(Context.ConnectionId);            
             //從線上列表移除斷線的USER & 廣播新的在線列表
             await Clients.Group("ConList").SendAsync("GetConList", CONUSERLIST.RemoveList(Context.ConnectionId));
         }
