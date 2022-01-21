@@ -28,9 +28,10 @@ namespace ShopStore
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
-                    .UseIISIntegration() //Out-Proccess
+                    //.UseIISIntegration() //Out-Proccess
                     //.UseIIS() In-Proccess
                     .UseStartup<Startup>();
+                    //.UseUrls("http://*:80");
                     //.UseUrls("http://192.168.6.4:5051");
                 });
     }

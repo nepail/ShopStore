@@ -106,14 +106,15 @@ var Layout = {
         //有未讀訊息，渲染div
         RenderUserAlert(item) {
             var content = '';
+
             for (var i = 0, len = item.length; i < len; i++) {
                 content += `
-             <div class="notify-content">
-                <div class="notify-text">
-                    <h1>${item[i].alertTime}</h1>
-                    <p>${item[i].orderId} : ${item[i].stateMsg}</p>
-                </div>
-            </div>`
+                     <div class="notify-content">
+                        <div class="notify-text">
+                            <h1>${item[i].alertTime}</h1>
+                            <p>${item[i].orderId} : ${item[i].stateMsg}</p>
+                        </div>
+                    </div>`
             }
 
             $('#notification').html(content);
@@ -149,45 +150,50 @@ var Layout = {
                         })
                 }
             }
-        }
-    }
-}
+        },
 
+        Remote: {
+            RemoteServiceWorker(context, method) {
 
-//呼叫ServiceWorker
-function RemoteServiceWorker(context, method) {
+                if (navigator.serviceWorker.controller) {
 
-    if (navigator.serviceWorker.controller) {
+                    //建立 MessageChannel
+                    var messageChannel = new MessageChannel();
 
-        //建立 MessageChannel
-        var messageChannel = new MessageChannel();
+                    //Port1 監聽來自SW的訊息
+                    messageChannel.port1.onmessage = function (event) {
 
-        //Port1 監聽來自SW的訊息
-        messageChannel.port1.onmessage = function (event) {
+                        if (event.data.type == 'UserAlert') {
+                            toastr.success(event.data.stateMsg, `您的訂單編號(#${event.data.orderId})`);
+                        }
 
-            if (event.data.type == 'UserAlert') {
-                toastr.success(event.data.stateMsg, `您的訂單編號(#${event.data.orderId})`);
+                    }
+
+                    //發送訊息至SW，同時挾帶 port2 使SW可以回傳訊息
+                    navigator.serviceWorker.controller.postMessage({
+                        'command': method,
+                        'message': context,
+                        'url': window.location.origin + '/ServerHub'
+                    }, [messageChannel.port2]);
+                }
+            },
+
+            //斷開長連接
+            StopServerHub() {
+                if (navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.controller.postMessage({
+                        'command': 'StopServerHub'
+                    })
+                }
             }
-
         }
-
-        //發送訊息至SW，同時挾帶 port2 使SW可以回傳訊息
-        navigator.serviceWorker.controller.postMessage({
-            'command': method,
-            'message': context,
-            'url': window.location.origin + '/ServerHub'
-        }, [messageChannel.port2]);
     }
 }
 
 
-//斷開長連接
-function StopServerHub() {
-    if (navigator.serviceWorker.controller) {
-        navigator.serviceWorker.controller.postMessage({
-            'command': 'StopServerHub'
-        })
-    }
-}
+
+
+
+
 
 
