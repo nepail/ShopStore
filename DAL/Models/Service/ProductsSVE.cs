@@ -75,28 +75,28 @@ namespace ShopStore.Models.Service
         /// <summary>
         /// 新增商品
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
         public bool AddProducts(ProductsViewModel model)
         {            
             try
             {
                 using var conn = CONNECTION;
-                ProductDetailsModel productsModel = new ProductDetailsModel
+                var productsModel = new ProductsModel
                 {
-                    f_pId = model.f_pId,
-                    f_name = model.f_name,
-                    f_price = model.f_price,                    
-                    f_description = model.f_description,
-                    f_categoryId = model.f_categoryId,
-                    f_stock = model.f_stock,
-                    f_isDel = model.f_isDel,
-                    f_isOpen = model.f_isOpen,
-                    f_updateTime = DateTime.Now,
-                    f_createTime = DateTime.Now
+                    pId = model.f_pId,
+                    name = model.f_name,
+                    price = model.f_price,                    
+                    description = model.f_description,
+                    categoryId = model.f_categoryId,
+                    stock = model.f_stock,
+                    isDel = model.f_isDel,
+                    isOpen = model.f_isOpen,
+                    updateTime = DateTime.Now,
+                    createTime = DateTime.Now
                 };
 
-                return conn.Execute("pro_shopStore_addProduct", productsModel, commandType: System.Data.CommandType.StoredProcedure) > 0;
+                return conn.Execute("pro_fr_addProduct", productsModel, commandType: System.Data.CommandType.StoredProcedure) > 0;
             }
             catch (Exception ex)
             {

@@ -136,6 +136,7 @@ namespace ShopStore.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]        
+        [Authorize(AuthenticationSchemes = "manager")]
         public async Task<IActionResult> CreateNewProduct(ProductsViewModel request)
         {
             try
@@ -227,9 +228,7 @@ namespace ShopStore.Controllers
         public IActionResult GetProductDetailById(string id)
         {
             try
-            {
-                //var result = await _products.GetProductDetailByIdAsync(id);
-
+            {                
                 ViewBag.Id = id;
                 return PartialView("_ProductPartial");
             }
