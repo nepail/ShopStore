@@ -22,16 +22,17 @@ chatbox.display();
 var Home = {
 
     InitPage() {
-        Home.UC.SetBtn.Sidebar();
-
-        Home.UC.SetChatRoom.SetBtnUserListClick();
-        Home.CONNECTION.Init();
+        //側邊欄
+        Home.UC.SideMenu.SetBtn.Sidebar();
 
         //聊天室初始化
-        Home.UC.ChatRoom.Init();
+        Home.UC.ChatRoom.Init();        
+        Home.CONNECTION.Init();
+
     },
 
     DATA: {
+        //計算百分比
         GetPercent(num, total) {
             num = parseFloat(num);
             total = parseFloat(total);
@@ -43,52 +44,56 @@ var Home = {
     },
 
     UC: {
-        //按鈕繫結事件
-        SetBtn: {
-            Sidebar() {
-                $('.sidebar-button').click(function () {
-                    $('.sidebar').toggleClass('active');
-                    $('.sub-menu').css('display', 'none');
-                });
 
-                $('.icon-link').find('a').click(function (e) {
-                    e.preventDefault();
-                    $(this).parent('.icon-link').siblings('.sub-menu').slideToggle();
-                });
 
-                $('.sub-menu').find('a').click(function (e) {
-                    e.preventDefault;
+        SideMenu: {
+            //按鈕繫結事件
+            SetBtn: {
+                Sidebar() {
+                    $('.sidebar-button').click(function () {
+                        $('.sidebar').toggleClass('active');
+                        $('.sub-menu').css('display', 'none');
+                    });
 
-                    if ($(this).attr('data-controller').includes('Logout')) {
-                        window.location.href = '/Manager';
-                    }
+                    $('.icon-link').find('a').click(function (e) {
+                        e.preventDefault();
+                        $(this).parent('.icon-link').siblings('.sub-menu').slideToggle();
+                    });
 
-                    if ($(this).attr('data-controller') != '') {
+                    $('.sub-menu').find('a').click(function (e) {
+                        e.preventDefault;
 
-                        $.ajax({
-                            url: $(this).attr('data-controller'),
-                            success: res => {
-                                if (res.includes('後台管理系統')) {
+                        if ($(this).attr('data-controller').includes('Logout')) {
+                            window.location.href = '/Manager';
+                        }
+
+                        if ($(this).attr('data-controller') != '') {
+
+                            $.ajax({
+                                url: $(this).attr('data-controller'),
+                                success: res => {
+                                    if (res.includes('後台管理系統')) {
+                                        window.location.href = '/Manager';
+                                    }
+                                    $('#app').html(res)
+                                },
+                                error: res => {
                                     window.location.href = '/Manager';
                                 }
-                                $('#app').html(res)
-                            },
-                            error: res => {
-                                window.location.href = '/Manager';
-                            }
-                        })
-                    }
-                });
+                            })
+                        }
+                    });
 
-                //首頁按鈕
-                $('#btnHome').click(function () {                    
-                    $('#app').html(`
+                    //首頁按鈕
+                    $('#btnHome').click(function () {
+                        $('#app').html(`
                         <div id="Home-container" class="Home-container">
                             <div id="loading-section" class="loading">                                
                                 <span class="loading__anim"></span>
                             </div>
                         </div>`)
-                });
+                    });
+                },
             },
         },
 
@@ -97,8 +102,9 @@ var Home = {
             
             //聊天室初始化
             Init() {                                
-                this.UC.SetName();
-                this.UC.SetBtn.UserListClick();
+                Home.UC.ChatRoom.UC.SetName();
+                Home.UC.ChatRoom.UC.SetBtn.UserListClick();
+                Home.UC.SetChatRoom.SetBtnUserListClick();
             },
 
             UC: {
@@ -144,6 +150,10 @@ var Home = {
 
                         $('#users-list').html(userListHtml);
                     }
+
+
+
+
                 }
             }
         },
@@ -152,7 +162,7 @@ var Home = {
             //點選使用者列表進行傳訊
             SetBtnUserListClick() {
 
-                //回到上一頁
+                //上一頁按鈕
                 $('#prevToChatList').click(function (e) {
                     e.preventDefault();                    
 
@@ -163,8 +173,7 @@ var Home = {
                     $div.scrollTop($div[0].scrollHeight);
                 });
 
-
-                //傳送訊息
+                //傳送訊息按鈕
                 $('#btnSendToChat').click(function (e) {
                     e.preventDefault();
                     var $chatBox = $('#chat-box');
@@ -277,9 +286,6 @@ var Home = {
                 }
             });
 
-
-
-
             //接收User回傳的訊息
             connection.on('ReceivePrivateFromUser', function (userNameFrom, userName, msg) {
 
@@ -326,13 +332,6 @@ var Home = {
             connection.onclose(function (e) {
                 console.log('連線已中斷');
             });
-
-            //connection.stop().then(function () {
-            //    console.log('連線停止');
-            //}).catch(function (err) {
-            //    console.error('連線停止時發生錯誤');
-            //    console.error(err.toString());
-            //})
 
             //3. 接受群組回傳訊息
             connection.on('GetGroupMsg', function (groupName, userName, msg) {

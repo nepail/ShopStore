@@ -37,6 +37,34 @@ namespace ShopStore.Hubs
         }
 
         /// <summary>
+        /// 第一次連線
+        /// </summary>
+        /// <returns></returns>        
+        public async override Task OnConnectedAsync()
+        {
+            //將後台用戶加入連線清單
+            var target = Context.User.Identities.FirstOrDefault(x => x.AuthenticationType == "manager");
+            AddConUserList(target);
+
+            //測試用
+            await SendMessageToUser($"{ClientName} 已經連線 ID:", ClientID);
+        }
+
+        /// <summary>
+        /// 斷線處理，若用戶端呼叫 connection.stop() ，except 的值將是 null
+        /// </summary>
+        /// <param name="except"></param>
+        /// <returns></returns>
+        public async override Task OnDisconnectedAsync(Exception except)
+        {
+            await base.OnDisconnectedAsync(except);
+            CONUSERLIST.RemoveList(Context.ConnectionId);            
+            //從線上列表移除斷線的USER & 廣播新的在線列表
+            await Clients.Group("ConList").SendAsync("GetConList", CONUSERLIST.RemoveList(Context.ConnectionId));
+        }
+
+
+        /// <summary>
         /// User 連線時加入到清單內，之後呼叫 Group 方法傳送在線列表
         /// </summary>
         private async void AddConUserList(ClaimsIdentity User)
@@ -83,35 +111,6 @@ namespace ShopStore.Hubs
             }
             //將新建的 User 加入單一使用者群組
             await Groups.AddToGroupAsync(ClientID, User.Name);
-        }
-
-        /// <summary>
-        /// 第一次連線
-        /// </summary>
-        /// <returns></returns>        
-        public async override Task OnConnectedAsync()
-        {
-            //將後台用戶加入連線清單
-
-            var target = Context.User.Identities.FirstOrDefault(x => x.AuthenticationType == "manager");
-
-            AddConUserList(target);
-
-            //測試用
-            await SendMessageToUser($"{ClientName} 已經連線 ID:", ClientID);
-        }
-
-        /// <summary>
-        /// 斷線處理，若用戶端呼叫 connection.stop() ，except 的值將是 null
-        /// </summary>
-        /// <param name="except"></param>
-        /// <returns></returns>
-        public async override Task OnDisconnectedAsync(Exception except)
-        {
-            await base.OnDisconnectedAsync(except);
-            CONUSERLIST.RemoveList(Context.ConnectionId);            
-            //從線上列表移除斷線的USER & 廣播新的在線列表
-            await Clients.Group("ConList").SendAsync("GetConList", CONUSERLIST.RemoveList(Context.ConnectionId));
         }
 
         /// <summary>

@@ -7,6 +7,9 @@
     描述:程式碼風格調整
     修改日期:2022-01-20
 
+    描述:新增 Docker 設定 & 加入註解
+    修改日期:2022-01-21
+
  */
 
 #endregion
@@ -28,9 +31,12 @@ namespace ShopStore
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
+                    //發佈時若勾選單一檔案，需修改使用 IISIntegration 啟用 Out-Procces 模式
                     //.UseIISIntegration() //Out-Proccess
                     //.UseIIS() In-Proccess
                     .UseStartup<Startup>();
+
+                    //Docker 內運行需指定內部端口80，否則會出錯
                     //.UseUrls("http://*:80");
                     //.UseUrls("http://192.168.6.4:5051");
                 });

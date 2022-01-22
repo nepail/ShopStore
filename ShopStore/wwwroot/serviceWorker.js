@@ -39,19 +39,15 @@ self.addEventListener('message', function (event) {
 //建立長連接
 function CreateServerHub(url) {
 
-    if (serverHub != undefined && serverHub.state == 'Connected') {
-        console.log('已建立過連接');
-        console.log(serverHub.state);
+    if (serverHub != undefined && serverHub.state == 'Connected') {           
         return;
     }
 
     serverHub = new signalR.HubConnectionBuilder()
         .withUrl(url)
         .build();
-
-    //開啟連接，連接後向Main Thread發送保活命令
-    serverHub.start().then(() => {
-        console.log('[ServiceWork]serverHub 連接成功');                
+    
+    serverHub.start().then(() => {        
 
     }).catch((res) => {
         console.error('serverHub 連接錯誤');
@@ -78,6 +74,10 @@ function SendMsgToPage(orderId, stateMsg) {
 
 //關閉連接
 function StopServerHub() {
-    serverHub.stop();
-    console.log('serverHub 已斷開')
+
+    if (serverHub != undefined && serverHub.state == 'Connected') {
+        serverHub.stop();
+        console.log('serverHub 已斷開')
+    }
+
 }

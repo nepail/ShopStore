@@ -1,3 +1,17 @@
+#region 功能與歷史修改描述
+
+/*
+    描述:Windows Service Worker
+    建立日期:2022-01-10
+
+    描述:程式碼風格調整
+    修改日期:2022-01-21
+
+ */
+
+#endregion
+
+
 using DAL.Models.Manager.ViewModels.Product;
 using Dapper;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -10,7 +24,7 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,13 +32,13 @@ namespace ShopStoreWorkerService
 {
     public class Worker : BackgroundService
     {
-        private readonly ILogger<Worker> _logger;
-        private readonly string logPath;
-        private StreamWriter cpuLogger = null!;
-        private readonly HubConnection connection;        
-        private readonly string StrConn = "Data Source=localhost;Initial Catalog=ShoppingDB;User ID=shopstoreadmin;Password=pk!shopstoreadmin;Integrated Security=false;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-        private readonly int CheckTime;
-        private readonly string DomainUrl;
+        private readonly ILogger<Worker> LOGGER;
+        private readonly string LOGPATH;
+        private StreamWriter CPULOGGER = null!;
+        private readonly HubConnection CONNECTION;        
+        private readonly string CONNSTR = "Data Source=localhost;Initial Catalog=ShoppingDB;User ID=shopstoreadmin;Password=pk!shopstoreadmin;Integrated Security=false;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private readonly int CHECKTIME;
+        private readonly string DOMAINURL;
 
         public Worker
         (
@@ -32,18 +46,27 @@ namespace ShopStoreWorkerService
             IConfiguration config
         )
         {
-            _logger = logger;
-            logPath = Path.Combine(config.GetValue<string>("LogPath") ?? AppContext.BaseDirectory!, "cpu.log");
-            //connection = new HubConnectionBuilder().WithUrl(@"http://localhost:6372/chatHub").Build();
-            //connection = new HubConnectionBuilder().WithUrl(@"http://192.168.6.4:8083/chatHub").Build();
-            connection = new HubConnectionBuilder().WithUrl(config.GetValue<string>("DomainUrl"), options =>
+            LOGGER = logger;
+            LOGPATH = Path.Combine(config.GetValue<string>("LogPath") ?? AppContext.BaseDirectory!, "cpu2.log");           
+            CONNECTION = new HubConnectionBuilder().WithUrl(config.GetValue<string>("DomainUrl"), options =>
             {
                 //options.Cookies.Add(new System.Net.Cookie("manager", "123"));            
 
+                //The SSL connection could not be established, see inner exception.'
+                //應用程式進行SSL連線時會驗證SSL的安全性，測試環境為本機，加入以下設定略過
+                options.WebSocketConfiguration = conf =>
+                {
+                    conf.RemoteCertificateValidationCallback = (message, cert, chain, errors) => { return true; };
+                };
+
+                options.HttpMessageHandlerFactory = factory => new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }
+                };
 
             }).Build();
             
-            CheckTime = config.GetValue<int>("CheckTime");
+            CHECKTIME = config.GetValue<int>("CheckTime");
             //DomainUrl = config.GetValue<string>("DomainUrl");
         }
 
@@ -54,10 +77,10 @@ namespace ShopStoreWorkerService
             
             //var con = new CookieContainer()
             
-            cpuLogger = new StreamWriter(logPath, true);            
-            await connection.StartAsync();
-            _logger.LogInformation("connection successful");
-            _logger.LogInformation("Service started");
+            CPULOGGER = new StreamWriter(LOGPATH, true);            
+            await CONNECTION.StartAsync();
+            LOGGER.LogInformation("connection successful");
+            LOGGER.LogInformation("Service started");
             
             // 基底類別 BackgroundService 在 StartAsync() 呼叫 ExecuteAsync、
             // 在 StopAsync() 時呼叫 stoppingToken.Cancel() 優雅結束
@@ -66,9 +89,9 @@ namespace ShopStoreWorkerService
 
         void Log(string message)
         {
-            if (cpuLogger == null) return;
-            cpuLogger.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} {message}");
-            cpuLogger.Flush();
+            if (CPULOGGER == null) return;
+            CPULOGGER.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} {message}");
+            CPULOGGER.Flush();
         }
 
         int GetCpuLoad()
@@ -92,7 +115,7 @@ namespace ShopStoreWorkerService
             while (!stoppingToken.IsCancellationRequested)
             {
 
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);                
+                LOGGER.LogInformation("Worker running at: {time}", DateTimeOffset.Now);                
                 await Task.Delay(1000, stoppingToken);
 
                 // 使用 ThreadPool 執行，避免讀取 CPU 百分比的耗用時間干擾 Task.Delay 間隔
@@ -113,38 +136,38 @@ namespace ShopStoreWorkerService
                                 //_logger.LogInformation($"Logging CPU load");
                                 //_logger.LogInformation($"CPU: {cpuValue}%");                                
 
-                                using var conn = new SqlConnection(StrConn);
+                                using var conn = new SqlConnection(CONNSTR);
                                 var result = conn.QueryMultiple("pro_shopStore_Manager_InventoryCheck",
                                 commandType: System.Data.CommandType.StoredProcedure);
 
                                 var item = result.Read<InventoryViewModel>().ToDictionary(x => x.Stock, x => x);
                                 var logg = JsonConvert.SerializeObject(item);
                                 //_logger.LogInformation(logg);
-                                connection.InvokeAsync("SendMessage", "test:", logg);
+                                CONNECTION.InvokeAsync("SendMessage", "test:", logg);
                             }
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError(ex.ToString());
+                            LOGGER.LogError(ex.ToString());
                             throw;
                         }
                     }, stoppingToken);
-                await Task.Delay(CheckTime, stoppingToken);
+                await Task.Delay(CHECKTIME, stoppingToken);
             }
         }
 
         private async void SendCPUUsage(int cpu)
         {
-            await connection.InvokeAsync("SendMessage", "CPU:", cpu.ToString());
+            await CONNECTION.InvokeAsync("SendMessage", "CPU:", cpu.ToString());
         }
 
-        // 服務停止時
+        // 服務停止
         public override async Task StopAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Service stopped");
+            LOGGER.LogInformation("Service stopped");
             Log("Service stopped");
-            cpuLogger.Dispose();
-            cpuLogger = null!;
+            CPULOGGER.Dispose();
+            CPULOGGER = null!;
             await base.StopAsync(stoppingToken);
         }
     }

@@ -14,14 +14,11 @@
     <meta name="viewport" content="width=device-width" />
     <link rel="stylesheet" href="~/vendor/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/vendor/bootstrap-vue/dist/bootstrap-vue.min.css" />
-
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
     <link rel="stylesheet" href="~/css/Manager/Home/Home.css" />
-
     <link href="~/lib/bootstrap-sweetalert/sweetalert.css" rel="stylesheet" />
     <script src="~/lib/bootstrap-sweetalert/sweetalert.js"></script>
-
     <script src="~/vendor/vue/dist/vue.js"></script>
     <script src="~/vendor/bootstrap-vue/dist/bootstrap-vue.min.js"></script>
     <script src="~/vendor/axios/dist/axios.js"></script>
@@ -75,7 +72,7 @@
         <div id="app">
             <div id="Home-container" class="Home-container">
                 <div id="loading-section" class="loading">
-                    @*<span>資料讀取中...請稍後</span>*@
+                    
                     <span class="loading__anim"></span>
                 </div>
             </div>
@@ -103,7 +100,7 @@
                                         <p>上線中</p>
                                     </div>
                                 </div>
-                                <!-- <a href="#" class="logout">Logout</a> -->
+                                
                             </header>
                             <div class="search">
                                 <span class="text">Select an user to start chat</span>
@@ -111,18 +108,7 @@
                                 <button><i class="fas fa-search"></i></button>
                             </div>
                             <div id="users-list" class="users-list">
-@*                                <a href="#" data-id="1">
-                                    <div class="content">
-                                        <div class="user-img">
-                                            <span>A</span>
-                                        </div>
-                                        <div class="details">
-                                            <span>Coding Nepal</span>
-                                            <p>This is test message</p>
-                                        </div>
-                                    </div>
-                                    <div class="status-dot"><i class="fas fa-circle"></i></div>
-                                </a>*@                                
+                             
                             </div>
                         </section>
 
@@ -141,83 +127,16 @@
                                 </div>
                             </header>
                             <div id="chat-box" class="chat-box">
-@*                                <div class="chat outgoing">
-                                    <div class="details">
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                                    </div>
-                                </div>
-                                <div class="chat incoming">
-                                    <div class="user-img">
-                                        <span>A</span>
-                                    </div>
-                                    <div class="details">
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                                    </div>
-                                </div>
-                                <div class="chat outgoing">
-                                    <div class="details">
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                                    </div>
-                                </div>
-                                <div class="chat incoming">
-                                    <div class="user-img"></div>
-                                    <div class="details">
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                                    </div>
-                                </div>
-                                <div class="chat outgoing">
-                                    <div class="details">
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                                    </div>
-                                </div>
-                                <div class="chat incoming">
-                                    <div class="user-img"></div>
-                                    <div class="details">
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                                    </div>
-                                </div>
-                                <div class="chat outgoing">
-                                    <div class="details">
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                                    </div>
-                                </div>
-                                <div class="chat incoming">
-                                    <div class="user-img"></div>
-                                    <div class="details">
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                                    </div>
-                                </div>
-                                <div class="chat incoming">
-                                    <div class="user-img"></div>
-                                    <div class="details">
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                                    </div>
-                                </div>
-                                <div class="chat incoming">
-                                    <div class="user-img"></div>
-                                    <div class="details">
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                                    </div>
-                                </div>
-                                <div class="chat incoming">
-                                    <div class="user-img"></div>
-                                    <div class="details">
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                                    </div>
-                                </div>*@
+
                             </div>
                             <form action="#" class="typing-area">
                                 <input type="text" placeholder="輸入訊息...">
                                 <button id="btnSendToChat"><i class="fab fa-telegram-plane"></i></button>
                             </form>
                         </section>
-
-
                     </div>
                 </div>
-
             </div>
-
 
         </div>
         <div class="chatbox__button">
@@ -226,7 +145,6 @@
             </button>
         </div>
     </div>
-
 
 </body>
 

@@ -31,16 +31,27 @@ namespace ShopStore.Hubs
 
         public string ClientAccount { get { return Context.User.FindFirstValue("Account"); } }
         
-        private readonly ConUserService CONUSERLIST;
-
-        private readonly IDistributedCache REDIS;
+        private readonly ConUserService CONUSERLIST;        
 
         private readonly IWebHostEnvironment WEBHOSTENVIRONMENT;
         public ServerHub(ConUserService conUserService, IDistributedCache redis, IWebHostEnvironment webHostEnvironment)
         {
-            CONUSERLIST = conUserService;
-            REDIS = redis;
+            CONUSERLIST = conUserService;            
             WEBHOSTENVIRONMENT = webHostEnvironment;
+        }
+
+
+
+        public async override Task OnConnectedAsync()
+        {
+            //將前台的User加入到清單中            
+            AddConUserList();
+        }
+
+        public async override Task OnDisconnectedAsync(Exception except)
+        {
+            //斷線後從List移除
+            CONUSERLIST.RemoveFromServerList(Context.ConnectionId);
         }
 
         private async void AddConUserList()
@@ -74,18 +85,6 @@ namespace ShopStore.Hubs
             }
         }
 
-        public async override Task OnConnectedAsync()
-        {
-            //將前台的User加入到清單中            
-            AddConUserList();
-        }
-
-        public async override Task OnDisconnectedAsync(Exception except)
-        {
-            //斷線後從List移除
-            CONUSERLIST.RemoveFromServerList(Context.ConnectionId);
-        }
-
         /// <summary>
         /// 後端向前端通知狀態變更
         /// </summary>
@@ -95,15 +94,14 @@ namespace ShopStore.Hubs
         public async Task SendMessageToFrontedUser(string userAccount, string orderId, string stateMsg)
         {
             var target = CONUSERLIST.ServerList.FirstOrDefault(x => x.UserAccount == userAccount);
+
             if (target != null)
             {
                 await Clients.Clients(target.ConnectionID).SendAsync("SendMessageToFrontedUser", orderId, stateMsg);
                 return;
-            }
+            }            
 
-            //Redis儲存消息，待用戶上線後獲取            
-
-            //在本機上暫存用戶通知//todo
+            //在本機上暫存用戶通知
             StoredUserAlert(userAccount, orderId, stateMsg);
         }
 

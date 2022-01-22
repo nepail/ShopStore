@@ -13,23 +13,22 @@
 
 #endregion
 
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using NLog;
+using ShopStore.Common;
 using ShopStore.Models.Interface;
 using ShopStore.ViewModels;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using System.Threading.Tasks;
-using ShopStore.Common;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Distributed;
 using System;
-using NLog;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
-using System.Linq;
-using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace ShopStore.Controllers
 {
@@ -38,7 +37,7 @@ namespace ShopStore.Controllers
     {
         private readonly IMembers MEMBERS;
         private readonly IDistributedCache REDIS;
-        private static Logger LOGGER = LogManager.GetCurrentClassLogger();
+        private static readonly Logger LOGGER = LogManager.GetCurrentClassLogger();
         private readonly IHttpContextAccessor HTTPCONTEXTACCESSOR;
         private readonly IWebHostEnvironment WEBHOSTENVIRONMENT;
 
@@ -187,9 +186,6 @@ namespace ShopStore.Controllers
         /// <summary>
         /// 登入
         /// </summary>
-        /// <param name="request"></param>
-        /// <param name="returnUrl"></param>
-        /// <returns></returns>        
         [HttpPost]
         public async Task<IActionResult> Login(string account, string pwd, string returnUrl)
         {
@@ -205,8 +201,7 @@ namespace ShopStore.Controllers
             {
                 new Claim("Account", member.f_account),
                 new Claim(ClaimTypes.Name, member.f_nickname), //暱稱                
-                new Claim(ClaimTypes.NameIdentifier, member.f_id), //userId                
-                //new Claim(ClaimTypes.Role, member.f_groupid),
+                new Claim(ClaimTypes.NameIdentifier, member.f_id), //userId                                
                 new Claim(ClaimTypes.Role, "Normal"),
             };
 
@@ -235,10 +230,6 @@ namespace ShopStore.Controllers
             var options = new DistributedCacheEntryOptions();
             options.SetSlidingExpiration(TimeSpan.FromMinutes(30)); //重新讀取後會重新計時
             REDIS.SetString(account, userGuid, options);
-
-            //Session 自動保存到Redis
-            //HttpContext.Session.SetString("UserId", "Tester");
-
 
             //導回原址OR導回頁首
             if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))

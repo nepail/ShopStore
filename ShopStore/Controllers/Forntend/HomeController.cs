@@ -40,8 +40,7 @@ namespace ShopStore.Controllers
         /// <summary>
         /// 帳號重複登入
         /// </summary>
-        /// <returns></returns>
-        //[AllowAnonymous]
+        /// <returns></returns>        
         [Authorize(Roles = "Normal")]
         public IActionResult Error()
         {
@@ -65,8 +64,7 @@ namespace ShopStore.Controllers
         /// <summary>
         /// 授權拒絕
         /// </summary>
-        /// <returns></returns>        
-        //[AllowAnonymous]
+        /// <returns></returns>                
         public IActionResult AccessDenied()
         {
             return View("/Views/Frontend/Home/AccessDenied.cshtml");

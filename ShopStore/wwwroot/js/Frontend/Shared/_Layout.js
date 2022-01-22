@@ -1,42 +1,81 @@
 ﻿$(document).ready(function () {
     Layout.Init();
-    Layout.SW.Reg();
+    
 })
 
 var Layout = {
-
+    //初始化
     Init() {
-
-        Layout.Default.Setting.Slick();
-        Layout.Default.Setting.Toastr();
-
-        Layout.SetBtn();
-        Layout.On.Unload();
+        Layout.UC.Init();
+        Layout.SW.Reg();
     },
-
-    On: {
-        Unload() {
-            $(window).on('unload', function (e) {
-                e.preventDefalue();
-                StopServerHub();
+    
+    DATA: {
+        //檢查未讀訊息
+        CheckUserAlert() {
+            $.ajax({
+                url: '/Member/CheckUserAlert',
+                success: res => {
+                    if (res.success) {                        
+                        Layout.UC.RenderUserAlert(res.item);                        
+                    }
+                },
+                error: res => {
+                    swal('CheckUserAlert Error', 'Network Error', 'error')
+                }
             })
         }
     },
 
-    SetBtn() {
-        //User 鈴鐺通知
-        $('#btnNotify').click(function () {
-            var $notification = $('#notification');
-            var $notifyText = $('.notify-text');
+    UC: {
+        //初始化
+        Init() {
+            Layout.UC.Setting.Slick();
+            Layout.UC.Setting.Toastr();
+            Layout.UC.SetBtn();
+            Layout.UC.On.Unload();
+        },
 
-            $('#blip').css('opacity', 0);
+        //渲染使用者通知div
+        RenderUserAlert(item) {
+            var content = '';
 
-            $notification.toggleClass('open');
-            $notifyText.toggleClass('show');
-        })
-    },
+            for (var i = 0, len = item.length; i < len; i++) {
+                content += `
+                     <div class="notify-content">
+                        <div class="notify-text">
+                            <h1>${item[i].alertTime}</h1>
+                            <p>${item[i].orderId} : ${item[i].stateMsg}</p>
+                        </div>
+                    </div>`
+            }
 
-    Default: {
+            $('#notification').html(content);
+            $('#blip').css('opacity', 1);
+        },
+       
+        On: {
+            Unload() {
+                $(window).on('unload', function (e) {
+                    e.preventDefalue();
+                    StopServerHub();
+                })
+            }
+        },
+
+        SetBtn() {
+            //User 鈴鐺通知
+            $('#btnNotify').click(function () {
+                var $notification = $('#notification');
+                var $notifyText = $('.notify-text');
+
+                $('#blip').css('opacity', 0);
+
+                $notification.toggleClass('open');
+                $notifyText.toggleClass('show');
+            })
+        },
+
         Setting: {
             Slick() {
                 $('.single-item').slick({
@@ -83,52 +122,18 @@ var Layout = {
 
             }
         }
+
     },
 
-    DATA: {
-        //檢查未讀訊息
-        CheckUserAlert() {
-            $.ajax({
-                url: '/Member/CheckUserAlert',
-                success: res => {
-                    if (res.success) {                        
-                        Layout.UC.RenderUserAlert(res.item);                        
-                    }
-                },
-                error: res => {
-                    swal('CheckUserAlert Error', 'Network Error', 'error')
-                }
-            })
-        }
-    },
-
-    UC: {
-        //有未讀訊息，渲染div
-        RenderUserAlert(item) {
-            var content = '';
-
-            for (var i = 0, len = item.length; i < len; i++) {
-                content += `
-                     <div class="notify-content">
-                        <div class="notify-text">
-                            <h1>${item[i].alertTime}</h1>
-                            <p>${item[i].orderId} : ${item[i].stateMsg}</p>
-                        </div>
-                    </div>`
-            }
-
-            $('#notification').html(content);
-            $('#blip').css('opacity', 1);
-        }
-    },
-
+    //ServiceWorker
     SW: {
+        //註冊
         Reg() {
             //檢查是否註冊過ServiceWorker
             navigator.serviceWorker.getRegistrations().then(registrations => {
-
+                
                 if (registrations.length > 0) {
-                    console.log('service worker already Registration')
+                    //已註冊過SW    
                 } else {
                     //註冊ServiceWorker
                     RegistrationServiceWorker();
@@ -141,18 +146,20 @@ var Layout = {
 
                 if ('serviceWorker' in navigator) {
                     navigator.serviceWorker
-                        .register('/serviceWorker.js')//註冊 Service Worker
+                        .register('/serviceWorker.js')//第二個參數可代入想要註冊的範圍
                         .then(function (reg) {
-                            console.log('Registration succeeded. Scope is ' + reg.scope); //註冊成功
+                            
                         })
                         .catch(function (error) {
-                            console.log('Registration failed with ' + error); //註冊失敗
+                            console.log('註冊失敗： ' + error); //註冊失敗
                         })
                 }
             }
         },
 
+        //操作
         Remote: {
+            //發送命令
             RemoteServiceWorker(context, method) {
 
                 if (navigator.serviceWorker.controller) {
@@ -178,7 +185,7 @@ var Layout = {
                 }
             },
 
-            //斷開長連接
+            //發送斷開長連接命令
             StopServerHub() {
                 if (navigator.serviceWorker.controller) {
                     navigator.serviceWorker.controller.postMessage({
@@ -189,11 +196,5 @@ var Layout = {
         }
     }
 }
-
-
-
-
-
-
 
 
