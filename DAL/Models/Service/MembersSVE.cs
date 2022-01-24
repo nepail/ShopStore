@@ -59,17 +59,17 @@ namespace ShopStore.Models.Service
         /// <summary>
         /// 登入查詢有無該User
         /// </summary>
-        /// <param name="f_account"></param>
-        /// <param name="f_pcode"></param>
+        /// <param name="account"></param>
+        /// <param name="pcode"></param>
         /// <returns></returns>
-        public MemberViewModel FindUser(string f_account, string f_pcode)
+        public MemberViewModel FindUser(string account, string pcode)
         {
             try
             {
                 using var conn = CONNECTION;
-                return conn.QueryFirstOrDefault<MemberViewModel>(@"pro_shopStore_getMember",
-                                                                          new { f_account, f_pcode, f_date = DateTime.Now },
-                                                                          commandType: System.Data.CommandType.StoredProcedure);                
+                return conn.QueryFirstOrDefault<MemberViewModel>(@"pro_fr_getMember",
+                                                                new { account, pcode, date = DateTime.Now },
+                                                                commandType: System.Data.CommandType.StoredProcedure);                
             }
             catch (Exception ex)
             {
@@ -88,7 +88,7 @@ namespace ShopStore.Models.Service
             try
             {
                 using var conn = CONNECTION;
-                return conn.QueryFirstOrDefault<UserProfileViewModel>(@"pro_shopStore_getMemberProfile",
+                return conn.QueryFirstOrDefault<UserProfileViewModel>(@"pro_fr_getMemberProfile",
                                                                           new { memberId },
                                                                           commandType: System.Data.CommandType.StoredProcedure);                
             }
@@ -108,6 +108,9 @@ namespace ShopStore.Models.Service
         {
             try
             {
+
+                //Dapper.SqlMapper.SetTypeMap()
+
                 using var conn = CONNECTION;
                 string strSql = @" INSERT INTO t_members(                                          
                                          f_name
@@ -150,12 +153,12 @@ namespace ShopStore.Models.Service
         /// <param name="code"></param>
         /// <param name="mail"></param>
         /// <returns></returns>
-        public bool ResetMemberPcode(string code, string mail)
+        public bool ResetMemberPcode(string pwd, string mail)
         {
             try
             {
                 using var conn = CONNECTION;
-                return conn.Execute("pro_shopStore_ResetMemberPcode", new { code, mail }, commandType: System.Data.CommandType.StoredProcedure) > 0;
+                return conn.Execute("pro_bg_editMemberPwd", new { pwd, mail }, commandType: System.Data.CommandType.StoredProcedure) > 0;
             }
             catch (Exception ex)
             {

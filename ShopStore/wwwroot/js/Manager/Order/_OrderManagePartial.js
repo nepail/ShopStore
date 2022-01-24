@@ -181,9 +181,9 @@ var Order = {
 
         if (postData[ordernum] == undefined) {
             postData[ordernum] = {
-                f_id: '',
-                f_status: 0,
-                f_ShippingMethod: 0
+                id: '',
+                status: 0,
+                ShippingMethod: 0
             }
         }
 
@@ -199,8 +199,8 @@ var Order = {
 
         if (type == 0) {
 
-            postData[ordernum].f_id = orderid;
-            postData[ordernum].f_status = parseInt(statusCode.slice(-1));
+            postData[ordernum].id = orderid;
+            postData[ordernum].status = parseInt(statusCode.slice(-1));
 
             postQueue[ordernum].orderUser = orderUser;
             postQueue[ordernum].orderId = orderid;
@@ -214,8 +214,8 @@ var Order = {
 
         if (type == 1) {
 
-            postData[ordernum].f_id = orderid;
-            postData[ordernum].f_ShippingMethod = parseInt(statusCode.slice(-1));
+            postData[ordernum].id = orderid;
+            postData[ordernum].ShippingMethod = parseInt(statusCode.slice(-1));
 
             postQueue[ordernum].orderUser = orderUser;
             postQueue[ordernum].orderId = orderid;

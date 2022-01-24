@@ -14,8 +14,8 @@
 
     public class Order
     {
-        public string f_id { get; set; }
-        public int f_status { get; set; }
-        public int f_shippingMethod { get; set; }
+        public string id { get; set; }
+        public int status { get; set; }
+        public int shippingMethod { get; set; }
     }
 }

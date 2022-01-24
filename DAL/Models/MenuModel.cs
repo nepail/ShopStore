@@ -80,8 +80,7 @@ namespace DAL.Models
         public string f_name { get; set; }
         public string f_controller { get; set; }
         public int f_isopen { get; set; }
-        public int f_level { get; set; }
-        //public int f_isdel { get; set; }
+        public int f_level { get; set; }        
     }
 
     public class MainMenuItem

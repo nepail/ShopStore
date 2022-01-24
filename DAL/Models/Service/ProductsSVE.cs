@@ -41,7 +41,7 @@ namespace ShopStore.Models.Service
             try
             {
                 using var conn = CONNECTION;
-                var result = await conn.QueryAsync<ProductsViewModel>("pro_shopStore_getProducts", new { f_isopen = isopen }, commandType: System.Data.CommandType.StoredProcedure);
+                var result = await conn.QueryAsync<ProductsViewModel>("pro_fr_getProducts", new { isopen }, commandType: System.Data.CommandType.StoredProcedure);
                 return result;
             }
             catch (Exception ex)
@@ -129,7 +129,7 @@ namespace ShopStore.Models.Service
             try
             {
                 using var conn = CONNECTION;
-                return await conn.ExecuteAsync("pro_shopStore_updateProduct", productModel, commandType: System.Data.CommandType.StoredProcedure) > 0;                
+                return await conn.ExecuteAsync("pro_bg_editProduct", productModel, commandType: System.Data.CommandType.StoredProcedure) > 0;                
             }
             catch (Exception ex)
             {

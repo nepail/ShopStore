@@ -33,10 +33,10 @@ namespace ShopStore.Models.Interface
         /// <summary>
         /// 登入查詢有無該User
         /// </summary>
-        /// <param name="f_account"></param>
-        /// <param name="f_pcode"></param>
+        /// <param name="account"></param>
+        /// <param name="pcode"></param>
         /// <returns></returns>
-        public MemberViewModel FindUser(string f_account, string f_pcode);
+        public MemberViewModel FindUser(string account, string pcode);
 
         /// <summary>
         /// 取得該Member的資料

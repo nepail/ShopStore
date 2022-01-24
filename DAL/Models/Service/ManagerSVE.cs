@@ -51,7 +51,7 @@ namespace ShopStore.Models.Service
             try
             {
                 using var conn = CONNECTION;
-                SqlMapper.GridReader result = await conn.QueryMultipleAsync("pro_shopStore_getMenu", new { userid = userId }, commandType: System.Data.CommandType.StoredProcedure);
+                SqlMapper.GridReader result = await conn.QueryMultipleAsync("pro_bg_getMenu", new { userId }, commandType: System.Data.CommandType.StoredProcedure);
                 List<MenuModel> menuModels = result.Read<MenuModel>().ToList();
                 List<MenuSubModel> menuSubModels = result.Read<MenuSubModel>().ToList();
                 List<MenuModel> menu = (from a in menuModels
@@ -86,7 +86,7 @@ namespace ShopStore.Models.Service
             try
             {
                 using var conn = CONNECTION;
-                var result = conn.Execute("pro_shopStore_Manager_addMenu", menuModel, commandType: System.Data.CommandType.StoredProcedure);
+                var result = conn.Execute("pro_bg_addMenu", menuModel, commandType: System.Data.CommandType.StoredProcedure);
                 return true;
             }
             catch (Exception ex)
@@ -109,17 +109,17 @@ namespace ShopStore.Models.Service
                 using var conn = CONNECTION;
                 if (model.MainMenuItems != null && model.MainMenuItems.Count > 0)
                 {
-                    var result = await conn.ExecuteAsync("pro_shopStore_Manager_addMainMenu", model.MainMenuItems, commandType: System.Data.CommandType.StoredProcedure);
+                    var result = await conn.ExecuteAsync("pro_bg_addManagerMainMenu", model.MainMenuItems, commandType: System.Data.CommandType.StoredProcedure);
                 }
 
                 if (model.SubItems != null && model.SubItems.Count > 0)
                 {
-                    var result = await conn.ExecuteAsync("pro_shopStore_Manager_addSubMenu", model.SubItems, commandType: System.Data.CommandType.StoredProcedure);
+                    var result = await conn.ExecuteAsync("pro_bg_addManagerSubMenu", model.SubItems, commandType: System.Data.CommandType.StoredProcedure);
                 }
 
                 if (model.MenuSubModels != null && model.MenuSubModels.Count > 0)
                 {
-                    var result = await conn.ExecuteAsync("pro_shopStore_Manager_updateSubMenu", model.MenuSubModels, commandType: System.Data.CommandType.StoredProcedure);
+                    var result = await conn.ExecuteAsync("pro_bg_editManagerSubMenu", model.MenuSubModels, commandType: System.Data.CommandType.StoredProcedure);
                 }
 
             }
@@ -141,7 +141,7 @@ namespace ShopStore.Models.Service
             try
             {
                 using var conn = CONNECTION;
-                string sqlStr = "pro_shopStore_Manager_getOrderList";
+                string sqlStr = "pro_bg_getOrders";
                 var result = conn.Query(sqlStr);
                 List<OrderManageViewModel> model = (List<OrderManageViewModel>)conn.Query<OrderManageViewModel>(sqlStr);
 
@@ -155,7 +155,7 @@ namespace ShopStore.Models.Service
         }
 
         /// <summary>
-        /// 取所有狀態
+        /// 取得訂單的設定
         /// </summary>
         /// <returns></returns>
         public OrderStatusModel GetOrderStatus()
@@ -163,7 +163,7 @@ namespace ShopStore.Models.Service
             try
             {
                 using var conn = CONNECTION;
-                var result = conn.QueryMultiple("pro_shopStore_Manager_Order_getStatus", commandType: System.Data.CommandType.StoredProcedure);
+                var result = conn.QueryMultiple("pro_bg_getOrderSetting", commandType: System.Data.CommandType.StoredProcedure);
 
                 OrderStatusModel model = new OrderStatusModel()
                 {
@@ -190,7 +190,7 @@ namespace ShopStore.Models.Service
             try
             {
                 using var conn = CONNECTION;
-                bool result = conn.Query<bool>("pro_shopStore_Manager_removeOrderList", new { f_id = ordernum }, commandType: System.Data.CommandType.StoredProcedure).FirstOrDefault();
+                bool result = conn.Query<bool>("pro_bg_delOrder", new { ordernum }, commandType: System.Data.CommandType.StoredProcedure).FirstOrDefault();
                 return true;
             }
             catch (Exception ex)
@@ -210,7 +210,7 @@ namespace ShopStore.Models.Service
             try
             {
                 using var conn = CONNECTION;
-                return conn.Execute("pro_shopStore_Manager_UpdateOrder", orders, commandType: System.Data.CommandType.StoredProcedure) > 0;
+                return conn.Execute("pro_bg_editOrder", orders, commandType: System.Data.CommandType.StoredProcedure) > 0;
             }
             catch (Exception ex)
             {
@@ -229,7 +229,7 @@ namespace ShopStore.Models.Service
             try
             {
                 using var conn = CONNECTION;
-                return conn.Execute(@"pro_shopStore_Manager_AddUser", model, commandType: System.Data.CommandType.StoredProcedure) == 1;
+                return conn.Execute(@"pro_bg_addUser", model, commandType: System.Data.CommandType.StoredProcedure) == 1;
             }
             catch (Exception ex)
             {
@@ -248,7 +248,7 @@ namespace ShopStore.Models.Service
             try
             {
                 using var conn = CONNECTION;
-                return (UserManageViewModels)conn.QueryFirstOrDefault<UserManageViewModels>("pro_shopStore_Manager_User_getUser", new { userLogin.Account, userLogin.Pcode }, commandType: System.Data.CommandType.StoredProcedure);
+                return (UserManageViewModels)conn.QueryFirstOrDefault<UserManageViewModels>("pro_bg_getUserById", new { userLogin.Account, userLogin.Pcode }, commandType: System.Data.CommandType.StoredProcedure);
             }
             catch (Exception ex)
             {
@@ -267,7 +267,7 @@ namespace ShopStore.Models.Service
             try
             {
                 using var conn = CONNECTION;
-                var result = conn.QueryMultiple("pro_shopStore_Manager_getUsers", commandType: System.Data.CommandType.StoredProcedure);
+                var result = conn.QueryMultiple("pro_bg_getUsers", commandType: System.Data.CommandType.StoredProcedure);
 
                 List<UserManageViewModel> userManageViewModels = result.Read<UserManageViewModel>().ToList();
                 List<UserManageViewModels> model = userManageViewModels.Select(x => new UserManageViewModels
@@ -301,7 +301,7 @@ namespace ShopStore.Models.Service
             {
                 using var conn = CONNECTION;
                 var userPermission = conn.Query<UserPermission, UserPermissionDetail, UserPermission>
-                    ("pro_shopStore_Manager_getUsersPermissions",
+                    ("pro_bg_getUsersAuth",
                     (o, c) =>
                     {
                         o.PermissionDetail = c;
@@ -352,7 +352,7 @@ namespace ShopStore.Models.Service
                 }
 
                 using var conn = CONNECTION;
-                return conn.Execute("pro_shopStore_Manager_UserPermissionsUpdate", permissionModels, commandType: System.Data.CommandType.StoredProcedure) > 0;                
+                return conn.Execute("pro_bg_editUserAuth", permissionModels, commandType: System.Data.CommandType.StoredProcedure) > 0;                
             }
             catch (Exception ex)
             {
@@ -370,7 +370,7 @@ namespace ShopStore.Models.Service
             try
             {
                 using var conn = CONNECTION;
-                return conn.Execute("pro_shopStore_Manager_UserRemove",
+                return conn.Execute("pro_bg_delUser",
                                     new { userId },
                                     commandType: System.Data.CommandType.StoredProcedure) == 1;
             }
@@ -390,7 +390,7 @@ namespace ShopStore.Models.Service
             try
             {
                 using var conn = CONNECTION;
-                return (List<MemberManagerViewModel>)conn.Query<MemberManagerViewModel>("pro_shopStore_Manager_Member_GetList",
+                return (List<MemberManagerViewModel>)conn.Query<MemberManagerViewModel>("pro_bg_getMembers",
                                     commandType: System.Data.CommandType.StoredProcedure);
             }
             catch (Exception ex)
@@ -410,7 +410,7 @@ namespace ShopStore.Models.Service
             try
             {
                 using var conn = CONNECTION;
-                return conn.Execute("pro_shopStore_Manager_Member_SuspendByID",
+                return conn.Execute("pro_bg_editMemberAuth",
                     new { memberId, isSuspend },
                     commandType: System.Data.CommandType.StoredProcedure) == 1;
             }
@@ -422,22 +422,22 @@ namespace ShopStore.Models.Service
         }
 
         /// <summary>
-        /// 會員停權
+        /// 修改會員等級
         /// </summary>
-        /// <param name="memberId"></param>
+        /// <param name="memberManageModel"></param>
         /// <returns></returns>
         public bool UpdateByMemberId(MemberManageModel memberManageModel)
         {
             try
             {
                 using var conn = CONNECTION;
-                return conn.Execute("pro_shopStore_Manager_Member_UpdateByID",
+                return conn.Execute("pro_bg_editMemberLevel",
                     memberManageModel.MemberModel,
                     commandType: System.Data.CommandType.StoredProcedure) > 0;
             }
             catch (Exception ex)
             {
-                LOGGER.Debug(ex, $"SuspendByID={memberManageModel}");
+                LOGGER.Debug(ex, $"UpdateByMemberId={memberManageModel}");
                 return false;
             }
         }
@@ -451,7 +451,7 @@ namespace ShopStore.Models.Service
             try
             {
                 using var conn = CONNECTION;
-                var result = conn.QueryMultiple("pro_shopStore_Manager_InventoryCheck",
+                var result = conn.QueryMultiple("pro_bg_checkProducts",
                     commandType: System.Data.CommandType.StoredProcedure);
 
                 return result.Read<InventoryViewModel>().ToDictionary(x => x.Id, x => x);
